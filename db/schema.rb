@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_07_190824) do
+ActiveRecord::Schema.define(version: 2023_05_14_234216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
@@ -35,6 +35,20 @@ ActiveRecord::Schema.define(version: 2023_05_07_190824) do
   enable_extension "unaccent"
   enable_extension "uuid-ossp"
   enable_extension "xml2"
+
+  create_table "user_profiles", force: :cascade do |t|
+    t.string "user"
+    t.string "references"
+    t.string "first_name", limit: 100
+    t.string "last_name", limit: 100
+    t.string "telephone", limit: 30
+    t.datetime "joined_at"
+    t.string "photo_url", limit: 200
+    t.string "timezone", limit: 60
+    t.json "settings"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
