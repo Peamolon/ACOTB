@@ -2,6 +2,8 @@
 
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
+  respond_to :html, only: []
+  respond_to :xml, only: []
 
   private
   def respond_with(resource, options={})
