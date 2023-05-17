@@ -37,8 +37,7 @@ ActiveRecord::Schema.define(version: 2023_05_14_234216) do
   enable_extension "xml2"
 
   create_table "user_profiles", force: :cascade do |t|
-    t.string "user"
-    t.string "references"
+    t.bigint "user_id"
     t.string "first_name", limit: 100
     t.string "last_name", limit: 100
     t.string "telephone", limit: 30
@@ -48,6 +47,7 @@ ActiveRecord::Schema.define(version: 2023_05_14_234216) do
     t.json "settings"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -64,4 +64,5 @@ ActiveRecord::Schema.define(version: 2023_05_14_234216) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "user_profiles", "users"
 end

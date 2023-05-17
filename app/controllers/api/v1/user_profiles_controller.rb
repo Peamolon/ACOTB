@@ -2,7 +2,7 @@ module Api
   module V1
     class UserProfilesController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_user_profile, only: [:show, :update, :destroy]
+      before_action :set_user_profile, only: [:show, :update]
 
       def index
         user_profiles = UserProfile.all
@@ -14,9 +14,9 @@ module Api
       end
 
       def create
-        user_profile = UserProfile.new(user_profile_params)
+        user_profile = UserProfile.new(user_profile_params.merge(user_id: current_user.id, joined_at: Time.now))
         if user_profile.save
-          render json: user_profile, status: :created
+          render json: {message: 'UserProfile successfully created',data: user_profile}, status: :created
         else
           render json: { errors: user_profile.errors.full_messages }, status: :unprocessable_entity
         end
@@ -28,11 +28,6 @@ module Api
         else
           render json: { errors: @user_profile.errors.full_messages }, status: :unprocessable_entity
         end
-      end
-
-      def destroy
-        @user_profile.destroy
-        head :no_content
       end
 
       private

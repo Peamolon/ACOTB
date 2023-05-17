@@ -1,8 +1,7 @@
 class CreateUserProfiles < ActiveRecord::Migration[6.0]
   def change
     create_table :user_profiles do |t|
-      t.string :user
-      t.string :references
+      t.references :user, foreign_key: true
       t.string :first_name, limit: 100
       t.string :last_name, limit: 100
       t.string :telephone, limit: 30
