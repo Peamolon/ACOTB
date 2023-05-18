@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/phatworx/devise_security_extension.git
+  revision: 181ca92024b16c72e7e9fb2f87c9d99462273a46
+  specs:
+    devise_security_extension (0.10.0)
+      devise (>= 3.0.0, < 5.0)
+      railties (~> 6.0.3, >= 3.2.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -227,6 +235,7 @@ DEPENDENCIES
   byebug
   devise (~> 4.2)
   devise-jwt
+  devise_security_extension!
   grape
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)

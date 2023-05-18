@@ -1,9 +1,7 @@
 # frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
   respond_to :json
-  respond_to :html, only: []
-  respond_to :xml, only: []
+
   private
   def respond_with(resource, options={})
     render json: {
@@ -26,8 +24,5 @@ class Users::SessionsController < Devise::SessionsController
       }, status: :unauthorized
     end
   end
-  def set_flash_message!(key, kind, options = {})
-    # Evita configurar el mensaje flash
-    puts "Entra aqui"
-  end
+
 end
