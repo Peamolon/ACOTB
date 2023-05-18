@@ -149,6 +149,7 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.5.3)
+    phonelib (0.8.1)
     psych (3.3.4)
     puma (4.3.12)
       nio4r (~> 2.0)
@@ -193,6 +194,7 @@ GEM
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    rolify (6.0.1)
     ruby2_keywords (0.0.5)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
@@ -239,10 +241,12 @@ DEPENDENCIES
   grape
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
+  phonelib
   psych (< 4)
   puma (~> 4.1)
   rack-cors
   rails (~> 6.0.6, >= 6.0.6.1)
+  rolify
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
