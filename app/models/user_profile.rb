@@ -11,7 +11,6 @@ class UserProfile < ApplicationRecord
 
   private
   def set_role
-    puts "El role es #{role}"
     self.add_role role.to_sym
   end
 end
