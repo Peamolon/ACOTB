@@ -12,7 +12,11 @@ class Role < ApplicationRecord
 
   scopify
 
-  ALLOWED_ROLES = [:administrator, :student, :proffesor, :director, :responsible, :superadmin]
+  ALLOWED_ROLES = [:administrator, :student, :proffesor, :director, :manager, :superadmin]
+
+  def self.allowed_roles
+    ALLOWED_ROLES
+  end
 
   def self.is_valid?(role)
     ALLOWED_ROLES.include?(role)
