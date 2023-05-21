@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_profile: one
+  semester: 1
+  document_number: 1
+  type_document: MyString
+
+two:
+  user_profile: two
+  semester: 1
+  document_number: 1
+  type_document: MyString
