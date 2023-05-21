@@ -10,10 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_19_151309) do
+ActiveRecord::Schema.define(version: 2023_05_21_170102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "administrators", force: :cascade do |t|
+    t.bigint "user_profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profile_id"], name: "index_administrators_on_user_profile_id"
+  end
+
+  create_table "directors", force: :cascade do |t|
+    t.bigint "user_profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profile_id"], name: "index_directors_on_user_profile_id"
+  end
+
+  create_table "managers", force: :cascade do |t|
+    t.bigint "user_profile_id", null: false
+    t.string "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profile_id"], name: "index_managers_on_user_profile_id"
+  end
 
   create_table "roles", force: :cascade do |t|
     t.string "name"
@@ -23,6 +45,16 @@ ActiveRecord::Schema.define(version: 2023_05_19_151309) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.bigint "user_profile_id", null: false
+    t.string "semester"
+    t.string "id_number"
+    t.string "id_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profile_id"], name: "index_students_on_user_profile_id"
   end
 
   create_table "user_profiles", force: :cascade do |t|
@@ -65,5 +97,9 @@ ActiveRecord::Schema.define(version: 2023_05_19_151309) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "administrators", "user_profiles"
+  add_foreign_key "directors", "user_profiles"
+  add_foreign_key "managers", "user_profiles"
+  add_foreign_key "students", "user_profiles"
   add_foreign_key "user_profiles", "users"
 end
