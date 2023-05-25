@@ -1,0 +1,3 @@
+class RotationType < ApplicationRecord
+
+end
