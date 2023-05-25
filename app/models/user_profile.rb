@@ -21,7 +21,7 @@ class UserProfile < ApplicationRecord
       Student.create(user_profile_id: self.id)
     end
     if has_role? :proffesor
-      Proffesor.create(user_profile_id: self.id)
+      Teacher.create(user_profile_id: self.id)
     end
     if has_role? :director
       Director.create(user_profile_id: self.id) if has_role?(:director)
