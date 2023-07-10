@@ -10,14 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_23_015509) do
+ActiveRecord::Schema.define(version: 2023_05_28_184242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "tablefunc"
-  enable_extension "unaccent"
-  enable_extension "uuid-ossp"
-  enable_extension "xml2"
 
   create_table "administrators", force: :cascade do |t|
     t.bigint "user_profile_id", null: false
@@ -50,6 +46,13 @@ ActiveRecord::Schema.define(version: 2023_05_23_015509) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_managers_on_user_profile_id"
+  end
+
+  create_table "professors", force: :cascade do |t|
+    t.bigint "user_profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profile_id"], name: "index_professors_on_user_profile_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -94,11 +97,13 @@ ActiveRecord::Schema.define(version: 2023_05_23_015509) do
     t.index ["user_profile_id"], name: "index_students_on_user_profile_id"
   end
 
-  create_table "teachers", force: :cascade do |t|
-    t.bigint "user_profile_id", null: false
+  create_table "subjects", force: :cascade do |t|
+    t.integer "director_id"
+    t.integer "total_credits"
+    t.integer "credits"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_profile_id"], name: "index_teachers_on_user_profile_id"
+    t.index ["director_id"], name: "index_subjects_on_director_id"
   end
 
   create_table "user_profiles", force: :cascade do |t|
@@ -134,19 +139,21 @@ ActiveRecord::Schema.define(version: 2023_05_23_015509) do
     t.string "jti", null: false
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0, null: false
+    t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "administrators", "user_profiles"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
   add_foreign_key "managers", "user_profiles"
+  add_foreign_key "professors", "user_profiles"
   add_foreign_key "rotations", "directors"
   add_foreign_key "rotations", "institutions"
   add_foreign_key "rotations", "rotation_types"
   add_foreign_key "students", "user_profiles"
-  add_foreign_key "teachers", "user_profiles"
   add_foreign_key "user_profiles", "users"
 end
