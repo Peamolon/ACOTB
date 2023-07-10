@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :user_profiles, only: [:index, :show, :create, :update, :destroy]
+      resources :roles, only: [:index]
+      resources :institutions, only: [:index, :show, :create, :update, :destroy]
+      resources :subjects, only: [:index, :show, :create, :update, :destroy]
     end
   end
 end
