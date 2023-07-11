@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_28_184242) do
+ActiveRecord::Schema.define(version: 2023_07_11_212725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,18 @@ ActiveRecord::Schema.define(version: 2023_05_28_184242) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_managers_on_user_profile_id"
+  end
+
+  create_table "password_resets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "password", limit: 10
+    t.string "code", limit: 30
+    t.boolean "is_used"
+    t.datetime "requested_at"
+    t.string "ip_address", limit: 60
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
   create_table "professors", force: :cascade do |t|
@@ -87,6 +99,35 @@ ActiveRecord::Schema.define(version: 2023_05_28_184242) do
     t.index ["rotation_type_id"], name: "index_rotations_on_rotation_type_id"
   end
 
+  create_table "rubric_rotation_scores", force: :cascade do |t|
+    t.bigint "rotation_id", null: false
+    t.bigint "rubric_id", null: false
+    t.integer "score"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rotation_id"], name: "index_rubric_rotation_scores_on_rotation_id"
+    t.index ["rubric_id"], name: "index_rubric_rotation_scores_on_rubric_id"
+  end
+
+  create_table "rubrics", force: :cascade do |t|
+    t.string "name", limit: 200
+    t.string "level", limit: 100
+    t.string "response", limit: 200
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "student_informations", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "rotation_id", null: false
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rotation_id"], name: "index_student_informations_on_rotation_id"
+    t.index ["student_id"], name: "index_student_informations_on_student_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.bigint "user_profile_id", null: false
     t.string "semester"
@@ -104,6 +145,14 @@ ActiveRecord::Schema.define(version: 2023_05_28_184242) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["director_id"], name: "index_subjects_on_director_id"
+  end
+
+  create_table "terms_of_services", force: :cascade do |t|
+    t.string "body"
+    t.string "version", limit: 10
+    t.datetime "publish_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "user_profiles", force: :cascade do |t|
@@ -128,6 +177,17 @@ ActiveRecord::Schema.define(version: 2023_05_28_184242) do
     t.index ["user_profile_id"], name: "index_user_profiles_roles_on_user_profile_id"
   end
 
+  create_table "user_terms_of_services", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "terms_of_service_id", null: false
+    t.datetime "accept_at"
+    t.string "ip_address", limit: 60
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["terms_of_service_id"], name: "index_user_terms_of_services_on_terms_of_service_id"
+    t.index ["user_id"], name: "index_user_terms_of_services_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -150,10 +210,17 @@ ActiveRecord::Schema.define(version: 2023_05_28_184242) do
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
   add_foreign_key "managers", "user_profiles"
+  add_foreign_key "password_resets", "users"
   add_foreign_key "professors", "user_profiles"
   add_foreign_key "rotations", "directors"
   add_foreign_key "rotations", "institutions"
   add_foreign_key "rotations", "rotation_types"
+  add_foreign_key "rubric_rotation_scores", "rotations"
+  add_foreign_key "rubric_rotation_scores", "rubrics"
+  add_foreign_key "student_informations", "rotations"
+  add_foreign_key "student_informations", "students"
   add_foreign_key "students", "user_profiles"
   add_foreign_key "user_profiles", "users"
+  add_foreign_key "user_terms_of_services", "terms_of_services"
+  add_foreign_key "user_terms_of_services", "users"
 end
