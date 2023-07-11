@@ -1,0 +1,2 @@
+class TermsOfService < ApplicationRecord
+end
