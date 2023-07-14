@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :administrators, only: [:index, :show, :create, :update]
       resources :professors, only: [:index, :show, :create, :update]
       resources :managers, only: [:index, :show, :create, :update]
+      resources :directors, only: [:index, :show, :create, :update]
     end
   end
 end
