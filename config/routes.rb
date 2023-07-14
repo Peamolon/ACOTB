@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :roles, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]
+      resources :administrators
     end
   end
 end
