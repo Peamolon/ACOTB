@@ -9,6 +9,10 @@ Rails.application.routes.draw do
       resources :roles, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]
+      resources :administrators, only: [:index, :show, :create, :update]
+      resources :professors, only: [:index, :show, :create, :update]
+      resources :managers, only: [:index, :show, :create, :update]
+      resources :directors, only: [:index, :show, :create, :update]
     end
   end
 end
