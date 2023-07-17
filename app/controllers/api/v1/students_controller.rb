@@ -26,7 +26,7 @@ module Api
       end
 
       def student_params
-        params.require(:student).permit(:semester, :id_number, :id_type)
+        params.require(:student).permit(:user_profile_id, :semester, :id_number, :id_type)
       end
 
     end
