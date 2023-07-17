@@ -1,6 +1,6 @@
 class UserProfile < ApplicationRecord
   rolify
-  belongs_to :user
+  belongs_to :user, touch: true
   has_one :student
   has_one :director
   has_one :administrator

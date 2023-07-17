@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  term_of_service: one
+  accept_at: 2023-07-11 16:23:19
+  ip_address: MyString
+
+two:
+  user: two
+  term_of_service: two
+  accept_at: 2023-07-11 16:23:19
+  ip_address: MyString
