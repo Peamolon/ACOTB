@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       resources :students, only: [:index, :show, :update]
       #resources :student_informations, only: [:index, :create,  :show, :update]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy]
+      resources :rotations, only:[:index, :create, :show, :update, :destroy]
+      resources :rubric_rotation_scores, only:[:create, :update, :destroy]
+      resources :rotation_types, only:[:create, :update]
     end
   end
 end
