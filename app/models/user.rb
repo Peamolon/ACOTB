@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create
   validates :telephone, presence: true, on: :create
-  validates :username, presence: true, on: :create
+  validates :username, presence: true, on: :create, uniqueness: true
   validate :valid_telephone?, on: :create
   validate :valid_rol?, on: :create
   after_create :set_user_profile

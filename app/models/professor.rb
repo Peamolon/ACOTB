@@ -5,7 +5,7 @@ class Professor < ApplicationRecord
 
   private
   def set_professor_role
-    user_profile.add_role :professor
+    user_profile.add_role :professor unless user_profile.has_role? :professor
   end
 
   def unique_user_profile

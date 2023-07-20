@@ -6,7 +6,7 @@ class Director < ApplicationRecord
 
   private
   def set_director_role
-    user_profile.add_role :director
+    user_profile.add_role :director unless user_profile.has_role? :director
   end
 
   def unique_user_profile
