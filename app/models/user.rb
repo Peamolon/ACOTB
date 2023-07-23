@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create
   validates :telephone, presence: true, on: :create
-  validates :username, presence: true, on: :create
+  validates :username, presence: true, on: :create, uniqueness: true
   validate :valid_telephone?, on: :create
   validate :valid_rol?, on: :create
   after_create :set_user_profile
@@ -34,13 +34,13 @@ class User < ApplicationRecord
   def valid_telephone?
     phone = Phonelib.parse(telephone, 'CO')
     unless phone.valid?
-      errors.add(:telephone, 'es inválido')
+      errors.add(:telephone, 'is invalid')
     end
   end
 
   def valid_rol?
     unless Role.is_valid?(role.to_sym)
-      errors.add(:rol, 'es invalido')
+      errors.add(:rol, 'is invalid')
     end
   end
 end

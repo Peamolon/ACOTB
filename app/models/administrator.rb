@@ -5,7 +5,7 @@ class Administrator < ApplicationRecord
 
   private
   def set_administrator_role
-    user_profile.add_role :administrator
+    user_profile.add_role :administrator unless user_profile.has_role? :administrator
   end
 
   def unique_user_profile
