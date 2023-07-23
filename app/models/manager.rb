@@ -3,6 +3,10 @@ class Manager < ApplicationRecord
   after_create :set_manager_role
   validate :unique_user_profile
 
+  def fully_registered?
+    position.present?
+  end
+
   private
   def set_manager_role
     user_profile.add_role :manager unless user_profile.has_role? :manager

@@ -37,7 +37,7 @@ module Api
       end
 
       def manager_params
-        params.require(:manager).permit(:user_profile_id)
+        params.require(:manager).permit(:user_profile_id, :position)
       end
     end
   end

@@ -12,7 +12,7 @@ class Role < ApplicationRecord
 
   scopify
 
-  ALLOWED_ROLES = [:administrator, :student, :proffesor, :director, :manager, :superadmin]
+  ALLOWED_ROLES = [:administrator, :student, :professor, :director, :manager, :superadmin]
 
   def self.allowed_roles
     ALLOWED_ROLES

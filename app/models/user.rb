@@ -34,13 +34,13 @@ class User < ApplicationRecord
   def valid_telephone?
     phone = Phonelib.parse(telephone, 'CO')
     unless phone.valid?
-      errors.add(:telephone, 'es inválido')
+      errors.add(:telephone, 'is invalid')
     end
   end
 
   def valid_rol?
     unless Role.is_valid?(role.to_sym)
-      errors.add(:rol, 'es invalido')
+      errors.add(:rol, 'is invalid')
     end
   end
 end

@@ -29,6 +29,17 @@ class UserProfile < ApplicationRecord
     end
   end
 
+  def add_role(role_name, resource = nil)
+    unless Role.allowed_roles.include?(role_name.to_sym)
+      raise ArgumentError, "Role #{role_name} is not allowed."
+    end
+
+    if has_role? role_name
+      raise ArgumentError, "User has already role #{role_name}"
+    end
+    super
+  end
+
   private
   def set_role
     assign_role(role)
