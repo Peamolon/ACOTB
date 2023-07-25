@@ -12,7 +12,7 @@ class UserProfile < ApplicationRecord
   validates :telephone, presence: true, length: { maximum: 30 }
   validates :joined_at, presence: true
   attr_accessor :role
-  after_create :set_role
+  #after_create :set_role
 
   def assign_role(role)
     sym = role.to_sym

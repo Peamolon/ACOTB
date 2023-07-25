@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bienvenido a nuestro PG despues lo dejo bonito</title>
+</head>
+<body>
+<h1>Bienvenido, <%= @user.username %>!</h1>
+<p>Has sido registrado en nuestra aplicación.</p>
+<!-- Agrega un enlace para que el usuario establezca su contraseña -->
+<%= link_to 'Establecer Contraseña', edit_user_password_url(@user, reset_password_token: @user.reset_password_token) %>
+</body>
+</html>

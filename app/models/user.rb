@@ -6,14 +6,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :lockable,
          :jwt_authenticatable, jwt_revocation_strategy: self
   has_one :user_profile
-  attr_accessor :first_name, :last_name, :telephone, :role
-  validates :first_name, presence: true, on: :create
-  validates :last_name, presence: true, on: :create
-  validates :telephone, presence: true, on: :create
   validates :username, presence: true, on: :create, uniqueness: true
-  validate :valid_telephone?, on: :create
-  validate :valid_rol?, on: :create
-  after_create :set_user_profile
 
   def current_profile
     user_profile if user_profile.present?

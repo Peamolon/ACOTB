@@ -1,7 +1,7 @@
 module Api
   module V1
     class UserProfilesController < ApplicationController
-      before_action :authenticate_user!
+      before_action :authenticate_user!, except: :create
       before_action :set_user_profile, only: [:show, :update]
 
       def index
@@ -14,11 +14,16 @@ module Api
       end
 
       def create
-        user_profile = UserProfile.new(user_profile_params.merge(user_id: current_user.id, joined_at: Time.now))
-        if user_profile.save
-          render json: {message: 'UserProfile successfully created',data: user_profile}, status: :created
+        user_profile_creator = Users::UserProfileCreatorService.new(user_profile_params)
+        if user_profile_creator.valid?
+          result = user_profile_creator.call
+          if result.errors.any?
+            render json: { errors: user_profile_creator.errors.full_messages }, status: :unprocessable_entity
+          else
+            render json: {message: 'UserProfile successfully created',data: result.user_profile}, status: :created
+          end
         else
-          render json: { errors: user_profile.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: user_profile_creator.errors.full_messages }, status: :unprocessable_entity
         end
       end
 
@@ -37,7 +42,7 @@ module Api
       end
 
       def user_profile_params
-        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :joined_at, :photoURL, :timezone, :settings)
+        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :username, :email, :role)
       end
     end
   end
