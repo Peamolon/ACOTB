@@ -28,7 +28,7 @@ module Users
         ActiveRecord::Base.transaction do
           create_user
           create_user_profile
-          send_welcome_email
+          #send_welcome_email
         end
       end
       self
@@ -45,7 +45,7 @@ module Users
     end
 
     def create_user
-      @user = User.create!(email: email, username: username, password: SecureRandom.urlsafe_base64(32))
+      @user = User.create!(email: email, username: username, password: '12345678')
     end
 
     def valid_telephone?
