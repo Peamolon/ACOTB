@@ -12,7 +12,13 @@ module Api
         end
 
         def validate_token
-          render json: { message: 'Token is valid' }, status: :ok
+          render json: {
+            message: 'Token is valid',
+            data: {
+              user: current_user.user_profile,
+              role: current_user.user_profile.roles.last.name
+            }
+          }, status: :ok
         end
       end
     end
