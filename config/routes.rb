@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
+
   namespace :api do
     namespace :v1 do
       resources :user_profiles, only: [:index, :show, :create, :update, :destroy]
@@ -20,6 +21,9 @@ Rails.application.routes.draw do
       resources :professors, only: [:index, :show, :create, :update]
       resources :managers, only: [:index, :show, :create, :update]
       resources :directors, only: [:index, :show, :create, :update]
+      namespace :validations do
+        get :validate_token, to: 'tokens#validate_token'
+      end
     end
   end
 end
