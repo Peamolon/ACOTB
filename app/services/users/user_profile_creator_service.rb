@@ -42,6 +42,7 @@ module Users
 
     def create_user_profile
       @user_profile = UserProfile.create!(first_name: first_name, last_name: last_name, telephone: telephone, joined_at: Time.now, user_id: user.id)
+      @user_profile.add_role role.to_sym
     end
 
     def create_user
