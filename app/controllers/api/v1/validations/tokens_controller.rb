@@ -3,7 +3,11 @@ module Api
     module Validations
       class TokensController < ApplicationController
         def log_out_current_user
-          sign_out(current_user)
+          if sign_out(current_user)
+            render json: {
+              message: 'current user signed out'
+            }
+          end
         end
 
         def validate_token
@@ -15,7 +19,7 @@ module Api
           else
             render json: {
               error: 'Token has expired'
-            }, status: :unauthorized
+            }, status: 403
           end
         end
       end
