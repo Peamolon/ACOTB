@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :managers, only: [:index, :show, :create, :update]
       resources :directors, only: [:index, :show, :create, :update]
       namespace :validations do
-        post :validate_token, to: 'tokens#validate_token'
+        get :validate_token, to: 'tokens#validate_token'
         get :log_out_current_user, to: 'tokens#log_out_current_user'
       end
     end
