@@ -2,6 +2,7 @@ module Api
   module V1
     module Validations
       class TokensController < ApplicationController
+        before_action :authenticate_user!, except: :log_out_current_user
         def log_out_current_user
           if sign_out(current_user)
             render json: {
@@ -11,16 +12,7 @@ module Api
         end
 
         def validate_token
-          if user_signed_in?
-            render json: {
-              message: 'Token is active',
-              data: current_user
-            }
-          else
-            render json: {
-              error: 'Token has expired'
-            }, status: 403
-          end
+          render json: { message: 'Token is valid' }, status: :ok
         end
       end
     end
