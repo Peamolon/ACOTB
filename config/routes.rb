@@ -6,7 +6,11 @@ Rails.application.routes.draw do
   }
   namespace :api do
     namespace :v1 do
-      resources :user_profiles, only: [:index, :show, :create, :update, :destroy]
+      resources :user_profiles, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          delete :destroy_multiple_users
+        end
+      end
       resources :roles, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]
@@ -20,6 +24,7 @@ Rails.application.routes.draw do
       resources :professors, only: [:index, :show, :create, :update]
       resources :managers, only: [:index, :show, :create, :update]
       resources :directors, only: [:index, :show, :create, :update]
+
     end
   end
 end

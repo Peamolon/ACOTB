@@ -14,19 +14,30 @@ class UserProfile < ApplicationRecord
   attr_accessor :role
   #after_create :set_role
 
+  def get_roles
+    roles.pluck(:name)
+  end
+
   def assign_role(role)
     sym = role.to_sym
-    add_role sym
-    case sym
-    when :administrator
-      Administrator.create(user_profile_id: self.id)
-    when :student
-      Student.create(user_profile_id: self.id)
-    when :professor
-      Professor.create(user_profile_id: self.id)
-    when :manager
-      Manager.create(user_profile_id: self.id)
+    begin
+      add_role sym
+      case sym
+      when :administrator
+        Administrator.create!(user_profile_id: self.id)
+      when :student
+        Student.create!(user_profile_id: self.id)
+      when :professor
+        Professor.create!(user_profile_id: self.id)
+      when :manager
+        Manager.create!(user_profile_id: self.id)
+      when :director
+        Director.create!(user_profile_id: self.id)
+      end
+    rescue
+      raise ArgumentError
     end
+
   end
 
   def add_role(role_name, resource = nil)
