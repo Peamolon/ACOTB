@@ -4,10 +4,13 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
-
   namespace :api do
     namespace :v1 do
-      resources :user_profiles, only: [:index, :show, :create, :update, :destroy]
+      resources :user_profiles, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          delete :destroy_multiple_users
+        end
+      end
       resources :roles, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]

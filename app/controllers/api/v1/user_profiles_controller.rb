@@ -3,7 +3,6 @@ module Api
     class UserProfilesController < ApplicationController
       before_action :authenticate_user!, except: :create
       before_action :set_user_profile, only: [:show, :update]
-
       def index
         user_profiles = UserProfile.all
         render json: user_profiles
@@ -27,6 +26,36 @@ module Api
         end
       end
 
+      def destroy
+        destroy_user_service = Users::DestroyUserService.new(id: params[:id])
+        if destroy_user_service.present?
+          result = destroy_user_service.call
+          if result.errors.any?
+            render json: { errors: destroy_user_service.errors.full_messages }, status: :unprocessable_entity
+          else
+            render json: {message: 'User was successfully destroyed'}, status: 200
+          end
+        else
+          render json: { errors: 'User not found' }, status: :unprocessable_entity
+        end
+      end
+
+      def destroy_multiple_users
+        user_ids = params[:user_ids]
+        if user_ids.present?
+          ActiveRecord::Base.transaction do
+            user_ids.each do |user_id|
+              puts user_id
+              destroy_user_service = Users::DestroyUserService.new(id: user_id)
+              destroy_user_service.call
+            end
+            render json: { message: 'Users were successfully destroyed' }, status: 200
+          end
+        else
+          render json: { errors: 'No user IDs provided' }, status: :unprocessable_entity
+        end
+      end
+
       def update
         if @user_profile.update(user_profile_params)
           render json: @user_profile
@@ -42,7 +71,11 @@ module Api
       end
 
       def user_profile_params
-        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :username, :email, :role)
+        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role)
+      end
+
+      def destroy_multiple_params
+        params.permit(user_ids: [])
       end
     end
   end
