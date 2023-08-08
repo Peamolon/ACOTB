@@ -45,7 +45,6 @@ module Api
         if user_ids.present?
           ActiveRecord::Base.transaction do
             user_ids.each do |user_id|
-              puts user_id
               destroy_user_service = Users::DestroyUserService.new(id: user_id)
               destroy_user_service.call
             end
