@@ -83,4 +83,5 @@ production:
   <<: *default
   database: acotb_api_production
   username: acotb_api
-  password: <%= ENV['ACOTB_API_DATABASE_PASSWORD'] %>
+  password: <%= ENV['PROD_DB_PASSWORD'] %>
+  url: <%= ENV['PROD_DB_URL'] %>
