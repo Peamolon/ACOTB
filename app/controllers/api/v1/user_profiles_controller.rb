@@ -17,7 +17,7 @@ module Api
         if user_profile_creator.valid?
           result = user_profile_creator.call
           if result.errors.any?
-            render json: { errors: user_profile_creator.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: user_profile_creator.errors }, status: :unprocessable_entity
           else
             render json: {message: 'UserProfile successfully created',data: result.user_profile}, status: :created
           end
@@ -74,7 +74,7 @@ module Api
       end
 
       def user_profile_params
-        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role)
+        params.require(:user_profile).permit(:first_name, :last_name, :telephone)
       end
 
       def destroy_multiple_params

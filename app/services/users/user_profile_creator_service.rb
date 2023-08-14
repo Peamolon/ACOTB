@@ -21,7 +21,7 @@ module Users
 
     def call
       errors.add(:telephone, 'is invalid') unless valid_telephone?
-      errors.add(:rol, 'is invalid') unless valid_role?
+      errors.add(:role, 'is invalid') unless valid_role?
       errors.add(:username, 'is already taken') if User.exists?(username: username)
       errors.add(:email, 'is already taken') if User.exists?(email: email)
       unless errors.any?
