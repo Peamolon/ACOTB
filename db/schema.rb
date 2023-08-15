@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_11_212725) do
+ActiveRecord::Schema.define(version: 2023_07_25_222256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,8 +131,6 @@ ActiveRecord::Schema.define(version: 2023_07_11_212725) do
   create_table "students", force: :cascade do |t|
     t.bigint "user_profile_id", null: false
     t.string "semester"
-    t.string "id_number"
-    t.string "id_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_students_on_user_profile_id"
@@ -166,6 +164,8 @@ ActiveRecord::Schema.define(version: 2023_07_11_212725) do
     t.json "settings"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "id_type"
+    t.string "id_number"
     t.index ["user_id"], name: "index_user_profiles_on_user_id"
   end
 
