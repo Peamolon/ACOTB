@@ -41,7 +41,7 @@ module Api
       end
 
       def rotation_params
-        params.require(:rotation).permit(:name, :start_date, :end_date)
+        params.require(:rotation).permit(:name, :start_date, :end_date, :rotation_type_id, :director_id, :institution_id)
       end
 
     end

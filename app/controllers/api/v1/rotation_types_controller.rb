@@ -27,7 +27,7 @@ module Api
       end
 
       def rotation_type_params
-        params.require(:rotation_type).permit(:description, :credits, :approved, :id_type)
+        params.require(:rotation_type).permit(:description, :credits, :approved)
       end
     end
   end
