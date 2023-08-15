@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_25_222256) do
+ActiveRecord::Schema.define(version: 2023_08_15_204606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activities", force: :cascade do |t|
+    t.bigint "unities_id", null: false
+    t.string "type"
+    t.string "name", limit: 200
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["unities_id"], name: "index_activities_on_unities_id"
+  end
 
   create_table "administrators", force: :cascade do |t|
     t.bigint "user_profile_id", null: false
@@ -153,6 +162,15 @@ ActiveRecord::Schema.define(version: 2023_07_25_222256) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "unities", force: :cascade do |t|
+    t.bigint "user_profiles_id", null: false
+    t.string "type"
+    t.string "name", limit: 200
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_profiles_id"], name: "index_unities_on_user_profiles_id"
+  end
+
   create_table "user_profiles", force: :cascade do |t|
     t.bigint "user_id"
     t.string "first_name", limit: 100
@@ -206,6 +224,7 @@ ActiveRecord::Schema.define(version: 2023_07_25_222256) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "activities", "unities", column: "unities_id"
   add_foreign_key "administrators", "user_profiles"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
@@ -220,6 +239,7 @@ ActiveRecord::Schema.define(version: 2023_07_25_222256) do
   add_foreign_key "student_informations", "rotations"
   add_foreign_key "student_informations", "students"
   add_foreign_key "students", "user_profiles"
+  add_foreign_key "unities", "user_profiles", column: "user_profiles_id"
   add_foreign_key "user_profiles", "users"
   add_foreign_key "user_terms_of_services", "terms_of_services"
   add_foreign_key "user_terms_of_services", "users"
