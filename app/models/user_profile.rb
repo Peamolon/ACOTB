@@ -11,6 +11,13 @@ class UserProfile < ApplicationRecord
   validates :last_name, presence: true, length: { maximum: 100 }
   validates :telephone, presence: true, length: { maximum: 30 }
   validates :joined_at, presence: true
+  validates_presence_of :id_type, :id_number
+  #validates :id_number
+
+  enum id_type: { CC: 0, CE: 1, PA: 2, PE: 3 }
+  DOCUMENT_TYPES = %w[CC CE PA PE]
+  public_constant :DOCUMENT_TYPES
+
   attr_accessor :role
   after_create :set_role
 
