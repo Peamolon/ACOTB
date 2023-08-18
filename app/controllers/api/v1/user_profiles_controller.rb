@@ -70,7 +70,7 @@ module Api
       end
 
       def create_user_profile_params
-        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role, :email, :username)
+        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role, :email, :username, :id_number, :id_type)
       end
 
       def user_profile_params

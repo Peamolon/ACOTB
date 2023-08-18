@@ -15,7 +15,6 @@ class UserProfile < ApplicationRecord
   validates :telephone, presence: true, length: { maximum: 30 }
   validates :joined_at, presence: true
   validates :id_number, presence: true
-  validates :id_type, presence: true, inclusion: {in: DOCUMENT_TYPES, message: "invalid document type"}
 
   enum id_type: { CC: 0, CE: 1, PA: 2, PE: 3 }
 

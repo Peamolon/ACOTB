@@ -24,7 +24,10 @@ default: &default
 development:
   adapter: postgresql
   encoding: unicode
-  url: postgres://dpqumpqs:obWUm8STm3UNmYyRD0-0drIyufKA4jEL@mahmud.db.elephantsql.com/dpqumpqs
+  database: pg_development
+  pool: 5
+  username: postgres
+  password: Loquendero123
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
