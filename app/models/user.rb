@@ -12,7 +12,7 @@ class User < ApplicationRecord
   validates :telephone, presence: true, on: :create
   validates :username, presence: true, on: :create
   validate :valid_telephone?, on: :create
-  validate :valid_rol?, on: :create
+  #validate :valid_rol?, on: :create
   after_create :set_user_profile
 
   def current_profile

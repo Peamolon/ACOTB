@@ -1,7 +1,7 @@
 module Api
   module V1
     class UserProfilesController < ApplicationController
-      before_action :authenticate_user!
+      #before_action :authenticate_user!
       before_action :set_user_profile, only: [:show, :update]
 
       def index

@@ -24,7 +24,7 @@ default: &default
 development:
   adapter: postgresql
   encoding: unicode
-  url: postgres://dpqumpqs:obWUm8STm3UNmYyRD0-0drIyufKA4jEL@mahmud.db.elephantsql.com/dpqumpqs
+  url: postgres://briannysmonserrate@localhost/acotb_db
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
