@@ -13,7 +13,7 @@ module Api
       end
 
       def create
-        user_profile_creator = Users::UserProfileCreatorService.new(create_user_profile_params)
+        user_profile_creator = ::Users::UserProfileCreatorService.new(create_user_profile_params)
         if user_profile_creator.valid?
           result = user_profile_creator.call
           if result.errors.any?
@@ -27,7 +27,7 @@ module Api
       end
 
       def destroy
-        destroy_user_service = Users::DestroyUserService.new(id: params[:id])
+        destroy_user_service = ::Users::DestroyUserService.new(id: params[:id])
         if destroy_user_service.present?
           result = destroy_user_service.call
           if result.errors.any?
@@ -70,7 +70,7 @@ module Api
       end
 
       def create_user_profile_params
-        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role, :email, :username, :id_number, :id_type)
+        params.require(:user_profile).permit(:first_name, :last_name, :telephone, :role, :email, :username, :id_number, :id_type, :joined_at)
       end
 
       def user_profile_params
