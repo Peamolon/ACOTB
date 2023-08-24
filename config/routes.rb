@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   default_url_options :host => "localhost:3000"
   devise_for :users, controllers: {
     sessions: 'users/sessions',
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    passwords: 'users/passwords'
   }
   namespace :api do
     namespace :v1 do
