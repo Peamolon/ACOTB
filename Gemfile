@@ -52,3 +52,5 @@ gem 'warden-jwt_auth', '~> 0.6.0'
 gem 'devise_security_extension', git: 'https://github.com/phatworx/devise_security_extension.git'
 gem 'rolify'
 gem 'phonelib'
+gem 'sendgrid-ruby'
+
