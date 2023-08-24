@@ -42,8 +42,28 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  config.action_mailer.default_url_options = { host: 'localhost:3000' } # for absolute urls in email
   config.action_mailer.asset_host = "http://localhost:3000" # for image URLs in HTML email
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.delivery_method = :smtp
+  #config.action_mailer.smtp_settings = {
+  # address: 'smtp.sendgrid.net',
+  # port: 587,
+  # domain: 'localhost:3000', # Cambia esto al dominio de tu aplicación
+  #
+  # password: "Acotb.api2023SBJ",
+  # authentication: 'plain',
+  # enable_starttls_auto: true
+  #}
+
+  ActionMailer::Base.smtp_settings = {
+    address: 'smtp.sendgrid.net',
+    port: '587',
+    authentication: :plain,
+    user_name: ENV["SENDGRID_USERNAME"],
+    password: ENV["SENDGRID_PASSWORD"],
+    enable_starttls_auto: true
+  }
+
 
   # Allow generating absolute urls with routing url helpers.
   Rails.application.routes.default_url_options[:host] = 'localhost:3000'

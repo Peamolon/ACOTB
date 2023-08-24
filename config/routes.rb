@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   default_url_options :host => "localhost:3000"
   devise_for :users, controllers: {
     sessions: 'users/sessions',
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    passwords: 'users/passwords'
   }
   namespace :api do
     namespace :v1 do
@@ -29,6 +30,10 @@ Rails.application.routes.draw do
         get :validate_token, to: 'tokens#validate_token'
         get :log_out_current_user, to: 'tokens#log_out_current_user'
       end
+      namespace :users do
+        resource :reset_passwords, only:[:update]
+      end
+
     end
   end
 end

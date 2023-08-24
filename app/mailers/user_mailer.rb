@@ -1,8 +1,15 @@
 class UserMailer < ApplicationMailer
-  default from: 'your_email@example.com' # Reemplaza con el correo electrónico desde el cual enviarás los correos
+  default from: 'acotb.unbosque@gmail.com'
 
   def welcome_email(user)
     @user = user
-    mail(to: @user.email, subject: 'Bienvenido a nuestra aplicación') # Puedes cambiar el asunto según tus necesidades
+    mail(to: @user.email, subject: 'Bienvenido a nuestra aplicación')
   end
+
+  def reset_password(user)
+    @user = user
+    @reset_password_url = edit_password_url(@user, reset_password_token: @user.reset_password_token)
+    mail(to: @user.email, subject: "Instrucciones para restablecer tu contraseña")
+  end
+
 end
