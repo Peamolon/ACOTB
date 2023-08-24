@@ -16,7 +16,7 @@ class UserProfile < ApplicationRecord
   validates :joined_at, presence: true
   validates :id_number, presence: true
 
-  enum id_type: { CC: 0, CE: 1, PA: 2, PE: 3 }
+  #enum id_type: { 'CC': 0, 'CE': 1, 'PA': 2, 'PE': 3 }
 
   attr_accessor :role
   #after_create :set_role
