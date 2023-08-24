@@ -29,6 +29,10 @@ Rails.application.routes.draw do
         get :validate_token, to: 'tokens#validate_token'
         get :log_out_current_user, to: 'tokens#log_out_current_user'
       end
+      namespace :users do
+        resource :reset_passwords, only:[:update]
+      end
+
     end
   end
 end
