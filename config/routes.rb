@@ -12,6 +12,7 @@ Rails.application.routes.draw do
         end
       end
       resources :roles, only: [:index]
+      resources :id_types, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]
       resources :students, only: [:index, :show, :update]
