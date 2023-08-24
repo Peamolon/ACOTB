@@ -203,6 +203,9 @@ GEM
       railties (>= 5.2)
     rolify (6.0.1)
     ruby2_keywords (0.0.5)
+    ruby_http_client (3.5.5)
+    sendgrid-ruby (6.6.2)
+      ruby_http_client (~> 3.4)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -257,6 +260,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.0.6, >= 6.0.6.1)
   rolify
+  sendgrid-ruby
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
