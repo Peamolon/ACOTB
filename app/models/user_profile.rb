@@ -20,6 +20,13 @@ class UserProfile < ApplicationRecord
 
   attr_accessor :role
   #after_create :set_role
+  def email
+    user.email
+  end
+
+  def username
+    user.username
+  end
 
   def get_roles
     roles.pluck(:name)

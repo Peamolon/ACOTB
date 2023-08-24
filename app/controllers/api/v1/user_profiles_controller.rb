@@ -9,7 +9,7 @@ module Api
       end
 
       def show
-        render json: @user_profile
+        render json: @user_profile, methods: [:email, :username]
       end
 
       def create
@@ -17,9 +17,9 @@ module Api
         if user_profile_creator.valid?
           result = user_profile_creator.call
           if result.errors.any?
-            render json: { errors: user_profile_creator.errors }, status: :unprocessable_entity
+            render json: { errors: user_profile_creator.errors }, status: 400
           else
-            render json: {message: 'UserProfile successfully created',data: result.user_profile}, status: :created
+            render json: { message: 'UserProfile successfully created', data: result.user_profile.as_json(include: { user: { only: [:email, :username] } }) }, status: :created
           end
         else
           render json: { errors: user_profile_creator.errors.full_messages }, status: :unprocessable_entity
