@@ -5,7 +5,7 @@ module Api
       before_action :set_user_profile, only: [:show, :update]
       def index
         user_profiles = UserProfile.all
-        render json: user_profiles
+        render json: user_profiles, methods: [:email, :username, :assigned_roles]
       end
 
       def show
