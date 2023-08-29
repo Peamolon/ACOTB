@@ -9,7 +9,7 @@ module Api
       end
 
       def show
-        render json: @user_profile, methods: [:email, :username]
+        render json: @user_profile, methods: [:email, :username, :assigned_roles]
       end
 
       def create
@@ -19,10 +19,18 @@ module Api
           if result.errors.any?
             render json: { errors: user_profile_creator.errors }, status: 400
           else
-            render json: { message: 'UserProfile successfully created', data: result.user_profile.as_json(include: { user: { only: [:email, :username] } }) }, status: :created
+            render json: {
+              message: 'UserProfile successfully created',
+              data: result.user_profile.as_json(
+                include: {
+                  user: { only: [:email, :username] },
+                  roles: { only: [:name] }
+                }
+              )
+            }, status: :created
           end
         else
-          render json: { errors: user_profile_creator.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: user_profile_creator.errors.full_messages }, status: 400
         end
       end
 
@@ -31,12 +39,12 @@ module Api
         if destroy_user_service.present?
           result = destroy_user_service.call
           if result.errors.any?
-            render json: { errors: destroy_user_service.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: destroy_user_service.errors.full_messages }, status: 400
           else
             render json: {message: 'User was successfully destroyed'}, status: 200
           end
         else
-          render json: { errors: 'User not found' }, status: :unprocessable_entity
+          render json: { errors: 'User not found' }, status: 400
         end
       end
 
@@ -57,7 +65,7 @@ module Api
 
       def update
         if @user_profile.update(user_profile_params)
-          render json: @user_profile
+          render json: @user_profile, methods: [:email, :username, :assigned_roles]
         else
           render json: { errors: @user_profile.errors.full_messages }, status: :unprocessable_entity
         end

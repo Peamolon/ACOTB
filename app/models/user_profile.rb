@@ -28,7 +28,7 @@ class UserProfile < ApplicationRecord
     user.username
   end
 
-  def get_roles
+  def assigned_roles
     roles.pluck(:name)
   end
 
