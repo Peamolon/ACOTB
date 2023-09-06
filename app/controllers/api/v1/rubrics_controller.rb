@@ -41,7 +41,7 @@ module Api
       end
 
       def rubric_params
-        params.require(:rubric).permit(:name, :level, :response)
+        params.require(:rubric).permit(:verb, :level, :description)
       end
 
     end

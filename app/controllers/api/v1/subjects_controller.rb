@@ -13,13 +13,18 @@ module Api
       end
 
       def create
-        @subject = Subject.new(subject_params)
-
-        if @subject.save
-          render json: @subject, status: :created
+        create_subject_service = ::Subjects::CreateSubjectService.new(create_subject_params)
+        if create_subject_service.valid?
+          result = create_subject_service.call
+          if result.errors.any?
+            render json: { errors: create_subject_service.errors.full_messages }, status: 400
+          else
+            render json: {message: 'Subject was successfully created'}, status: 200
+          end
         else
-          render json: @subject.errors, status: :unprocessable_entity
+          render json: { errors: create_subject_service.errors.full_messages }, status: 400
         end
+
       end
 
       def update
@@ -41,8 +46,8 @@ module Api
         @subject = Subject.find(params[:id])
       end
 
-      def subject_params
-        params.require(:subject).permit(:director_id, :total_credits, :credits)
+      def create_subject_params
+        params.require(:subject).permit(:director_id, :name, :credits, :rotation_id, academic_period_info: [:start_date, :end_date], rubric_info: [:verb, :description])
       end
     end
   end
