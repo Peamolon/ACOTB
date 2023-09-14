@@ -1,12 +1,11 @@
 module Subjects
   class CreateSubjectService
     include ActiveModel::Validations
-    attr_accessor :name, :credits, :director_id, :academic_period_info, :subject, :rotation_id, :rubric_info
+    attr_accessor :name, :credits, :director_id, :academic_period_info, :subject, :rubric_info
     validates :name, presence: true
     validates :credits, presence: true
     validates :director_id, presence: true
     validates :academic_period_info, presence: true
-    validates :rotation_id, presence: true
     validates :rubric_info, presence: true
 
     def initialize(attributes = {})
@@ -20,7 +19,7 @@ module Subjects
 
     def call
       errors.add(:director_id, 'must exist') unless Director.exists?(id: director_id)
-      errors.add(:rotation_id, 'must exist') unless Rotation.exists?(id: rotation_id)
+      #errors.add(:rotation_id, 'must exist') unless Rotation.exists?(id: rotation_id)
 
       has_valid_verbs?
       verbs_are_completed?
@@ -45,7 +44,7 @@ module Subjects
 
     def create_subject
       @subject = Subject.create!(credits: credits, director_id: director_id, name: name)
-      Rotation.find(rotation_id).update(subject_id: @subject.id)
+      #Rotation.find(rotation_id).update(subject_id: @subject.id)
     end
 
     def create_academic_periods

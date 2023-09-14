@@ -34,6 +34,14 @@ Rails.application.routes.draw do
         resource :reset_passwords, only:[:update]
       end
 
+      namespace :public do
+        resources :rubric_informations do
+          collection do
+            get 'levels'
+            get 'get_verb'
+          end
+        end
+      end
     end
   end
 end
