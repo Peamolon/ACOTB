@@ -21,6 +21,12 @@ module Api
         end
       end
 
+      def active_rotations
+        render json: {
+          'active_rotation_count': Rotation.active.count
+        }
+      end
+
       def update
         if @rotation.update(rotation_params)
           render json: @rotation
@@ -31,7 +37,7 @@ module Api
 
       def index
         @rotations = Rotation.all
-        render json: @rotations
+        render json: @rotations, methods: [:director_name]
       end
 
 

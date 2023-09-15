@@ -19,5 +19,7 @@ class Subject < ApplicationRecord
   has_many :rotations
   has_many :academic_periods
   has_many :rubrics
+  has_many :academic_periods
+  has_many :unities, through: :academic_periods
 
 end

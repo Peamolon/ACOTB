@@ -4,18 +4,19 @@
 #
 #  id         :bigint           not null, primary key
 #  name       :string(200)
+#  state      :string
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  unities_id :bigint           not null
+#  unity_id   :bigint           not null
 #
 # Indexes
 #
-#  index_activities_on_unities_id  (unities_id)
+#  index_activities_on_unity_id  (unity_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (unities_id => unities.id)
+#  fk_rails_...  (unity_id => unities.id)
 #
 require 'test_helper'
 

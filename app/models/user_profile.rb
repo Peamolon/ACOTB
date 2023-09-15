@@ -46,6 +46,9 @@ class UserProfile < ApplicationRecord
 
   attr_accessor :role
   #after_create :set_role
+  def full_name
+    "#{first_name} #{last_name}"
+  end
   def email
     user.email
   end

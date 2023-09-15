@@ -20,6 +20,12 @@ module Api
         render json: @student
       end
 
+      def get_student_count
+        render json: {
+          'active_student_count': Student.count
+        }
+      end
+
       private
       def set_student
         @student = Student.find(params[:id])

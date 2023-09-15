@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_06_015725) do
+ActiveRecord::Schema.define(version: 2023_09_15_033314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,12 +26,13 @@ ActiveRecord::Schema.define(version: 2023_09_06_015725) do
   end
 
   create_table "activities", force: :cascade do |t|
-    t.bigint "unities_id", null: false
+    t.bigint "unity_id", null: false
     t.string "type"
     t.string "name", limit: 200
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["unities_id"], name: "index_activities_on_unities_id"
+    t.string "state"
+    t.index ["unity_id"], name: "index_activities_on_unity_id"
   end
 
   create_table "administrators", force: :cascade do |t|
@@ -113,6 +114,7 @@ ActiveRecord::Schema.define(version: 2023_09_06_015725) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "subject_id"
+    t.string "state"
     t.index ["director_id"], name: "index_rotations_on_director_id"
     t.index ["institution_id"], name: "index_rotations_on_institution_id"
   end
@@ -175,12 +177,14 @@ ActiveRecord::Schema.define(version: 2023_09_06_015725) do
   end
 
   create_table "unities", force: :cascade do |t|
-    t.bigint "user_profiles_id", null: false
     t.string "type"
     t.string "name", limit: 200
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_profiles_id"], name: "index_unities_on_user_profiles_id"
+    t.bigint "academic_period_id", null: false
+    t.bigint "subject_id", null: false
+    t.index ["academic_period_id"], name: "index_unities_on_academic_period_id"
+    t.index ["subject_id"], name: "index_unities_on_subject_id"
   end
 
   create_table "user_profiles", force: :cascade do |t|
@@ -237,7 +241,7 @@ ActiveRecord::Schema.define(version: 2023_09_06_015725) do
   end
 
   add_foreign_key "academic_periods", "subjects"
-  add_foreign_key "activities", "unities", column: "unities_id"
+  add_foreign_key "activities", "unities"
   add_foreign_key "administrators", "user_profiles"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
@@ -252,7 +256,8 @@ ActiveRecord::Schema.define(version: 2023_09_06_015725) do
   add_foreign_key "student_informations", "rotations"
   add_foreign_key "student_informations", "students"
   add_foreign_key "students", "user_profiles"
-  add_foreign_key "unities", "user_profiles", column: "user_profiles_id"
+  add_foreign_key "unities", "academic_periods"
+  add_foreign_key "unities", "subjects"
   add_foreign_key "user_profiles", "users"
   add_foreign_key "user_terms_of_services", "terms_of_services"
   add_foreign_key "user_terms_of_services", "users"

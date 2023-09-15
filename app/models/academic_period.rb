@@ -20,7 +20,12 @@
 #
 class AcademicPeriod < ApplicationRecord
   belongs_to :subject
+  has_many :unities
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :number, presence: true
+
+  def self.closest_to_today
+    where('start_date <= ? AND end_date >= ?', Date.current, Date.current).order(start_date: :asc).first
+  end
 end
