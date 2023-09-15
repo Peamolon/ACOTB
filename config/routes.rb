@@ -35,7 +35,11 @@ Rails.application.routes.draw do
       end
       #resources :student_informations, only: [:index, :create,  :show, :update]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy]
-      resources :unities, only: [:index, :show]
+      resources :unities, only: [:index, :show] do
+        member do
+          get 'activities'
+        end
+      end
       resources :rotations, only:[:index, :create, :show, :update, :destroy] do
         collection do
           get 'active_rotations'

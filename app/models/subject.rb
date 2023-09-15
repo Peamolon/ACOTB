@@ -22,4 +22,9 @@ class Subject < ApplicationRecord
   has_many :academic_periods
   has_many :unities, through: :academic_periods
 
+  def get_rubrics
+    self.rubrics.pluck(:level, :verb, :description)
+  end
+
+
 end

@@ -24,6 +24,14 @@ module Api
         end
       end
 
+      def activities
+        @unity = Unity.find(params[:id])
+        render json: 'Unity not found ' unless @unity.present?
+
+        @activities = @unity.activities
+        render json: @activities
+      end
+
       private
 
       def set_unity

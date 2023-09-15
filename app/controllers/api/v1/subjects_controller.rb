@@ -9,7 +9,7 @@ module Api
       end
 
       def show
-        render json: @subject
+        render json: @subject, methods: [:get_rubrics]
       end
 
       def create

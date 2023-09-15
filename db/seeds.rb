@@ -61,11 +61,27 @@ def create_random_subject
     ],
     rubric_info: [
       {
-        verb: Faker::Lorem.word,
+        verb: 'Recordar '+ Faker::Lorem.word,
         description: Faker::Lorem.sentence
       },
       {
-        verb: Faker::Lorem.word,
+        verb: 'Comprender '+ Faker::Lorem.word,
+        description: Faker::Lorem.sentence
+      },
+      {
+        verb: 'Aplicar '+ Faker::Lorem.word,
+        description: Faker::Lorem.sentence
+      },
+      {
+        verb: 'Analizar '+ Faker::Lorem.word,
+        description: Faker::Lorem.sentence
+      },
+      {
+        verb: 'Evaluar '+ Faker::Lorem.word,
+        description: Faker::Lorem.sentence
+      },
+      {
+        verb: 'Crear '+ Faker::Lorem.word,
         description: Faker::Lorem.sentence
       },
     ]
