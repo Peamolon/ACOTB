@@ -16,10 +16,31 @@ Rails.application.routes.draw do
       resources :id_types, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy]
       resources :subjects, only: [:index, :show, :create, :update, :destroy]
-      resources :students, only: [:index, :show, :update]
+      resources :students, only: [:index, :show, :update] do
+        collection do
+          get 'get_student_count'
+        end
+      end
+
+      resources :activities do
+        collection do
+          get 'in_progress'
+        end
+      end
+
+      resources :academic_periods do
+        collection do
+          get 'get_next_period'
+        end
+      end
       #resources :student_informations, only: [:index, :create,  :show, :update]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy]
-      resources :rotations, only:[:index, :create, :show, :update, :destroy]
+      resources :unities, only: [:index, :show]
+      resources :rotations, only:[:index, :create, :show, :update, :destroy] do
+        collection do
+          get 'active_rotations'
+        end
+      end
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]
       resources :rotation_types, only:[:create, :update]
       resources :administrators, only: [:index, :show, :create, :update]
@@ -34,6 +55,14 @@ Rails.application.routes.draw do
         resource :reset_passwords, only:[:update]
       end
 
+      namespace :public do
+        resources :rubric_informations do
+          collection do
+            get 'levels'
+            get 'get_verb'
+          end
+        end
+      end
     end
   end
 end
