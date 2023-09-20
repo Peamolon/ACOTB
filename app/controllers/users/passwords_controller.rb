@@ -37,7 +37,7 @@ class Users::PasswordsController < Devise::PasswordsController
 
     if resource.errors.empty?
       sign_in(resource_name, resource)
-      render json: {code: 200, message: 'Update password successful, u can sign in' }, status: :ok
+      render json: {code: 200, message: 'Update password successfully' }, status: :ok
     else
       render json: { error: resource.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
