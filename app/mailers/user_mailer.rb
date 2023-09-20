@@ -3,7 +3,8 @@ class UserMailer < ApplicationMailer
 
   def welcome_email(user)
     @user = user
-    mail(to: @user.email, subject: 'Bienvenido a nuestra aplicación')
+    @change_password_url = edit_user_password_url(user, reset_password_token: user.reset_password_token)
+    mail(to: user.email, subject: "Bienvenido a ACOTB")
   end
 
   def reset_password(user)
