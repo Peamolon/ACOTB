@@ -34,7 +34,7 @@ module Users
         ActiveRecord::Base.transaction do
           create_user
           create_user_profile
-          #send_welcome_email
+          send_welcome_email
         end
       end
       self
