@@ -47,7 +47,7 @@ module Api
       end
 
       def create_subject_params
-        params.require(:subject).permit(:director_id, :name, :credits, :rotation_id, academic_period_info: [:start_date, :end_date], rubric_info: [:verb, :description])
+        params.require(:subject).permit(:director_id, :name, :credits, :rotation_id,:professor_id, academic_period_info: [:start_date, :end_date], rubric_info: [:verb, :description])
       end
     end
   end

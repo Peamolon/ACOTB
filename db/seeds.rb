@@ -115,6 +115,33 @@ end
 end
 
 
+def generate_bloom_taxonomy_percentage
+  total_percentage = 100
+  levels = [1, 2, 3, 4, 5, 6]
+  percentages = {}
+
+  levels.each do |level|
+    percentage = rand(0..total_percentage)
+    percentages[level] = percentage
+    total_percentage -= percentage
+  end
+
+  percentages
+end
+
+100.times do
+  calification = ActivityCalification.new(
+    activity_id: rand(1..Activity.count),
+    student_id: rand(1..Student.count),
+    numeric_grade: rand(0.0..5.0),
+    notes: Faker::Lorem.sentence,
+    calification_date: Faker::Date.between(from: 1.year.ago, to: Date.today),
+    bloom_taxonomy_percentage: generate_bloom_taxonomy_percentage
+  )
+  calification.save
+end
+
+
 
 
 

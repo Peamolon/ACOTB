@@ -19,12 +19,14 @@ Rails.application.routes.draw do
       resources :students, only: [:index, :show, :update] do
         collection do
           get 'get_student_count'
+          get 'top_students'
         end
       end
 
       resources :activities do
         collection do
           get 'in_progress'
+          get 'closest_to_today'
         end
       end
 
@@ -48,7 +50,11 @@ Rails.application.routes.draw do
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]
       resources :rotation_types, only:[:create, :update]
       resources :administrators, only: [:index, :show, :create, :update]
-      resources :professors, only: [:index, :show, :create, :update]
+      resources :professors, only: [:index, :show, :create, :update] do
+        member do
+          get 'get_unities'
+        end
+      end
       resources :managers, only: [:index, :show, :create, :update]
       resources :directors, only: [:index, :show, :create, :update]
       namespace :validations do

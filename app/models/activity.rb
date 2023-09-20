@@ -2,13 +2,14 @@
 #
 # Table name: activities
 #
-#  id         :bigint           not null, primary key
-#  name       :string(200)
-#  state      :string
-#  type       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  unity_id   :bigint           not null
+#  id            :bigint           not null, primary key
+#  delivery_date :date
+#  name          :string(200)
+#  state         :string
+#  type          :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  unity_id      :bigint           not null
 #
 # Indexes
 #
@@ -54,6 +55,16 @@ class Activity < ApplicationRecord
     event :postpone do
       transitions from: [:pending, :in_progress], to: :postponed
     end
+  end
+
+  def days_until_delivery
+    return 0 if delivery_date.nil?
+
+    difference = delivery_date - Date.today
+
+    return 0 if difference.negative?
+
+    difference.to_i
   end
 
 

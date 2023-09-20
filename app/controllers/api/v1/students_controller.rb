@@ -26,6 +26,14 @@ module Api
         }
       end
 
+      def top_students
+        @top_students = Student.joins(:activity_califications)
+                               .group('students.id')
+                               .order('AVG(activity_califications.numeric_grade) DESC')
+                               .limit(5)
+        render json: @top_students
+      end
+
       private
       def set_student
         @student = Student.find(params[:id])

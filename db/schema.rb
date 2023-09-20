@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_15_033314) do
+ActiveRecord::Schema.define(version: 2023_09_20_195853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,7 +32,21 @@ ActiveRecord::Schema.define(version: 2023_09_15_033314) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "state"
+    t.date "delivery_date"
     t.index ["unity_id"], name: "index_activities_on_unity_id"
+  end
+
+  create_table "activity_califications", force: :cascade do |t|
+    t.bigint "activity_id", null: false
+    t.bigint "student_id", null: false
+    t.float "numeric_grade"
+    t.text "notes"
+    t.date "calification_date"
+    t.text "bloom_taxonomy_percentage"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["activity_id"], name: "index_activity_califications_on_activity_id"
+    t.index ["student_id"], name: "index_activity_califications_on_student_id"
   end
 
   create_table "administrators", force: :cascade do |t|
@@ -165,7 +179,9 @@ ActiveRecord::Schema.define(version: 2023_09_15_033314) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
+    t.bigint "professor_id"
     t.index ["director_id"], name: "index_subjects_on_director_id"
+    t.index ["professor_id"], name: "index_subjects_on_professor_id"
   end
 
   create_table "terms_of_services", force: :cascade do |t|
@@ -242,6 +258,8 @@ ActiveRecord::Schema.define(version: 2023_09_15_033314) do
 
   add_foreign_key "academic_periods", "subjects"
   add_foreign_key "activities", "unities"
+  add_foreign_key "activity_califications", "activities"
+  add_foreign_key "activity_califications", "students"
   add_foreign_key "administrators", "user_profiles"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
@@ -256,6 +274,7 @@ ActiveRecord::Schema.define(version: 2023_09_15_033314) do
   add_foreign_key "student_informations", "rotations"
   add_foreign_key "student_informations", "students"
   add_foreign_key "students", "user_profiles"
+  add_foreign_key "subjects", "professors"
   add_foreign_key "unities", "academic_periods"
   add_foreign_key "unities", "subjects"
   add_foreign_key "user_profiles", "users"

@@ -17,8 +17,12 @@
 #
 class Professor < ApplicationRecord
   belongs_to :user_profile
+  has_many :subjects
+  has_many :unities, through: :subjects
+  belongs_to :professor
+
   after_create :set_professor_role
-  validate :unique_user_profile
+  validate :unique_user_profile0
 
   private
   def set_professor_role
