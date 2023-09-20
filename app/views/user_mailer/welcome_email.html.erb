@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Bienvenido a nuestro PG despues lo dejo bonito</title>
-</head>
-<body>
-<h1>Bienvenido, <%= @user.username %>!</h1>
-<p>Has sido registrado en nuestra aplicación.</p>
-<!-- Agrega un enlace para que el usuario establezca su contraseña -->
-<%= link_to 'Establecer Contraseña', edit_user_password_url(@user, reset_password_token: @user.reset_password_token) %>
-</body>
-</html>
+  <html>
+    <head>
+      <title>¡ACOTB te da la bienvenida!</title>
+    </head>
+    <body>
+      <h1>Hola, <%= @user.username %>!</h1>
+      <p>Has sido registrado en nuestra plataforma ACOTB, por favor ingresa a este link y actualiza tu contraseña.</p>
+      <%= link_to 'Actualizar Contraseña', @change_password_url %>
+      <p>¡Estamos contentos de que estés acá!</p>
+
+    </body>
+  </html>
