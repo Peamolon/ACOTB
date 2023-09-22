@@ -124,6 +124,9 @@ GEM
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     jwt (2.7.1)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -262,6 +265,7 @@ DEPENDENCIES
   dotenv-rails
   faker (~> 3.2, >= 3.2.1)
   grape
+  jbuilder (~> 2.7)
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   phonelib

@@ -39,6 +39,12 @@ module Api
         @activity.destroy
       end
 
+      def closest_to_today
+        @activities = Activity.where("delivery_date >= ?", Date.today).where(state: :pending).order(delivery_date: :asc).limit(5)
+
+        render json: @activities, methods: [:days_until_delivery]
+      end
+
       # GET /api/v1/activities/in_progress
       def in_progress
         @activities_in_progress = Activity.in_progress
