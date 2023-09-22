@@ -22,6 +22,7 @@
 class Activity < ApplicationRecord
   include AASM
   belongs_to :unity
+  has_many :activity_califications
 
   ACTIVITY_TYPES = %w[THEORETICAL PRACTICAL THEORETICAL_PRACTICAL]
   public_constant :ACTIVITY_TYPES
@@ -66,6 +67,4 @@ class Activity < ApplicationRecord
 
     difference.to_i
   end
-
-
 end

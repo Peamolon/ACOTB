@@ -28,10 +28,10 @@ class Subject < ApplicationRecord
   has_many :rubrics
   has_many :academic_periods
   has_many :unities, through: :academic_periods
+  has_many :course_registrations
+  has_many :students, through: :course_registrations
 
   def get_rubrics
     self.rubrics.pluck(:level, :verb, :description)
   end
-
-
 end

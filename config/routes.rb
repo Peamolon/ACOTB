@@ -21,6 +21,12 @@ Rails.application.routes.draw do
           get 'get_student_count'
           get 'top_students'
         end
+
+        member do
+          get 'get_general_score'
+          get 'get_activities'
+          get 'get_subjects'
+        end
       end
 
       resources :activities do
@@ -50,9 +56,13 @@ Rails.application.routes.draw do
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]
       resources :rotation_types, only:[:create, :update]
       resources :administrators, only: [:index, :show, :create, :update]
+      resources :activity_califications, only: [:create]
       resources :professors, only: [:index, :show, :create, :update] do
         member do
-          get 'get_unities'
+          get 'unities'
+          get 'students'
+          get 'activities'
+          get 'activities/:activity_id/activity_califications', to: 'professors#activity_califications'
         end
       end
       resources :managers, only: [:index, :show, :create, :update]

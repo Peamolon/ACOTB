@@ -31,16 +31,13 @@ class ActivityCalification < ApplicationRecord
 
   serialize :bloom_taxonomy_percentage, Hash
 
-  # Validar que los porcentajes de la taxonomía de Bloom sumen 100%
-  validate :validate_bloom_taxonomy_percentage
 
-  private
-
-  # Método para validar que los porcentajes de la taxonomía de Bloom sumen 100%
-  def validate_bloom_taxonomy_percentage
-    unless bloom_taxonomy_percentage.is_a?(Hash) && bloom_taxonomy_percentage.values.all? { |value| value.is_a?(Numeric) }
-      errors.add(:bloom_taxonomy_percentage, 'debe ser un hash con valores numéricos')
-      return
-    end
+  def subject
+    activity.unity.subject
   end
+
+  def student_name
+    student.full_name
+  end
+
 end

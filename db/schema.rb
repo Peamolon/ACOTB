@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_20_195853) do
+ActiveRecord::Schema.define(version: 2023_09_21_173122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,15 @@ ActiveRecord::Schema.define(version: 2023_09_20_195853) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_administrators_on_user_profile_id"
+  end
+
+  create_table "course_registrations", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "subject_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["student_id"], name: "index_course_registrations_on_student_id"
+    t.index ["subject_id"], name: "index_course_registrations_on_subject_id"
   end
 
   create_table "directors", force: :cascade do |t|
@@ -261,6 +270,8 @@ ActiveRecord::Schema.define(version: 2023_09_20_195853) do
   add_foreign_key "activity_califications", "activities"
   add_foreign_key "activity_califications", "students"
   add_foreign_key "administrators", "user_profiles"
+  add_foreign_key "course_registrations", "students"
+  add_foreign_key "course_registrations", "subjects"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
   add_foreign_key "managers", "user_profiles"

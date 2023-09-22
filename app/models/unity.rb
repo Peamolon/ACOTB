@@ -23,7 +23,7 @@
 class Unity < ApplicationRecord
   belongs_to :subject
   belongs_to :academic_period
-  has_many :activities, dependent: :destroy
+  has_many :activities
 
   UNITY_TYPES = %w[MODULE WORKSHOP CURSE]
   public_constant :UNITY_TYPES
