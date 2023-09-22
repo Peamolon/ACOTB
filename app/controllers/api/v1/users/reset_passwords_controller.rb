@@ -10,10 +10,10 @@ module Api
           if user.valid_password?(old_password)
             new_password = params[:new_password]
             User.update(password: new_password)
-            render json: {  message: 'Your password has been update successfully'},
+            render json: {  message: 'Your password has been updated successfully'},
                    status: 200
           else
-            render json: { message: "Your password has don't been update because don't match with which you have registered" },
+            render json: { message: "Password does not match with the registered one" },
                    status: :unprocessable_entity
           end
         end

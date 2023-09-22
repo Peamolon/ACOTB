@@ -9,17 +9,17 @@ class Users::PasswordsController < Devise::PasswordsController
       mail = user.try(:send_reset_password_instructions)
       if mail.present?
         render json: {
-          status: { code: 200, message: 'Send instructions for reset password'}
+          status: { code: 200, message: 'Reset password instructions were sent '}
         }, status: :ok
       else
         render json: {
-          status: { message: "Don't send instructions for reset password",
+          status: { message: "Something went wrong",
                     status: :unprocessable_entity }
         }
       end
     else
       render json: {
-        status: { code: 400, message: "Don't send instructions because this email don't exist",
+        status: { code: 400, message: "Email not found",
                   status: :ok }
       }
     end
@@ -37,7 +37,7 @@ class Users::PasswordsController < Devise::PasswordsController
 
     if resource.errors.empty?
       sign_in(resource_name, resource)
-      render json: {code: 200, message: 'Update password successfully' }, status: :ok
+      render json: {code: 200, message: 'your password has been updated successfully' }, status: :ok
     else
       render json: { error: resource.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
