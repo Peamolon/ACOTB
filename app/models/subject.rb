@@ -27,9 +27,13 @@ class Subject < ApplicationRecord
   has_many :academic_periods
   has_many :rubrics
   has_many :academic_periods
-  has_many :unities, through: :academic_periods
+  has_many :unities
   has_many :course_registrations
   has_many :students, through: :course_registrations
+
+  def activities
+    Activity.where(unity_id: unities.pluck(:id))
+  end
 
   def get_rubrics
     self.rubrics.pluck(:level, :verb, :description)

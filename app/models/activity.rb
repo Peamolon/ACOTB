@@ -30,6 +30,8 @@ class Activity < ApplicationRecord
   validates :name, presence: true, length: { maximum: 200 }
   validates :type, presence: true, inclusion:{in: ACTIVITY_TYPES, message: "invalid activity type"}
 
+  after_create :create_activity_califications
+
   scope :in_progress, -> { where(state: :in_progress)}
 
   self.inheritance_column = :_type_disabled
@@ -66,5 +68,11 @@ class Activity < ApplicationRecord
     return 0 if difference.negative?
 
     difference.to_i
+  end
+
+  private
+
+  def create_activity_califications
+    self.unity.subject.students.map{ |student| ActivityCalification.create!(student_id: student.id, activity_id: self.id)}
   end
 end

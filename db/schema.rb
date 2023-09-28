@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(version: 2023_09_28_145816) do
     t.date "end_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "state"
     t.index ["director_id"], name: "index_rotations_on_director_id"
     t.index ["institution_id"], name: "index_rotations_on_institution_id"
   end

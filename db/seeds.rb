@@ -49,6 +49,7 @@ def create_random_subject
     name: Faker::Educator.subject,
     credits: Faker::Number.between(from: 1, to: 5) * 3,
     director_id: rand(1..Director.count),
+    professor_id: rand(1..Professor.count),
     academic_period_info: [
       {
         start_date: Faker::Date.between(from: '2023-09-01', to: '2023-12-15'),
@@ -61,28 +62,28 @@ def create_random_subject
     ],
     rubric_info: [
       {
-        verb: 'Recordar '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Recordar',
+        description: 'Recordar '+ Faker::Lorem.word
       },
       {
-        verb: 'Comprender '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Comprender',
+        description: 'Comprender '+ Faker::Lorem.sentence
       },
       {
-        verb: 'Aplicar '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Aplicar',
+        description: 'Aplicar '+ Faker::Lorem.word
       },
       {
-        verb: 'Analizar '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Analizar',
+        description: 'Analizar '+ Faker::Lorem.word
       },
       {
-        verb: 'Evaluar '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Evaluar',
+        description: 'Evaluar '+ Faker::Lorem.word
       },
       {
-        verb: 'Crear '+ Faker::Lorem.word,
-        description: Faker::Lorem.sentence
+        verb: 'Crear',
+        description: 'Crear '+ Faker::Lorem.word
       },
     ]
   }
@@ -95,7 +96,7 @@ end
 end
 
 #Create Unities
-100.times do
+400.times do
   Unity.create!(
     name: Faker::Lorem.words(number: 3).join(' '),
     type: Unity::UNITY_TYPES.sample,
@@ -104,13 +105,34 @@ end
     )
 end
 
+#Assing subjects to students
+def assign_subjects_to_students
+  student_ids = Student.all.pluck(:id)
+  subject_ids = Subject.all.pluck(:id)
 
-#create activities
-200.times do
+  max_subjects_to_assign = 4
+
+  student_ids.each do |student_id|
+    num_subjects_to_assign = rand(1..max_subjects_to_assign)
+
+    subjects_to_assign = subject_ids.sample(num_subjects_to_assign)
+
+    ::Students::AssignSubjectService.new(subjects_to_assign, [student_id]).call
+  end
+end
+
+5.times do
+  assign_subjects_to_students
+end
+
+#Create activities
+100.times do
   Activity.create!(
-    unity_id: Unity.all.sample.id,
+    name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
-    name: Faker::Lorem.sentence(word_count: 3)
+    delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
+    unity_id: Unity.pluck(:id).sample,
+    state: Activity.aasm.states.map(&:name).sample
   )
 end
 
@@ -129,17 +151,16 @@ def generate_bloom_taxonomy_percentage
   percentages
 end
 
-100.times do
-  calification = ActivityCalification.new(
-    activity_id: rand(1..Activity.count),
-    student_id: rand(1..Student.count),
+
+ActivityCalification.all.each do |calification|
+  calification.update(
     numeric_grade: rand(0.0..5.0),
     notes: Faker::Lorem.sentence,
     calification_date: Faker::Date.between(from: 1.year.ago, to: Date.today),
     bloom_taxonomy_percentage: generate_bloom_taxonomy_percentage
   )
-  calification.save
 end
+
 
 
 

@@ -24,21 +24,14 @@ module ActivityCalifications
     private
 
     def calculate_average_for_subject(subject)
-      califications_for_subject = @student.activity_califications.joins(activity: { unity: :subject }).where(subjects: { id: subject.id })
-      return {} if califications_for_subject.empty?
+      activities_id = subject.activities.pluck(:id)
+      activity_califications = ActivityCalification.where(activity_id: activities_id).where(student_id: @student.id)
 
-      sum_hash = Hash.new(0)
+      return {} if activity_califications.empty?
 
-      califications_for_subject.each do |calification|
-        calification.bloom_taxonomy_percentage.each do |key, value|
-          sum_hash[key] += value
-        end
-      end
+      result = ::ActivityCalifications::CalculateBloomTaxonomyAverageService.new(activity_califications).call
 
-      num_califications = califications_for_subject.length
-      average_hash = sum_hash.transform_values { |value| value.to_f / num_califications }
-
-      average_hash
+      result
     end
   end
 end

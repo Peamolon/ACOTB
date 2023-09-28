@@ -28,8 +28,8 @@ class ActivityCalification < ApplicationRecord
   belongs_to :activity
   belongs_to :student
 
-  validates :numeric_grade, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :notes, length: { maximum: 255 }
+  validate :student_has_subject
 
   serialize :bloom_taxonomy_percentage, Hash
 
@@ -64,6 +64,14 @@ class ActivityCalification < ApplicationRecord
 
   def student_name
     student.full_name
+  end
+
+  private
+
+  def student_has_subject
+    unless student.subjects.exists?(id: activity.unity.subject.id)
+      errors.add(:student, 'must be enrolled in the subject of the activity')
+    end
   end
 
 end
