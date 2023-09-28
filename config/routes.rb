@@ -26,6 +26,10 @@ Rails.application.routes.draw do
           get 'get_general_score'
           get 'get_activities'
           get 'get_subjects'
+          get 'get_activities_count'
+          get 'get_next_activity'
+          get 'get_general_score'
+          get 'get_subject_scores'
         end
       end
 

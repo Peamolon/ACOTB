@@ -6,12 +6,10 @@
 #  end_date       :date
 #  name           :string
 #  start_date     :date
-#  state          :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  director_id    :bigint           not null
 #  institution_id :bigint           not null
-#  subject_id     :integer
 #
 # Indexes
 #
@@ -42,7 +40,7 @@ class Rotation < ApplicationRecord
       transitions from: :no_active, to: :active
     end
 
-    event :deactivate do # Cambiado de :desactivate a :deactivate
+    event :deactivate do
       transitions from: :active, to: :no_active
     end
   end

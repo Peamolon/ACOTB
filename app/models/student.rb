@@ -20,7 +20,6 @@ class Student < ApplicationRecord
   belongs_to :user_profile
   has_many :activity_califications
   has_many :activities, through: :activity_califications
-  has_and_belongs_to_many :subjects
   has_many :course_registrations
   has_many :subjects, through: :course_registrations
   #validates :semester, inclusion: { in: %w(1 2 3 4 5 6 7 8 9 10 11 12) }
