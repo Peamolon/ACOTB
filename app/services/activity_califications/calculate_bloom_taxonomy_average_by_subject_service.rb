@@ -27,17 +27,14 @@ module ActivityCalifications
       califications_for_subject = @student.activity_califications.joins(activity: { unity: :subject }).where(subjects: { id: subject.id })
       return {} if califications_for_subject.empty?
 
-      # Inicializa un hash para almacenar la suma total de cada clave en el hash
       sum_hash = Hash.new(0)
 
-      # Itera sobre las calificaciones y suma los valores en el hash
       califications_for_subject.each do |calification|
         calification.bloom_taxonomy_percentage.each do |key, value|
           sum_hash[key] += value
         end
       end
 
-      # Calcula el promedio dividiendo la suma total entre el número de calificaciones
       num_califications = califications_for_subject.length
       average_hash = sum_hash.transform_values { |value| value.to_f / num_califications }
 
