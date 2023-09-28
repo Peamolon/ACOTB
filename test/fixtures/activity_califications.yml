@@ -7,6 +7,7 @@
 #  calification_date         :date
 #  notes                     :text
 #  numeric_grade             :float
+#  state                     :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #  activity_id               :bigint           not null

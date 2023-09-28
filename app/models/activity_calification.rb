@@ -7,6 +7,7 @@
 #  calification_date         :date
 #  notes                     :text
 #  numeric_grade             :float
+#  state                     :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #  activity_id               :bigint           not null
@@ -23,6 +24,7 @@
 #  fk_rails_...  (student_id => students.id)
 #
 class ActivityCalification < ApplicationRecord
+  include AASM
   belongs_to :activity
   belongs_to :student
 
@@ -31,9 +33,33 @@ class ActivityCalification < ApplicationRecord
 
   serialize :bloom_taxonomy_percentage, Hash
 
+  aasm column: 'state' do
+    state :no_grade, initial: true
+    state :graded
+
+    event :complete do
+      transitions from: :no_grade, to: :graded
+    end
+
+    event :revert do
+      transitions from: :graded, to: :no_grade
+    end
+  end
+
+  def activity_name
+    activity.name
+  end
+
+  def activity_type
+    activity.type
+  end
 
   def subject
     activity.unity.subject
+  end
+
+  def unity
+    activity.unity
   end
 
   def student_name

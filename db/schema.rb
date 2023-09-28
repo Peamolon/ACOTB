@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_21_173122) do
+ActiveRecord::Schema.define(version: 2023_09_28_145816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2023_09_21_173122) do
     t.text "bloom_taxonomy_percentage"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "state"
     t.index ["activity_id"], name: "index_activity_califications_on_activity_id"
     t.index ["student_id"], name: "index_activity_califications_on_student_id"
   end
@@ -136,8 +137,6 @@ ActiveRecord::Schema.define(version: 2023_09_21_173122) do
     t.date "end_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "subject_id"
-    t.string "state"
     t.index ["director_id"], name: "index_rotations_on_director_id"
     t.index ["institution_id"], name: "index_rotations_on_institution_id"
   end

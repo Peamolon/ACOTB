@@ -47,7 +47,6 @@ class Rubric < ApplicationRecord
     keywords[verb] || []
   end
 
-
   private
   def verb_is_valid
     unless LEVELS.include?(verb)

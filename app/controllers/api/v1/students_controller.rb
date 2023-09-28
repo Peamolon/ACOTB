@@ -1,7 +1,10 @@
 module Api
   module V1
     class StudentsController < ApplicationController
-      before_action :set_student, only: [:show, :update, :get_general_score, :get_activities, :get_subjects]
+      before_action :set_student, only: [:show, :update, :get_general_score,
+                                         :get_activities, :get_subjects, :get_activities_count,
+                                         :get_next_activity, :activity_calification, :get_general_score,
+                                         :get_subject_scores]
       def index
         @students = Student.all
         render json: @students
@@ -24,6 +27,15 @@ module Api
         render json: @score
       end
 
+      def get_activities_count
+        @pending_activities = @student.activity_califications.where(state: :no_grade).count
+        @complete_activities = @student.activity_califications.where(state: :graded).count
+        render json: {
+          pending_activities_count: @pending_activities,
+          complete_activities_count: @complete_activities
+        }
+      end
+
       def get_student_count
         render json: {
           'active_student_count': Student.count
@@ -34,9 +46,27 @@ module Api
         render json: @student.subjects.includes(:unities)
       end
 
-      def get_activities
-        render json: @student.activity_califications
+      def get_next_activity
+        @activity = @student.activities.where("delivery_date >= ?", Date.today).order(delivery_date: :asc).first
+        render json: {
+          'next_activity': @activity || []
+        }
       end
+
+      def get_subject_scores
+        result = ::ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.new(@student).call
+        render json: result
+      end
+
+      def get_activities
+        render json: @student.activity_califications, methods: [:unity, :activity_name, :activity_type]
+      end
+
+      def get_general_score
+        result = ::ActivityCalifications::CalculateBloomTaxonomyAverageService.new(@student.activity_califications).call
+        render json: result
+      end
+
 
       def top_students
         @top_students = Student.joins(:activity_califications)
