@@ -182,14 +182,14 @@ ActiveRecord::Schema.define(version: 2023_09_28_145816) do
   end
 
   create_table "subjects", force: :cascade do |t|
-    t.integer "director_id"
+    t.integer "manager_id"
     t.integer "total_credits"
     t.integer "credits"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
     t.bigint "professor_id"
-    t.index ["director_id"], name: "index_subjects_on_director_id"
+    t.index ["manager_id"], name: "index_subjects_on_manager_id"
     t.index ["professor_id"], name: "index_subjects_on_professor_id"
   end
 

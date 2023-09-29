@@ -62,14 +62,18 @@ Rails.application.routes.draw do
       resources :administrators, only: [:index, :show, :create, :update]
       resources :activity_califications, only: [:create]
       resources :professors, only: [:index, :show, :create, :update] do
+        collection do
+          get 'professor_count'
+        end
+      end
+      resources :managers, only: [:index, :show, :create, :update] do
         member do
           get 'unities'
           get 'students'
           get 'activities'
-          get 'activities/:activity_id/activity_califications', to: 'professors#activity_califications'
+          get 'activities/:activity_id/activity_califications', to: 'managers#activity_califications'
         end
       end
-      resources :managers, only: [:index, :show, :create, :update]
       resources :directors, only: [:index, :show, :create, :update]
       namespace :validations do
         get :validate_token, to: 'tokens#validate_token'

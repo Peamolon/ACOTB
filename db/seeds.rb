@@ -48,7 +48,7 @@ def create_random_subject
   subject_params = {
     name: Faker::Educator.subject,
     credits: Faker::Number.between(from: 1, to: 5) * 3,
-    director_id: rand(1..Director.count),
+    manager_id: rand(1..Manager.count),
     professor_id: rand(1..Professor.count),
     academic_period_info: [
       {

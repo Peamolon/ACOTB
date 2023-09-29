@@ -8,12 +8,12 @@
 #  total_credits :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  director_id   :integer
+#  manager_id    :integer
 #  professor_id  :bigint
 #
 # Indexes
 #
-#  index_subjects_on_director_id   (director_id)
+#  index_subjects_on_manager_id    (manager_id)
 #  index_subjects_on_professor_id  (professor_id)
 #
 # Foreign Keys

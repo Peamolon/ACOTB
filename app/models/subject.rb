@@ -8,12 +8,12 @@
 #  total_credits :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  director_id   :integer
+#  manager_id    :integer
 #  professor_id  :bigint
 #
 # Indexes
 #
-#  index_subjects_on_director_id   (director_id)
+#  index_subjects_on_manager_id    (manager_id)
 #  index_subjects_on_professor_id  (professor_id)
 #
 # Foreign Keys
@@ -21,7 +21,7 @@
 #  fk_rails_...  (professor_id => professors.id)
 #
 class Subject < ApplicationRecord
-  belongs_to :director, foreign_key: 'director_id', class_name: 'Director'
+  belongs_to :manager, foreign_key: 'manager_id', class_name: 'Manager'
   belongs_to :professor, foreign_key: 'professor_id', class_name: 'Professor'
   has_many :rotations
   has_many :academic_periods

@@ -5,8 +5,14 @@ module Api
       #before_action :authenticate_user!
 
       def index
-        @subjects = Subject.all.includes(:unities)
-        render json: @subjects.to_json(:include => :unities)
+
+      end
+
+      def professor_count
+        @professors = Professor.all
+        render json: {
+          professor_count: @professors.count
+        }
       end
 
       def show
