@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       resources :user_profiles, only: [:index, :show, :create, :update, :destroy] do
         collection do
           delete :destroy_multiple_users
+          post 'create_backup'
         end
       end
       resources :roles, only: [:index]
