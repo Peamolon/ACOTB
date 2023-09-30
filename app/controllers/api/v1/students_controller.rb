@@ -6,8 +6,13 @@ module Api
                                          :get_next_activity, :activity_calification, :get_general_score,
                                          :get_subject_scores]
       def index
-        @students = Student.all
-        render json: @students
+        @students = Student.paginate(page: params[:page], per_page: 10)
+        total_pages = @students.total_pages
+
+        render json: {
+          students: @students,
+          total_pages: total_pages
+        }
       end
 
       def update
@@ -43,7 +48,13 @@ module Api
       end
 
       def get_subjects
-        render json: @student.subjects.includes(:unities)
+        @subjects = @student.subjects.includes(:unities).paginate(page: params[:page], per_page: 10)
+        total_pages = @subjects.total_pages
+
+        render json: {
+          subjects: @subjects,
+          total_pages: total_pages
+        }
       end
 
       def get_next_activity
@@ -59,7 +70,13 @@ module Api
       end
 
       def get_activities
-        render json: @student.activity_califications, methods: [:unity, :activity_name, :activity_type]
+        @activities = @student.activity_califications.paginate(page: params[:page], per_page: 10)
+        total_pages = @activities.total_pages
+
+        render json: {
+          activities: @activities,
+          total_pages: total_pages
+        }, methods: [:unity, :activity_name, :activity_type]
       end
 
       def get_general_score

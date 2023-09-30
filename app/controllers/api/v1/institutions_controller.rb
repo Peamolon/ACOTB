@@ -4,8 +4,13 @@ module Api
       before_action :authenticate_user!
 
       def index
-        institutions = Institution.all
-        render json: institutions
+        institutions = Institution.paginate(page: params[:page], per_page: 10)
+        total_pages = institutions.total_pages
+
+        render json: {
+          institutions: institutions,
+          total_pages: total_pages
+        }
       end
 
       def create

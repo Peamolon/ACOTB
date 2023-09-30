@@ -36,8 +36,12 @@ module Api
       end
 
       def index
-        @rotations = Rotation.all
-        render json: @rotations, methods: [:director_name]
+        @rotations = Rotation.all.paginate(page: params[:page], per_page: 10)
+        total_pages = @rotations.total_pages
+        render json: {
+          rotations: @rotations,
+          total_pages: total_pages
+        }
       end
 
 

@@ -4,8 +4,13 @@ module Api
       before_action :set_subject, only: [:show, :update, :destroy]
 
       def index
-        @subjects = Subject.all
-        render json: @subjects
+        per_page = params[:per_page] || 10
+        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
+        total_pages = @subjects.total_pages
+        render json: {
+          rotations: @subjects,
+          total_pages: total_pages
+        }
       end
 
       def show

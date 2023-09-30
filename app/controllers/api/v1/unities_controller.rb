@@ -5,8 +5,12 @@ module Api
 
       # GET /api/v1/unities
       def index
-        @unities = Unity.all
-        render json: @unities
+        @unities = Unity.all.paginate(page: params[:page], per_page: 10)
+        total_pages = @unities.total_pages
+        render json: {
+          unities: @unities,
+          total_pages: total_pages
+        }
       end
 
       # GET /api/v1/unities/1
@@ -26,11 +30,22 @@ module Api
 
       def activities
         @unity = Unity.find(params[:id])
-        render json: 'Unity not found ' unless @unity.present?
 
-        @activities = @unity.activities
-        render json: @activities
+        unless @unity.present?
+          render json: { error: 'Unity not found' }, status: :not_found
+          return
+        end
+
+        per_page = params[:per_page] || 10
+        @activities = @unity.activities.paginate(page: params[:page], per_page: per_page)
+        total_pages = @activities.total_pages
+
+        render json: {
+          activities: @activities,
+          total_pages: total_pages
+        }
       end
+
 
       private
 

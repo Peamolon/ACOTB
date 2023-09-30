@@ -13,27 +13,58 @@ module Api
       end
 
       def unities
-        @manager_unities = @manager.unities.includes(:activities).order(:type)
-        render json: @manager_unities.to_json(:include => :activities)
+        @manager_unities = @manager.unities.includes(:activities).order(:type).paginate(page: params[:page], per_page: 10)
+
+        total_pages = @manager_unities.total_pages
+
+        response_hash = {
+          manager_unities: @manager_unities,
+          total_pages: total_pages
+        }
+
+        render json: response_hash.to_json(:include => :activities)
       end
 
       def students
-        @students = @manager.subjects.map(&:students).flatten
-        render json: @students
+        @students_ids = @manager.subjects.map(&:students).flatten.pluck(:id)
+        @students = Student.where(id: @students_ids).paginate(page: params[:page], per_page: 10)
+
+        total_pages = @students.total_pages
+
+        response_hash = {
+          students: @students,
+          total_pages: total_pages
+        }
+
+        render json: response_hash
       end
 
       def activities
         @unities_ids = @manager.unities.pluck(:id)
-        @activities = Activity.where(unity_id: @unities_ids).includes(:unity)
-        render json: @activities.to_json(:include => :unity)
+        @activities = Activity.where(unity_id: @unities_ids).includes(:unity).paginate(page: params[:page], per_page: 10)
+
+        total_pages = @activities.total_pages
+
+        response_hash = {
+          activities: @activities,
+          total_pages: total_pages
+        }
+
+        render json: response_hash.to_json(:include => :unity)
       end
 
       def activity_califications
         @unities_ids = @manager.unities.pluck(:id)
-        @activity_califications = Activity.find(params[:activity_id]).activity_califications.includes(:student)
+        @activity_califications = Activity.find(params[:activity_id]).activity_califications.includes(:student).paginate(page: params[:page], per_page: 10)
 
-        render json: @activity_califications, methods: [:student_name]
+        total_pages = @activity_califications.total_pages
+
+        render json: {
+          activity_califications: @activity_califications,
+          total_pages: total_pages
+        }
       end
+
 
       def create
         @manager = Manager.new(manager_params)
