@@ -27,6 +27,7 @@ class ActivityCalification < ApplicationRecord
   include AASM
   belongs_to :activity
   belongs_to :student
+  delegate :unity, to: :activity
 
   validates :notes, length: { maximum: 255 }
   validate :student_has_subject
@@ -50,6 +51,14 @@ class ActivityCalification < ApplicationRecord
     activity.name
   end
 
+  def rubrics
+    subject.rubrics
+  end
+
+  def unity_id
+    unity.id
+  end
+
   def activity_type
     activity.type
   end
@@ -60,6 +69,16 @@ class ActivityCalification < ApplicationRecord
 
   def unity
     activity.unity
+  end
+
+  def unity_name
+    unity = activity.unity
+    unity.name
+  end
+
+  def unity_type
+    unity = activity.unity
+    unity.type
   end
 
   def student_name

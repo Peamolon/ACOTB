@@ -4,15 +4,10 @@ module Api
       before_action :set_student, only: [:show, :update, :get_general_score,
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
-                                         :get_subject_scores]
+                                         :get_subject_scores, :get_unities, :activities]
       def index
-        @students = Student.paginate(page: params[:page], per_page: 10)
-        total_pages = @students.total_pages
-
-        render json: {
-          students: @students,
-          total_pages: total_pages
-        }
+        @students = Student.all
+        render json: @students
       end
 
       def update
@@ -48,13 +43,7 @@ module Api
       end
 
       def get_subjects
-        @subjects = @student.subjects.includes(:unities).paginate(page: params[:page], per_page: 10)
-        total_pages = @subjects.total_pages
-
-        render json: {
-          subjects: @subjects,
-          total_pages: total_pages
-        }
+        render json: @student.subjects.includes(:unities)
       end
 
       def get_next_activity
@@ -69,14 +58,31 @@ module Api
         render json: result
       end
 
-      def get_activities
-        @activities = @student.activity_califications.paginate(page: params[:page], per_page: 10)
-        total_pages = @activities.total_pages
+      def get_unities
+        unities_id = @student.subjects.joins(:unities).pluck('unities.id')
+        unities = Unity.where(id: unities_id).paginate(page: params[:page], per_page: 10)
 
-        render json: {
-          activities: @activities,
+        total_pages = unities.total_pages
+
+        response_hash = {
+          unities: unities,
           total_pages: total_pages
-        }, methods: [:unity, :activity_name, :activity_type]
+        }
+
+        render json: response_hash || []
+      end
+
+      def activities
+        activity_califications = ActivityCalification.where(student_id: @student.id)
+
+        render json: activity_califications, methods: [:unity_id, :activity_name, :activity_type, :rubrics]
+
+      end
+
+      def get_activities
+        @activity_califications = @student.activity_califications.includes(:activity)
+        activity_califications_by_unity = @activity_califications.group_by { |calification| calification.unity }
+        render json: activity_califications_by_unity, methods: [:unity_name, :unity_type]
       end
 
       def get_general_score

@@ -31,6 +31,8 @@ Rails.application.routes.draw do
           get 'get_next_activity'
           get 'get_general_score'
           get 'get_subject_scores'
+          get 'get_unities'
+          get 'activities', to: 'students#activities'
         end
       end
 

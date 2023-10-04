@@ -4,12 +4,21 @@ class Users::SessionsController < Devise::SessionsController
 
   private
   def respond_with(resource, options={})
+    user_profile = current_user.user_profile
+    data = {}
+
+    data[:student_id] = user_profile.student.id if user_profile.student.present?
+    data[:professor_id] = user_profile.professor.id if user_profile.professor.present?
+    data[:director_id] = user_profile.director.id if user_profile.director.present?
+    data[:manager_id] = user_profile.manager.id if user_profile.manager.present?
+
     render json: {
       status: {
         code: 200, message: 'User signed in successfully',
         data: {
-          user: current_user.user_profile,
-          role: current_user.user_profile.roles.last.name
+          user: user_profile,
+          role: current_user.user_profile.roles.last.name,
+          entity: data
         }
       }
     }, status: :ok
