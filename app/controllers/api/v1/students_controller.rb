@@ -1,3 +1,5 @@
+require 'will_paginate/array'
+
 module Api
   module V1
     class StudentsController < ApplicationController
@@ -55,7 +57,15 @@ module Api
 
       def get_subject_scores
         result = ::ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.new(@student).call
-        render json: result
+        result = result.paginate(page: params[:page], per_page: 3)
+
+        total_pages = result.total_pages
+        response_hash = {
+          result: result,
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
       end
 
       def get_unities

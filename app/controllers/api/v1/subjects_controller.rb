@@ -1,7 +1,7 @@
 module Api
   module V1
     class SubjectsController < ApplicationController
-      before_action :set_subject, only: [:show, :update, :destroy]
+      before_action :set_subject, only: [:show, :update, :destroy, :get_unities_bu_subject]
 
       def index
         per_page = params[:per_page] || 10
@@ -11,6 +11,10 @@ module Api
           subjects: @subjects,
           total_pages: total_pages
         }
+      end
+
+      def get_unities_by_subject
+        render json: @subject.unities
       end
 
       def show
