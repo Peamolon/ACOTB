@@ -26,6 +26,11 @@ class Rotation < ApplicationRecord
   include AASM
   belongs_to :institution
   belongs_to :director
+  has_many :student_informations
+  has_many :students, through: :student_informations
+
+  has_many :rotation_subjects
+  has_many :subjects, through: :rotation_subjects
 
   validates :start_date, presence: true
   validates :end_date, presence: true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_28_145816) do
+ActiveRecord::Schema.define(version: 2023_10_05_050950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,15 @@ ActiveRecord::Schema.define(version: 2023_09_28_145816) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+  end
+
+  create_table "rotation_subjects", force: :cascade do |t|
+    t.bigint "rotation_id", null: false
+    t.bigint "subject_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rotation_id"], name: "index_rotation_subjects_on_rotation_id"
+    t.index ["subject_id"], name: "index_rotation_subjects_on_subject_id"
   end
 
   create_table "rotation_types", force: :cascade do |t|
@@ -277,6 +286,8 @@ ActiveRecord::Schema.define(version: 2023_09_28_145816) do
   add_foreign_key "managers", "user_profiles"
   add_foreign_key "password_resets", "users"
   add_foreign_key "professors", "user_profiles"
+  add_foreign_key "rotation_subjects", "rotations"
+  add_foreign_key "rotation_subjects", "subjects"
   add_foreign_key "rotations", "directors"
   add_foreign_key "rotations", "institutions"
   add_foreign_key "rubric_rotation_scores", "rotations"

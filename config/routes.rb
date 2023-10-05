@@ -66,7 +66,11 @@ Rails.application.routes.draw do
       end
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]
       resources :rotation_types, only:[:create, :update]
-      resources :administrators, only: [:index, :show, :create, :update]
+      resources :administrators, only: [:index, :show, :create, :update] do
+        collection do
+          get 'get_admin_counts'
+        end
+      end
       resources :activity_califications, only: [:create]
       resources :professors, only: [:index, :show, :create, :update] do
         collection do

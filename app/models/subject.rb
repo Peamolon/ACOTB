@@ -31,6 +31,9 @@ class Subject < ApplicationRecord
   has_many :course_registrations
   has_many :students, through: :course_registrations
 
+  has_many :rotation_subjects
+  has_many :rotations, through: :rotation_subjects
+
   def activities
     Activity.where(unity_id: unities.pluck(:id))
   end

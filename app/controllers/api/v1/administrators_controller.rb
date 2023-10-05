@@ -2,7 +2,6 @@ module Api
   module V1
     class AdministratorsController < ApplicationController
       before_action :set_administrator, only: [:show, :update]
-      before_action :authenticate_user!
 
       def index
         @administrators = Administrator.all
@@ -29,6 +28,19 @@ module Api
         else
           render json: @administrator.errors, status: :unprocessable_entity
         end
+      end
+
+      def get_admin_counts
+        active_rotations = Rotation.count
+        active_students = Student.count
+        active_professors = Professor.count
+        active_subjects = Subject.count
+        render json: {
+          active_rotations: active_rotations,
+          active_students: active_students,
+          active_professors: active_professors,
+          active_subjects: active_subjects
+        }
       end
 
       private
