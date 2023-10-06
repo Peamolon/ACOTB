@@ -38,11 +38,13 @@ module Api
       def index
         @rotations = Rotation.all.paginate(page: params[:page], per_page: 10)
         total_pages = @rotations.total_pages
+
         render json: {
-          rotations: @rotations,
+          rotations: @rotations.as_json(methods: [:institution_name, :manager_name]),
           total_pages: total_pages
         }
       end
+
 
 
       private
@@ -51,7 +53,7 @@ module Api
       end
 
       def rotation_params
-        params.require(:rotation).permit(:name, :start_date, :end_date, :rotation_type_id, :director_id, :institution_id)
+        params.require(:rotation).permit(:name, :start_date, :end_date, :rotation_type_id, :manager_id, :institution_id)
       end
 
     end

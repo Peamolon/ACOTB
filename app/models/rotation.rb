@@ -9,28 +9,27 @@
 #  state          :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  director_id    :bigint           not null
 #  institution_id :bigint           not null
+#  manager_id     :bigint
 #
 # Indexes
 #
-#  index_rotations_on_director_id     (director_id)
 #  index_rotations_on_institution_id  (institution_id)
+#  index_rotations_on_manager_id      (manager_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (director_id => directors.id)
 #  fk_rails_...  (institution_id => institutions.id)
+#  fk_rails_...  (manager_id => managers.id)
 #
 class Rotation < ApplicationRecord
   include AASM
   belongs_to :institution
-  belongs_to :director
+  belongs_to :manager
+  has_many :rotations
   has_many :student_informations
   has_many :students, through: :student_informations
 
-  has_many :rotation_subjects
-  has_many :subjects, through: :rotation_subjects
 
   validates :start_date, presence: true
   validates :end_date, presence: true
@@ -51,8 +50,12 @@ class Rotation < ApplicationRecord
     end
   end
 
-  def director_name
-    director.user_profile.full_name
+  def institution_name
+    institution.name
+  end
+
+  def manager_name
+    manager.user_profile.full_name
   end
 
   def subject

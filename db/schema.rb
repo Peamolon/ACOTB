@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_05_050950) do
+ActiveRecord::Schema.define(version: 2023_10_06_051659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,15 +55,6 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_administrators_on_user_profile_id"
-  end
-
-  create_table "course_registrations", force: :cascade do |t|
-    t.bigint "student_id", null: false
-    t.bigint "subject_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["student_id"], name: "index_course_registrations_on_student_id"
-    t.index ["subject_id"], name: "index_course_registrations_on_subject_id"
   end
 
   create_table "directors", force: :cascade do |t|
@@ -121,15 +112,6 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
   end
 
-  create_table "rotation_subjects", force: :cascade do |t|
-    t.bigint "rotation_id", null: false
-    t.bigint "subject_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["rotation_id"], name: "index_rotation_subjects_on_rotation_id"
-    t.index ["subject_id"], name: "index_rotation_subjects_on_subject_id"
-  end
-
   create_table "rotation_types", force: :cascade do |t|
     t.string "description"
     t.integer "credits"
@@ -140,15 +122,15 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
 
   create_table "rotations", force: :cascade do |t|
     t.bigint "institution_id", null: false
-    t.bigint "director_id", null: false
     t.string "name"
     t.date "start_date"
     t.date "end_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "state"
-    t.index ["director_id"], name: "index_rotations_on_director_id"
+    t.bigint "manager_id"
     t.index ["institution_id"], name: "index_rotations_on_institution_id"
+    t.index ["manager_id"], name: "index_rotations_on_manager_id"
   end
 
   create_table "rubric_rotation_scores", force: :cascade do |t|
@@ -191,15 +173,15 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
   end
 
   create_table "subjects", force: :cascade do |t|
-    t.integer "manager_id"
     t.integer "total_credits"
     t.integer "credits"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "name"
     t.bigint "professor_id"
-    t.index ["manager_id"], name: "index_subjects_on_manager_id"
+    t.bigint "rotation_id"
     t.index ["professor_id"], name: "index_subjects_on_professor_id"
+    t.index ["rotation_id"], name: "index_subjects_on_rotation_id"
   end
 
   create_table "terms_of_services", force: :cascade do |t|
@@ -279,17 +261,13 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
   add_foreign_key "activity_califications", "activities"
   add_foreign_key "activity_califications", "students"
   add_foreign_key "administrators", "user_profiles"
-  add_foreign_key "course_registrations", "students"
-  add_foreign_key "course_registrations", "subjects"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
   add_foreign_key "managers", "user_profiles"
   add_foreign_key "password_resets", "users"
   add_foreign_key "professors", "user_profiles"
-  add_foreign_key "rotation_subjects", "rotations"
-  add_foreign_key "rotation_subjects", "subjects"
-  add_foreign_key "rotations", "directors"
   add_foreign_key "rotations", "institutions"
+  add_foreign_key "rotations", "managers"
   add_foreign_key "rubric_rotation_scores", "rotations"
   add_foreign_key "rubric_rotation_scores", "rubrics"
   add_foreign_key "rubrics", "subjects"
@@ -297,6 +275,7 @@ ActiveRecord::Schema.define(version: 2023_10_05_050950) do
   add_foreign_key "student_informations", "students"
   add_foreign_key "students", "user_profiles"
   add_foreign_key "subjects", "professors"
+  add_foreign_key "subjects", "rotations"
   add_foreign_key "unities", "academic_periods"
   add_foreign_key "unities", "subjects"
   add_foreign_key "user_profiles", "users"

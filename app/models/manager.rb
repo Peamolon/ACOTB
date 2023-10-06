@@ -27,6 +27,10 @@ class Manager < ApplicationRecord
     position.present?
   end
 
+  def full_name
+    "#{user_profile.first_name} #{user_profile.last_name}"
+  end
+
   private
   def set_manager_role
     user_profile.add_role :manager unless user_profile.has_role? :manager

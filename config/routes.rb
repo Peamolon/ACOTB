@@ -15,7 +15,11 @@ Rails.application.routes.draw do
       end
       resources :roles, only: [:index]
       resources :id_types, only: [:index]
-      resources :institutions, only: [:index, :show, :create, :update, :destroy]
+      resources :institutions, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          get 'institution_names'
+        end
+      end
       resources :subjects, only: [:index, :show, :create, :update, :destroy] do
         member do
           get 'unities', to: 'subjects#get_unities_by_subject'
@@ -78,6 +82,9 @@ Rails.application.routes.draw do
         end
       end
       resources :managers, only: [:index, :show, :create, :update] do
+        collection do
+          get 'get_manager_names'
+        end
         member do
           get 'unities'
           get 'students'

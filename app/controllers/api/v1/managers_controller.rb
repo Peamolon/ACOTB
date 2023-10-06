@@ -12,6 +12,12 @@ module Api
         render json: @manager
       end
 
+      def get_manager_names
+        managers = Manager.all
+        manager_names = managers.map { |manager| [manager.id, manager.full_name] }
+        render json: manager_names
+      end
+
       def unities
         @manager_unities = @manager.unities.includes(:activities).order(:type).paginate(page: params[:page], per_page: 10)
 

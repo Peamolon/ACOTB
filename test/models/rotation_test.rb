@@ -9,18 +9,18 @@
 #  state          :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  director_id    :bigint           not null
 #  institution_id :bigint           not null
+#  manager_id     :bigint
 #
 # Indexes
 #
-#  index_rotations_on_director_id     (director_id)
 #  index_rotations_on_institution_id  (institution_id)
+#  index_rotations_on_manager_id      (manager_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (director_id => directors.id)
 #  fk_rails_...  (institution_id => institutions.id)
+#  fk_rails_...  (manager_id => managers.id)
 #
 require 'test_helper'
 

@@ -13,6 +13,10 @@ module Api
         }
       end
 
+      def institution_names
+        render json: Institution.all.pluck(:id, :name)
+      end
+
       def create
         institution = Institution.new(institution_params)
         if institution.save

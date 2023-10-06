@@ -21,7 +21,6 @@ class Student < ApplicationRecord
   has_many :activity_califications
   has_many :activities, through: :activity_califications
   has_many :course_registrations
-  has_many :subjects, through: :course_registrations
   has_many :student_informations
   has_many :rotations, through: :student_informations
   #validates :semester, inclusion: { in: %w(1 2 3 4 5 6 7 8 9 10 11 12) }
