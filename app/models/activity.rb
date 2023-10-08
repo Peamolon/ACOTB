@@ -9,19 +9,27 @@
 #  type          :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  rotation_id   :bigint           not null
+#  subject_id    :bigint           not null
 #  unity_id      :bigint           not null
 #
 # Indexes
 #
-#  index_activities_on_unity_id  (unity_id)
+#  index_activities_on_rotation_id  (rotation_id)
+#  index_activities_on_subject_id   (subject_id)
+#  index_activities_on_unity_id     (unity_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (rotation_id => rotations.id)
+#  fk_rails_...  (subject_id => subjects.id)
 #  fk_rails_...  (unity_id => unities.id)
 #
 class Activity < ApplicationRecord
   include AASM
   belongs_to :unity
+  belongs_to :subject
+  belongs_to :rotation
   has_many :activity_califications
 
   ACTIVITY_TYPES = %w[THEORETICAL PRACTICAL THEORETICAL_PRACTICAL]
@@ -29,6 +37,9 @@ class Activity < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 200 }
   validates :type, presence: true, inclusion:{in: ACTIVITY_TYPES, message: "invalid activity type"}
+  validates :unity, presence: true
+
+  before_validation :add_subject_rotation, on: :create
 
   after_create :create_activity_califications
 
@@ -72,7 +83,13 @@ class Activity < ApplicationRecord
 
   private
 
+  def add_subject_rotation
+    subject_id = unity.subject_id
+    self.subject_id = subject_id
+    self.rotation_id = Subject.find(subject_id).rotation.id
+  end
+
   def create_activity_califications
-    self.unity.subject.students.map{ |student| ActivityCalification.create!(student_id: student.id, activity_id: self.id)}
+    self.rotation.students.map{ |student| ActivityCalification.create!(student_id: student.id, activity_id: self.id)}
   end
 end

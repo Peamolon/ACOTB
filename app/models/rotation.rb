@@ -29,6 +29,7 @@ class Rotation < ApplicationRecord
   has_many :rotations
   has_many :student_informations
   has_many :students, through: :student_informations
+  has_many :activities
 
 
   validates :start_date, presence: true

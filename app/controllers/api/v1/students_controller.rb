@@ -69,8 +69,8 @@ module Api
       end
 
       def get_unities
-        unities_id = @student.subjects.joins(:unities).pluck('unities.id')
-        unities = Unity.where(id: unities_id).paginate(page: params[:page], per_page: 10)
+        #unities_id = @student.subjects.joins(:unities).pluck('unities.id')
+        unities = Unity.all.paginate(page: params[:page], per_page: 10)
 
         total_pages = unities.total_pages
 

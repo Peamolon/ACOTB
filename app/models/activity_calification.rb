@@ -30,7 +30,6 @@ class ActivityCalification < ApplicationRecord
   delegate :unity, to: :activity
 
   validates :notes, length: { maximum: 255 }
-  validate :student_has_subject
 
   serialize :bloom_taxonomy_percentage, Hash
 
@@ -86,11 +85,5 @@ class ActivityCalification < ApplicationRecord
   end
 
   private
-
-  def student_has_subject
-    unless student.subjects.exists?(id: activity.unity.subject.id)
-      errors.add(:student, 'must be enrolled in the subject of the activity')
-    end
-  end
 
 end

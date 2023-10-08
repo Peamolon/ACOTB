@@ -36,7 +36,7 @@ module Api
       end
 
       def index
-        @rotations = Rotation.all.paginate(page: params[:page], per_page: 10)
+        @rotations = Rotation.all.order('created_at DESC').paginate(page: params[:page], per_page: 10)
         total_pages = @rotations.total_pages
 
         render json: {

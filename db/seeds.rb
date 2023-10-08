@@ -36,7 +36,7 @@ end
     start_date: Faker::Date.between(from: 1.month.ago, to: 1.month.from_now),
     end_date: Faker::Date.between(from: 1.month.from_now, to: 3.months.from_now),
     institution_id: rand(1..Institution.count),
-    director_id: rand(1..Director.count)
+    manager_id: rand(1..Manager.count)
   }
 
   Rotation.create(rotation_params)
@@ -48,6 +48,7 @@ def create_random_subject
   subject_params = {
     name: Faker::Educator.subject,
     credits: Faker::Number.between(from: 1, to: 5) * 3,
+    rotation_id: rand(1..Rotation.count),
     manager_id: rand(1..Manager.count),
     professor_id: rand(1..Professor.count),
     academic_period_info: [
@@ -106,23 +107,23 @@ end
 end
 
 #Assing subjects to students
-def assign_subjects_to_students
+def assign_rotations_to_students
   student_ids = Student.all.pluck(:id)
-  subject_ids = Subject.all.pluck(:id)
+  rotation_ids = Rotation.all.pluck(:id)
 
   max_subjects_to_assign = 4
 
   student_ids.each do |student_id|
     num_subjects_to_assign = rand(1..max_subjects_to_assign)
 
-    subjects_to_assign = subject_ids.sample(num_subjects_to_assign)
+    rotations_to_assign = rotation_ids.sample(num_subjects_to_assign)
 
-    ::Students::AssignSubjectService.new(subjects_to_assign, [student_id]).call
+    ::Students::AssignRotationService.new(rotations_to_assign, [student_id]).call
   end
 end
 
 5.times do
-  assign_subjects_to_students
+  assign_rotations_to_students
 end
 
 #Create activities
@@ -131,7 +132,7 @@ end
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
     delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
-    unity_id: Unity.pluck(:id).sample,
+    unity_id: rand(1..Unity.count),
     state: Activity.aasm.states.map(&:name).sample
   )
 end
@@ -154,7 +155,7 @@ end
 
 ActivityCalification.all.each do |calification|
   calification.update(
-    numeric_grade: rand(0.0..5.0),
+    numeric_grade: rand(0..5),
     notes: Faker::Lorem.sentence,
     calification_date: Faker::Date.between(from: 1.year.ago, to: Date.today),
     bloom_taxonomy_percentage: generate_bloom_taxonomy_percentage

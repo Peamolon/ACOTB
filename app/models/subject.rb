@@ -29,7 +29,7 @@ class Subject < ApplicationRecord
   has_many :rubrics
   has_many :academic_periods
   has_many :unities
-  has_many :course_registrations
+  has_many :activities
 
   def activities
     Activity.where(unity_id: unities.pluck(:id))
