@@ -36,6 +36,8 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
+  config.hosts << /[a-z0-9]+\.c9users\.io/
+
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 

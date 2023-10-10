@@ -98,7 +98,7 @@ module Api
       def activities
         activity_califications = ActivityCalification.where(student_id: @student.id)
 
-        render json: activity_califications, methods: [:unity_id, :activity_name, :activity_type, :rubrics]
+        render json: activity_califications, methods: [:rotation_id, :activity_name, :activity_type, :rubrics]
 
       end
 
