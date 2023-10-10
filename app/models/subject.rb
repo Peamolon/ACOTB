@@ -24,18 +24,28 @@
 class Subject < ApplicationRecord
   belongs_to :rotation
   belongs_to :professor, foreign_key: 'professor_id', class_name: 'Professor'
-  has_many :rotations
   has_many :academic_periods
   has_many :rubrics
   has_many :academic_periods
   has_many :unities
   has_many :activities
 
+  def manager
+    rotation.manager.full_name
+  end
+
+  def institution
+    rotation.institution.name
+  end
   def activities
     Activity.where(unity_id: unities.pluck(:id))
   end
 
   def get_rubrics
     self.rubrics.pluck(:level, :verb, :description)
+  end
+
+  def as_json(options = {})
+    super(options.merge(methods: [:manager, :institution]))
   end
 end

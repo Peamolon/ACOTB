@@ -41,6 +41,7 @@ Rails.application.routes.draw do
           get 'get_subject_scores'
           get 'get_unities'
           get 'activities', to: 'students#activities'
+          get 'rotations'
         end
       end
 
@@ -66,6 +67,10 @@ Rails.application.routes.draw do
       resources :rotations, only:[:index, :create, :show, :update, :destroy] do
         collection do
           get 'active_rotations'
+        end
+        member do
+          get 'subjects'
+          get 'students'
         end
       end
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]

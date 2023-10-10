@@ -32,6 +32,19 @@ class Student < ApplicationRecord
   def full_name
     "#{user_profile.first_name} #{user_profile.last_name}"
   end
+
+  def telephone
+    user_profile.telephone
+  end
+
+  def id_number
+    user_profile.id_number
+  end
+
+  def id_type
+    user_profile.id_type
+  end
+
   def average_bloom_taxonomy_percentage
     all_califications = activity_califications
 
@@ -54,6 +67,10 @@ class Student < ApplicationRecord
     average_bloom_taxonomy.transform_values! { |sum| (sum / total_records).round(1) }
 
     average_bloom_taxonomy
+  end
+
+  def as_json(options = {})
+    super(options.merge(methods: [:full_name, :telephone, :id_number, :id_type]))
   end
 
   private

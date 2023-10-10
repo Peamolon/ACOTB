@@ -6,7 +6,7 @@ module Api
       before_action :set_student, only: [:show, :update, :get_general_score,
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
-                                         :get_subject_scores, :get_unities, :activities]
+                                         :get_subject_scores, :get_unities, :activities, :rotations]
       def index
         @students = Student.all
         render json: @students
@@ -62,6 +62,19 @@ module Api
         total_pages = result.total_pages
         response_hash = {
           result: result,
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
+      end
+
+      def rotations
+        rotations = @student.rotations.paginate(page: params[:page], per_page: 10)
+
+        total_pages = rotations.total_pages
+
+        response_hash = {
+          rotations: rotations,
           total_pages: total_pages
         }
 

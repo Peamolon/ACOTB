@@ -17,6 +17,16 @@ module Api
         render json: @subject.unities
       end
 
+      def activities
+        per_page = params[:per_page] || 10
+        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
+        total_pages = @subjects.total_pages
+        render json: {
+          subjects: @subjects,
+          total_pages: total_pages
+        }
+      end
+
       def show
         render json: @subject, methods: [:get_rubrics]
       end

@@ -26,7 +26,7 @@ class Rotation < ApplicationRecord
   include AASM
   belongs_to :institution
   belongs_to :manager
-  has_many :rotations
+  has_many :subjects
   has_many :student_informations
   has_many :students, through: :student_informations
   has_many :activities
@@ -61,5 +61,9 @@ class Rotation < ApplicationRecord
 
   def subject
     Subject.find(self.subject_id)
+  end
+
+  def as_json(options = {})
+    super(options.merge(methods: [:manager_name, :institution_name]))
   end
 end

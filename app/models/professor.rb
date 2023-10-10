@@ -23,6 +23,10 @@ class Professor < ApplicationRecord
   after_create :set_professor_role
   validate :unique_user_profile
 
+  def full_name
+    "#{user_profile.first_name} #{user_profile.last_name}"
+  end
+
   private
   def set_professor_role
     user_profile.add_role :professor unless user_profile.has_role? :professor
