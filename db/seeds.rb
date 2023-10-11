@@ -97,7 +97,7 @@ end
 end
 
 #Create Unities
-400.times do
+200.times do
   Unity.create!(
     name: Faker::Lorem.words(number: 3).join(' '),
     type: Unity::UNITY_TYPES.sample,
@@ -126,47 +126,27 @@ end
   assign_rotations_to_students
 end
 
-#Create activities
-100.times do
-  Activity.create!(
+
+BLOOM_LEVELS = {
+  "RECORDAR" => 0,
+  "COMPRENDER" => 1,
+  "APLICAR" => 2,
+  "ANALIZAR" => 3,
+  "EVALUAR" => 4,
+  "CREAR" => 5
+}.freeze
+
+200.times do
+  activity_params = {
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
     delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
     unity_id: rand(1..Unity.count),
-    state: Activity.aasm.states.map(&:name).sample
-  )
+    subject_id: rand(1..Subject.count),
+    rotation_id: rand(1..Rotation.count),
+    bloom_levels: BLOOM_LEVELS.keys.sample(rand(1..6))
+  }
+
+  service = Activities::CreateActivityService.new(activity_params)
+  service.call
 end
-
-
-def generate_bloom_taxonomy_percentage
-  total_percentage = 100
-  levels = [1, 2, 3, 4, 5, 6]
-  percentages = {}
-
-  levels.each do |level|
-    percentage = rand(0..total_percentage)
-    percentages[level] = percentage
-    total_percentage -= percentage
-  end
-
-  percentages
-end
-
-
-ActivityCalification.all.each do |calification|
-  calification.update(
-    numeric_grade: rand(0..5),
-    notes: Faker::Lorem.sentence,
-    calification_date: Faker::Date.between(from: 1.year.ago, to: Date.today),
-    bloom_taxonomy_percentage: generate_bloom_taxonomy_percentage
-  )
-end
-
-
-
-
-
-
-
-
-

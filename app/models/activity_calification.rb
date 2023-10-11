@@ -28,6 +28,7 @@ class ActivityCalification < ApplicationRecord
   belongs_to :activity
   belongs_to :student
   delegate :rotation, to: :activity
+  has_many :bloom_taxonomy_levels
 
   validates :notes, length: { maximum: 255 }
 

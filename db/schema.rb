@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_08_001513) do
+ActiveRecord::Schema.define(version: 2023_10_10_044431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,16 @@ ActiveRecord::Schema.define(version: 2023_10_08_001513) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_profile_id"], name: "index_administrators_on_user_profile_id"
+  end
+
+  create_table "bloom_taxonomy_levels", force: :cascade do |t|
+    t.integer "level"
+    t.integer "percentage"
+    t.string "verb"
+    t.bigint "activity_calification_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["activity_calification_id"], name: "index_bloom_taxonomy_levels_on_activity_calification_id"
   end
 
   create_table "directors", force: :cascade do |t|
@@ -267,6 +277,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_001513) do
   add_foreign_key "activity_califications", "activities"
   add_foreign_key "activity_califications", "students"
   add_foreign_key "administrators", "user_profiles"
+  add_foreign_key "bloom_taxonomy_levels", "activity_califications"
   add_foreign_key "directors", "user_profiles"
   add_foreign_key "institutions", "managers"
   add_foreign_key "managers", "user_profiles"
