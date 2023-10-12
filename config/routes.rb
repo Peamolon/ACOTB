@@ -95,6 +95,7 @@ Rails.application.routes.draw do
           get 'students'
           get 'activities'
           get 'activities/:activity_id/activity_califications', to: 'managers#activity_califications'
+          get 'pending_activities'
         end
       end
       resources :directors, only: [:index, :show, :create, :update]

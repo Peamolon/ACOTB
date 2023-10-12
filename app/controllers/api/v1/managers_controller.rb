@@ -1,7 +1,8 @@
 module Api
   module V1
     class ManagersController < ApplicationController
-      before_action :set_manager, only: [:show, :update, :unities, :students, :activities, :activity_califications]
+      before_action :set_manager, only: [:show, :update, :unities, :students,
+                                         :activities, :activity_califications, :pending_activities]
 
       def index
         @managers = Manager.all
@@ -10,6 +11,11 @@ module Api
 
       def show
         render json: @manager
+      end
+
+      def pending_activities
+        pending_activities = @manager.activities.where(state: :pending).limit(10)
+        render json: pending_activities
       end
 
       def get_manager_names

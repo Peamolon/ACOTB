@@ -20,8 +20,8 @@ class Manager < ApplicationRecord
   belongs_to :user_profile
   after_create :set_manager_role
   validate :unique_user_profile
-  has_many :subjects
-  has_many :unities, through: :subjects
+  has_many :rotations
+  has_many :activities, through: :rotations
 
   def fully_registered?
     position.present?

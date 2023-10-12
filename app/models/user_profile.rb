@@ -94,6 +94,10 @@ class UserProfile < ApplicationRecord
     super
   end
 
+  def as_json(options = {})
+    super(options.merge(methods: [:email, :username, :assigned_roles]))
+  end
+
   private
   def set_role
     assign_role(role)

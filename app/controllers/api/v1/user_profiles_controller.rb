@@ -4,8 +4,15 @@ module Api
       #before_action :authenticate_user!, except: :create
       before_action :set_user_profile, only: [:show, :update]
       def index
-        user_profiles = UserProfile.all
-        render json: user_profiles, methods: [:email, :username, :assigned_roles]
+        user_profiles = UserProfile.all.order(updated_at: :desc).paginate(page: params[:page], per_page: 10)
+        total_pages = user_profiles.total_pages
+
+        response_hash = {
+          user_profiles: user_profiles,
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
       end
 
       def show
