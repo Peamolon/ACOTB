@@ -47,12 +47,20 @@ class ActivityCalification < ApplicationRecord
     end
   end
 
+  def order_bloom_taxonomy_level
+    bloom_taxonomy_levels.order(:level)
+  end
+
   def activity_name
     activity.name
   end
 
   def rubrics
     subject.rubrics
+  end
+
+  def rotation
+    activity.rotation
   end
 
   def rotation_id
