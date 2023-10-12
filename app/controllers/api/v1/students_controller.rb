@@ -6,7 +6,7 @@ module Api
       before_action :set_student, only: [:show, :update, :get_general_score,
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
-                                         :get_subject_scores, :get_unities, :activities, :rotations]
+                                         :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score]
       def index
         @students = Student.all
         render json: @students
@@ -56,16 +56,17 @@ module Api
       end
 
       def get_subject_scores
-        result = ::ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.new(@student).call
-        result = result.paginate(page: params[:page], per_page: 3)
+        #result = ::ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.new(@student).call
+        #result = result.paginate(page: params[:page], per_page: 3)
 
-        total_pages = result.total_pages
-        response_hash = {
-          result: result,
-          total_pages: total_pages
-        }
+        #total_pages = result.total_pages
+        #response_hash = {
+        #  result: result,
+        #  total_pages: total_pages
+        #}
+        result = ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.student_evolutions(17, 71)
 
-        render json: response_hash || []
+        render json: result
       end
 
       def rotations
@@ -80,6 +81,22 @@ module Api
 
         render json: response_hash || []
       end
+
+      def get_subjects_with_score
+        subjects = @student.subjects.paginate(page: params[:page], per_page: 3)
+        total_pages = subjects.total_pages
+
+        response_hash = subjects.map do |subject|
+          bloom_data = ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.student_evolutions(@student.id, subject.id)
+          {
+            subject: subject,
+            bloom_data: bloom_data
+          }
+        end
+
+        render json: { subjects: response_hash, total_pages: total_pages } || { subjects: [], total_pages: 0 }
+      end
+
 
       def get_unities
         #unities_id = @student.subjects.joins(:unities).pluck('unities.id')

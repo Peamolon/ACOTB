@@ -1,37 +1,22 @@
 module ActivityCalifications
   class CalculateBloomTaxonomyAverageBySubjectService
-    def initialize(student)
-      @student = student
-    end
+    def self.student_evolutions(student_id, subject_id)
+      activity_califications = ActivityCalification
+                                 .joins(:activity)
+                                 .where(student_id: student_id, activities: { subject_id: subject_id })
+                                 .includes(:bloom_taxonomy_levels)
 
-    def call
-      result = []
+      data = Hash.new { |hash, key| hash[key] = [] }
 
-      @student.subjects.each do |subject|
-        average_result = calculate_average_for_subject(subject)
-        result << {
-          id: subject.id,
-          name: subject.name,
-          credits: subject.credits,
-          rubrics: subject.rubrics,
-          average_result: average_result
-        }
+      activity_califications.each do |calification|
+        calification.bloom_taxonomy_levels.each do |level|
+          data[level.verb] << {
+            calification_date: calification.calification_date,
+            percentage: level.percentage
+          }
+        end
       end
-
-      result
-    end
-
-    private
-
-    def calculate_average_for_subject(subject)
-      activities_id = subject.activities.pluck(:id)
-      activity_califications = ActivityCalification.where(activity_id: activities_id).where(student_id: @student.id)
-
-      return {} if activity_califications.empty?
-
-      result = ::ActivityCalifications::CalculateBloomTaxonomyAverageService.new(activity_califications).call
-
-      result
+      data
     end
   end
 end
