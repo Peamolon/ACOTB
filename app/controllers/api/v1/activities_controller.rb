@@ -36,6 +36,10 @@ module Api
         end
       end
 
+      def activity_types
+        render json: Activity::ACTIVITY_TYPES
+      end
+
       # DELETE /api/v1/activities/1
       def destroy
         @activity.destroy

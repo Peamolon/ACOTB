@@ -136,14 +136,14 @@ BLOOM_LEVELS = {
   "CREAR" => 5
 }.freeze
 
-200.times do
+20.times do
   activity_params = {
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
     delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
-    unity_id: rand(1..Unity.count),
-    subject_id: rand(1..Subject.count),
-    rotation_id: rand(1..Rotation.count),
+    unity_id: 278,
+    subject_id: 5,
+    rotation_id: 1,
     bloom_levels: BLOOM_LEVELS.keys.sample(rand(1..6))
   }
 

@@ -84,6 +84,10 @@ class ActivityCalification < ApplicationRecord
     unity.name
   end
 
+  def subject_name
+    subject.name
+  end
+
   def unity_type
     unity = activity.unity
     unity.type

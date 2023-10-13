@@ -8,6 +8,8 @@ module Students
     def call
       students = Student.where(id: @student_ids)
 
+      return { success: false, message: 'No student found' } unless students.present?
+
       students.each do |student|
         @rotation_ids.each do |rotation_id|
           if student.rotations.pluck(:id).include?(rotation_id) || !Rotation.find(rotation_id).present?

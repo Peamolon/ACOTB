@@ -15,6 +15,12 @@ module Api
         }
       end
 
+      def professor_names
+        @professors = Professor.all
+        professor_list = @professors.map { |professor| [professor.id, professor.full_name] }
+        render json: professor_list
+      end
+
       def show
         render json: @professor
       end

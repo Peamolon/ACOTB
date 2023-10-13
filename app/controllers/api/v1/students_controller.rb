@@ -56,21 +56,13 @@ module Api
       end
 
       def get_subject_scores
-        #result = ::ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.new(@student).call
-        #result = result.paginate(page: params[:page], per_page: 3)
-
-        #total_pages = result.total_pages
-        #response_hash = {
-        #  result: result,
-        #  total_pages: total_pages
-        #}
         result = ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.student_evolutions(17, 71)
 
         render json: result
       end
 
       def rotations
-        rotations = @student.rotations.paginate(page: params[:page], per_page: 10)
+        rotations = @student.rotations.paginate(page: params[:page], per_page: 5)
 
         total_pages = rotations.total_pages
 
@@ -83,7 +75,20 @@ module Api
       end
 
       def get_subjects_with_score
-        subjects = @student.subjects.paginate(page: params[:page], per_page: 3)
+        professor_id = params[:professor_id]
+        rotation_id = params[:rotation_id]
+        institution_id = params[:institution_id]
+
+        subjects = @student.subjects
+
+        subjects = subjects.where(professor_id: professor_id) if professor_id.present?
+
+        subjects = subjects.joins(:rotation).where("rotations.id" => rotation_id) if rotation_id.present?
+
+        subjects = subjects.joins(rotation: :institution).where("institutions.id" => institution_id) if institution_id.present?
+
+        subjects = subjects.paginate(page: params[:page], per_page: 3)
+
         total_pages = subjects.total_pages
 
         response_hash = subjects.map do |subject|
@@ -96,6 +101,7 @@ module Api
 
         render json: { subjects: response_hash, total_pages: total_pages } || { subjects: [], total_pages: 0 }
       end
+
 
 
       def get_unities
@@ -117,7 +123,7 @@ module Api
 
         render json: activity_califications, methods: [:rotation_id, :activity_name,
                                                        :activity_type, :rubrics, :rotation,
-                                                       :bloom_taxonomy_levels]
+                                                       :bloom_taxonomy_levels, :unity_name, :subject_name]
       end
 
       def get_activities

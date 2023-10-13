@@ -55,6 +55,10 @@ module Api
         }
       end
 
+      def rotation_names
+        render json: Rotation.all.pluck(:id, :name)
+      end
+
       def students
         @students = @rotation.students.paginate(page: params[:page], per_page: 10)
         total_pages = @students.total_pages

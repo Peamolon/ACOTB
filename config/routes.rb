@@ -50,6 +50,7 @@ Rails.application.routes.draw do
         collection do
           get 'in_progress'
           get 'closest_to_today'
+          get 'activity_types'
         end
       end
 
@@ -68,6 +69,7 @@ Rails.application.routes.draw do
       resources :rotations, only:[:index, :create, :show, :update, :destroy] do
         collection do
           get 'active_rotations'
+          get 'rotation_names'
         end
         member do
           get 'subjects'
@@ -85,6 +87,7 @@ Rails.application.routes.draw do
       resources :professors, only: [:index, :show, :create, :update] do
         collection do
           get 'professor_count'
+          get 'professor_names'
         end
       end
       resources :managers, only: [:index, :show, :create, :update] do
