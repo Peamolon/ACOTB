@@ -34,6 +34,10 @@ class Subject < ApplicationRecord
     rotation.manager.full_name
   end
 
+  def professor_name
+    professor.full_name
+  end
+
   def institution
     rotation.institution.name
   end
@@ -46,6 +50,6 @@ class Subject < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:manager, :institution]))
+    super(options.merge(methods: [:manager, :institution, :professor_name]))
   end
 end
