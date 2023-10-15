@@ -30,6 +30,14 @@ class Subject < ApplicationRecord
   has_many :unities
   has_many :activities
 
+  def active_academic_period
+    today = Date.today
+    academic_periods.select do |academic_period|
+      academic_period.start_date <= today && academic_period.end_date >= today
+    end.max_by { |academic_period| academic_period.end_date }
+  end
+
+
   def manager
     rotation.manager.full_name
   end

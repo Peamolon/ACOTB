@@ -66,6 +66,10 @@ module Api
         @activity = Activity.find(params[:id])
       end
 
+      def activity_params
+        params.require(:activity).permit(:name, :type, :delivery_date)
+      end
+
       def create_activity_params
         params.require(:activity).permit(
           :name,

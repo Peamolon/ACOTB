@@ -18,9 +18,22 @@ module Api
         render json: @unity
       end
 
+      def update
+        if @unity.update(unity_params)
+          render json: @unity
+        else
+          render json: @unity.errors, status: :unprocessable_entity
+        end
+      end
+
       # POST /api/v1/unities
       def create
-        @unity = Unity.new(unity_params)
+        subject_id = unity_params[:subject_id]
+        subject = Subject.find(subject_id)
+        current_academic_period = subject.active_academic_period
+        render json: { error: 'No academic period active for today' }, status: 422 unless current_academic_period.present?
+
+        @unity = Unity.new(unity_params.merge(academic_period_id: current_academic_period.id))
         if @unity.save
           render json: @unity, status: :created
         else
@@ -48,6 +61,10 @@ module Api
 
 
       private
+
+      def unity_params
+        params.require(:unity).permit(:type, :name, :subject_id)
+      end
 
       def set_unity
         @unity = Unity.find(params[:id])

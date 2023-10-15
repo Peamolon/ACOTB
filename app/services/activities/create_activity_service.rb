@@ -18,6 +18,8 @@ module Activities
 
     def call
       errors.add(:bloom_levels, 'Can not repeat the verb') unless unique_bloom_levels
+      errors.add(:type, 'is invalid') unless  Activity::ACTIVITY_TYPES.include?(type)
+
       unless valid_bloom_levels
         errors.add(:bloom_levels, 'No valid verbs are included')
         return self

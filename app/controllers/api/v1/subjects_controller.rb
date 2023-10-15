@@ -65,6 +65,10 @@ module Api
         @subject = Subject.find(params[:id])
       end
 
+      def subject_params
+        params.require(:subject).permit(:credits, :name)
+      end
+
       def create_subject_params
         params.require(:subject).permit(:director_id, :name, :credits, :rotation_id,:professor_id, academic_period_info: [:start_date, :end_date], rubric_info: [:verb, :description])
       end

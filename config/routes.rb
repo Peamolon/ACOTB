@@ -61,7 +61,7 @@ Rails.application.routes.draw do
       end
       #resources :student_informations, only: [:index, :create,  :show, :update]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy]
-      resources :unities, only: [:index, :show] do
+      resources :unities, only: [:index, :show, :create, :update] do
         member do
           get 'activities'
         end
@@ -88,6 +88,12 @@ Rails.application.routes.draw do
         collection do
           get 'professor_count'
           get 'professor_names'
+        end
+
+        member do
+          get 'get_professor_count'
+          get 'get_closest_activities'
+          get 'subjects'
         end
       end
       resources :managers, only: [:index, :show, :create, :update] do

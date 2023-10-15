@@ -1,7 +1,10 @@
 module Api
   module V1
     class ProfessorsController < ApplicationController
-      before_action :set_professor, only: [:show, :update, :unities, :get_general_score, :students, :activities, :activity_califications]
+      before_action :set_professor, only: [:show, :update,
+                                           :unities, :get_general_score, :students,
+                                           :activities, :activity_califications,:get_professor_count,
+                                           :get_closest_activities, :subjects]
       #before_action :authenticate_user!
 
       def index
@@ -15,6 +18,56 @@ module Api
         }
       end
 
+      def get_closest_activities
+        recent_activities = @professor.activities.order(delivery_date: :desc).limit(10)
+        render json: recent_activities, status: :ok
+      end
+
+      def subjects
+        per_page = params[:per_page] || 10
+        subjects = Subject.where(professor_id: @professor.id)
+
+        if params[:name].present?
+          subjects = subjects.where("name ILIKE ?", "%#{params[:name]}%")
+        end
+
+        if params[:created_at].present?
+          subjects = subjects.where("created_at >= ?", params[:created_at])
+        end
+
+        if params[:rotation_id].present?
+          subjects = subjects.where(rotation_id: params[:rotation_id])
+        end
+
+        @subjects = subjects.paginate(page: params[:page], per_page: per_page)
+        total_pages = @subjects.total_pages
+
+        render json: {
+          subjects: @subjects,
+          total_pages: total_pages
+        }
+      end
+
+
+      def get_professor_count
+        subjects = @professor.subjects
+
+        activities = Activity.where(subject: subjects)
+
+        no_calification_count = activities.joins(:activity_califications)
+                                .where(activity_califications: {state: :no_grade}).count
+
+        calification_count = activities.joins(:activity_califications)
+                                       .where(activity_califications: {state: :grade}).count
+
+        student_count = Student.joins(subjects: :professor).where('professors.id' => @professor.id).distinct.count
+
+        render json: {
+          no_calification_count: no_calification_count,
+          calification_count: calification_count,
+          student_count: student_count
+        }
+      end
       def professor_names
         @professors = Professor.all
         professor_list = @professors.map { |professor| [professor.id, professor.full_name] }
