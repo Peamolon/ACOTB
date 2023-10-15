@@ -16,6 +16,7 @@ module ActivityCalifications
           }
         end
       end
+      data["activity_califications_count"] = activity_califications.count
       data
     end
   end

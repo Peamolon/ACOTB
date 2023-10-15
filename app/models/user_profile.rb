@@ -57,6 +57,10 @@ class UserProfile < ApplicationRecord
     user.username
   end
 
+  def role
+    roles.last.name
+  end
+
   def assigned_roles
     roles.pluck(:name)
   end
@@ -95,7 +99,7 @@ class UserProfile < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:email, :username, :assigned_roles]))
+    super(options.merge(methods: [:email, :username, :assigned_roles, :role]))
   end
 
   private
