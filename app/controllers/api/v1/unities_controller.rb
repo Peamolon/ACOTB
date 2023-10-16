@@ -30,8 +30,13 @@ module Api
       def create
         subject_id = unity_params[:subject_id]
         subject = Subject.find(subject_id)
+        puts 'esta entrando aqui'
         current_academic_period = subject.active_academic_period
-        render json: { error: 'No academic period active for today' }, status: 422 unless current_academic_period.present?
+
+        if current_academic_period.nil?
+          render json: { error: 'No academic period active for today' }, status: 422
+          return
+        end
 
         @unity = Unity.new(unity_params.merge(academic_period_id: current_academic_period.id))
         if @unity.save
