@@ -35,6 +35,10 @@ class Manager < ApplicationRecord
     "#{user_profile.first_name} #{user_profile.last_name}"
   end
 
+  def email
+    user_profile.user.email
+  end
+
   private
   def set_manager_role
     user_profile.add_role :manager unless user_profile.has_role? :manager

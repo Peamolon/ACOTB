@@ -34,7 +34,7 @@ module Api
         current_academic_period = subject.active_academic_period
 
         if current_academic_period.nil?
-          render json: { error: 'No academic period active for today' }, status: 422
+          render json: { error: 'No active period for today' }, status: 422
           return
         end
 
