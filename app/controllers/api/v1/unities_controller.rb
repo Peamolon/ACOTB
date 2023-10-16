@@ -30,7 +30,6 @@ module Api
       def create
         subject_id = unity_params[:subject_id]
         subject = Subject.find(subject_id)
-        puts 'esta entrando aqui'
         current_academic_period = subject.active_academic_period
 
         if current_academic_period.nil?
