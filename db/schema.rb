@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_16_020718) do
+ActiveRecord::Schema.define(version: 2023_10_16_023504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,7 +160,7 @@ ActiveRecord::Schema.define(version: 2023_10_16_020718) do
   create_table "rubrics", force: :cascade do |t|
     t.string "verb", limit: 200
     t.string "level", limit: 100
-    t.string "description", limit: 200
+    t.string "description", limit: 500
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "subject_id"

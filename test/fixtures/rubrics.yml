@@ -3,7 +3,7 @@
 # Table name: rubrics
 #
 #  id          :bigint           not null, primary key
-#  description :string(200)
+#  description :string(500)
 #  level       :string(100)
 #  verb        :string(200)
 #  created_at  :datetime         not null
