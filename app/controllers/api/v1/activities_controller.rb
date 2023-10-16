@@ -1,7 +1,7 @@
 module Api
   module V1
     class ActivitiesController < ApplicationController
-      before_action :set_activity, only: [:show, :update, :destroy]
+      before_action :set_activity, only: [:show, :update, :destroy, :activity_califications]
 
       # GET /api/v1/activities
       def index
@@ -38,6 +38,17 @@ module Api
 
       def activity_types
         render json: Activity::ACTIVITY_TYPES
+      end
+
+      def activity_califications
+        @activity_califications = @activity.activity_califications.includes(:bloom_taxonomy_levels).paginate(page: params[:page], per_page: 10)
+
+        total_pages = @activity_califications.total_pages
+
+        render json: {
+          activity_califications: @activity_califications.as_json(include: :bloom_taxonomy_levels),
+          total_pages: total_pages
+        }
       end
 
       # DELETE /api/v1/activities/1

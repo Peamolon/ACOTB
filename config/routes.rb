@@ -13,6 +13,11 @@ Rails.application.routes.draw do
           post 'create_backup'
         end
       end
+      resources :csv do
+        collection do
+          post 'create_rotations'
+        end
+      end
       resources :roles, only: [:index]
       resources :id_types, only: [:index]
       resources :institutions, only: [:index, :show, :create, :update, :destroy] do
@@ -23,6 +28,7 @@ Rails.application.routes.draw do
       resources :subjects, only: [:index, :show, :create, :update, :destroy] do
         member do
           get 'unities', to: 'subjects#get_unities_by_subject'
+          get 'activities'
         end
       end
       resources :students, only: [:index, :show, :update] do
@@ -51,6 +57,10 @@ Rails.application.routes.draw do
           get 'in_progress'
           get 'closest_to_today'
           get 'activity_types'
+        end
+
+        member do
+          get 'activity_califications'
         end
       end
 
@@ -83,7 +93,11 @@ Rails.application.routes.draw do
           get 'get_admin_counts'
         end
       end
-      resources :activity_califications, only: [:create]
+      resources :activity_califications, only: [:create] do
+        member do
+          get 'activity_califications'
+        end
+      end
       resources :professors, only: [:index, :show, :create, :update] do
         collection do
           get 'professor_count'
@@ -99,6 +113,7 @@ Rails.application.routes.draw do
       resources :managers, only: [:index, :show, :create, :update] do
         collection do
           get 'get_manager_names'
+          post 'calificate'
         end
         member do
           get 'unities'
@@ -106,6 +121,9 @@ Rails.application.routes.draw do
           get 'activities'
           get 'activities/:activity_id/activity_califications', to: 'managers#activity_califications'
           get 'pending_activities'
+          get 'get_manager_count'
+          get 'get_next_activities'
+          get 'get_rotations_with_subjects'
         end
       end
       resources :directors, only: [:index, :show, :create, :update]

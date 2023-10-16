@@ -50,21 +50,12 @@ module Api
 
 
       def get_professor_count
-        subjects = @professor.subjects
-
-        activities = Activity.where(subject: subjects)
-
-        no_calification_count = activities.joins(:activity_califications)
-                                .where(activity_califications: {state: :no_grade}).count
-
-        calification_count = activities.joins(:activity_califications)
-                                       .where(activity_califications: {state: :grade}).count
+        subjects = @professor.subjects.count
 
         student_count = Student.joins(subjects: :professor).where('professors.id' => @professor.id).distinct.count
 
         render json: {
-          no_calification_count: no_calification_count,
-          calification_count: calification_count,
+          subjects_count: subjects,
           student_count: student_count
         }
       end

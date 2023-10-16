@@ -81,6 +81,21 @@ class Activity < ApplicationRecord
     difference.to_i
   end
 
+  def calificate_student(student_id)
+    student = Student.find(student_id)
+
+    activity_califications = student.activity_califications
+
+    activity_califications.each do |activity_calification|
+      bloom_levels = activity_calification.bloom_taxonomy_levels
+      bloom_levels.each do |bloom_level|
+        bloom_level.update(percentage: rand(0..100))
+      end
+      activity_calification.complete! if activity_calification.state == "no_grade"
+      activity_calification.update(numeric_grade: rand(1..5))
+    end
+  end
+
   private
 
   def add_subject_rotation

@@ -1,7 +1,7 @@
 module Api
   module V1
     class SubjectsController < ApplicationController
-      before_action :set_subject, only: [:show, :update, :destroy, :get_unities_by_subject]
+      before_action :set_subject, only: [:show, :update, :destroy, :get_unities_by_subject, :activities]
 
       def index
         per_page = params[:per_page] || 10

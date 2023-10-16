@@ -23,6 +23,10 @@ class Manager < ApplicationRecord
   has_many :rotations
   has_many :activities, through: :rotations
 
+  def subjects
+    rotations.map{|rotation| rotation.subjects}
+  end
+
   def fully_registered?
     position.present?
   end

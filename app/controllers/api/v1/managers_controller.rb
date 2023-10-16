@@ -2,7 +2,8 @@ module Api
   module V1
     class ManagersController < ApplicationController
       before_action :set_manager, only: [:show, :update, :unities, :students,
-                                         :activities, :activity_califications, :pending_activities]
+                                         :activities, :activity_califications, :pending_activities,
+                                         :get_manager_count, :get_next_activities, :get_rotations_with_subjects]
 
       def index
         @managers = Manager.all
@@ -13,9 +14,31 @@ module Api
         render json: @manager
       end
 
+      def calificate
+        service = ::Activities::CalificateActivityService.new(calificate_params)
+        result = service.call
+        if result.errors.any?
+          render json: { errors: result.errors.full_messages }, status: 422
+        else
+          render json: {message: 'Calificated'}, status: 200
+        end
+      end
+
       def pending_activities
         pending_activities = @manager.activities.where(state: :pending).limit(10)
         render json: pending_activities
+      end
+
+      def get_rotations_with_subjects
+        rotations = @manager.rotations.includes(:subjects).paginate(page: params[:page], per_page: 10)
+        total_pages = rotations.total_pages
+
+        response_hash = {
+          rotations: rotations.as_json(include: :subjects),
+          total_pages: total_pages
+        }
+
+        render json: response_hash
       end
 
       def get_manager_names
@@ -35,6 +58,33 @@ module Api
         }
 
         render json: response_hash.to_json(:include => :activities)
+      end
+
+      def get_manager_count
+        subjects = @manager.subjects
+
+        rotations = @manager.rotations
+
+        activities = Activity.where(subject: subjects)
+
+        no_calification_count = activities.joins(:activity_califications)
+                                          .where(activity_califications: {state: :no_grade}).count
+
+        calification_count = activities.joins(:activity_califications)
+                                       .where(activity_califications: {state: :grade}).count
+
+        student_count = Student.joins(:rotations).where(rotations: {id: rotations.pluck(:id)}).count
+
+        render json: {
+          no_calification_count: no_calification_count,
+          calification_count: calification_count,
+          student_count: student_count
+        }
+      end
+
+      def get_next_activities
+        activities = @manager.activities.where("delivery_date >= ?", Date.today).order(:delivery_date).limit(10)
+        render json: activities
       end
 
       def students
@@ -97,6 +147,10 @@ module Api
       end
 
       private
+
+      def calificate_params
+        params.require(:calificate).permit(:activity_calification_id, percentages: {})
+      end
 
       def set_manager
         @manager = Manager.find(params[:id])
