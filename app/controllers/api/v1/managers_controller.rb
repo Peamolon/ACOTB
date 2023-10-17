@@ -102,8 +102,8 @@ module Api
       end
 
       def activities
-        @unities_ids = @manager.unities.pluck(:id)
-        @activities = Activity.where(unity_id: @unities_ids).includes(:unity).paginate(page: params[:page], per_page: 10)
+        rotations_ids = @manager.rotations.pluck(:id)
+        @activities = Activity.where(rotation_id: rotations_ids).includes(:unity).paginate(page: params[:page], per_page: 10)
 
         total_pages = @activities.total_pages
 
