@@ -43,7 +43,7 @@ module Users
     private
 
     def send_welcome_email
-      user.try(:send_reset_password_instructions)
+      UserMailer.welcome_email(user).deliver_now
     end
 
     def create_user_profile

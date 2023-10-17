@@ -3,7 +3,11 @@ class UserMailer < ApplicationMailer
 
   def welcome_email(user)
     @user = user
-    @change_password_url = edit_user_password_url(user, reset_password_token: user.reset_password_token)
+    raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
+    user.reset_password_token = hashed
+    user.reset_password_sent_at = Time.now.utc
+    user.save
+    @token =  raw
     mail(to: user.email, subject: "Bienvenido a ACOTB")
   end
 
