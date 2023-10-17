@@ -71,7 +71,7 @@ Rails.application.routes.draw do
       end
       #resources :student_informations, only: [:index, :create,  :show, :update]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy]
-      resources :unities, only: [:index, :show, :create, :update] do
+      resources :unities, only: [:index, :show, :create, :update, :destroy] do
         member do
           get 'activities'
         end

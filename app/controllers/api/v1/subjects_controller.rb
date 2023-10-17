@@ -55,8 +55,13 @@ module Api
       end
 
       def destroy
-        @subject.destroy
-        head :no_content
+        delete_service = ::Subjects::DeleteSubjectService.new(subject: @subject)
+        result = delete_service.call
+        if result.errors.empty?
+          render json: {message: 'Subject was successfully destroyed'}, status: 200
+        else
+          render json: { errors: delete_service.errors.full_messages }, status: 400
+        end
       end
 
       private

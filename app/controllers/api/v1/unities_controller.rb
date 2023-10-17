@@ -63,6 +63,18 @@ module Api
         }
       end
 
+      def destroy
+        if @unity.activities.present?
+          render json: { error: 'Unity has active activities' }, status: 422
+          return
+        end
+        if @unity.destroy
+          render json: { message: 'Unity was destroyed' }, status: 200
+        else
+          render json: { error: 'Something went wrong' }, status: 422
+        end
+      end
+
 
       private
 
