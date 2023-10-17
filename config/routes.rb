@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         member do
           get 'unities', to: 'subjects#get_unities_by_subject'
           get 'activities'
+          get 'get_activities'
         end
       end
       resources :students, only: [:index, :show, :update] do

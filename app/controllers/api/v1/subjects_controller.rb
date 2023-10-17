@@ -1,7 +1,8 @@
 module Api
   module V1
     class SubjectsController < ApplicationController
-      before_action :set_subject, only: [:show, :update, :destroy, :get_unities_by_subject, :activities]
+      before_action :set_subject, only: [:show, :update, :destroy, :get_unities_by_subject,
+                                         :activities, :get_activities]
 
       def index
         per_page = params[:per_page] || 10
@@ -23,6 +24,16 @@ module Api
         total_pages = @subjects.total_pages
         render json: {
           subjects: @subjects,
+          total_pages: total_pages
+        }
+      end
+
+      def get_activities
+        per_page = params[:per_page] || 10
+        activities = @subject.activities.paginate(page: params[:page], per_page: per_page)
+        total_pages = activities.total_pages
+        render json: {
+          activities: activities,
           total_pages: total_pages
         }
       end
