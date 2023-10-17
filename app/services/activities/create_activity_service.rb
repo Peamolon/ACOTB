@@ -1,7 +1,7 @@
 module Activities
   class CreateActivityService
     include ActiveModel::Validations
-    attr_accessor :name, :type, :delivery_date, :unity_id, :subject_id, :bloom_levels, :rotation_id
+    attr_accessor :name, :type, :delivery_date, :unity_id, :bloom_levels, :rotation_id
 
     VALID_BLOOM_VERBS = %w(RECORDAR COMPRENDER APLICAR ANALIZAR EVALUAR CREAR).freeze
 
@@ -19,6 +19,10 @@ module Activities
     def call
       errors.add(:bloom_levels, 'Can not repeat the verb') unless unique_bloom_levels
       errors.add(:type, 'is invalid') unless  Activity::ACTIVITY_TYPES.include?(type)
+      errors.add(:unity_id, 'must exist') unless  Unity.exists?(id: unity_id)
+
+      unity = Unity.find(unity_id)
+      subject_id = unity.subject.id
 
       unless valid_bloom_levels
         errors.add(:bloom_levels, 'No valid verbs are included')
@@ -30,14 +34,14 @@ module Activities
           name: @name,
           type: @type,
           delivery_date: @delivery_date,
+          subject_id: subject_id,
           unity_id: @unity_id,
-          subject_id: @subject_id,
           rotation_id: @rotation_id
         )
         if activity.save
           create_bloom_levels(activity)
         end
-        self
+        activity
       end
     end
 

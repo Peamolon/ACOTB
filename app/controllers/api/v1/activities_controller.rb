@@ -22,7 +22,7 @@ module Api
         if result.errors.any?
           render json: { errors: create_activity_service.errors.full_messages }, status: 422
         else
-          render json: {message: 'Activity was successfully created'}, status: 200
+          render json: {message: 'Activity was successfully created', activity: result}, status: 200
         end
 
       end
@@ -87,7 +87,6 @@ module Api
           :type,
           :delivery_date,
           :unity_id,
-          :subject_id,
           :rotation_id,
           bloom_levels: []
         )
