@@ -5,6 +5,9 @@ Rails.application.routes.draw do
     registrations: 'users/registrations',
     passwords: 'users/passwords'
   }
+  devise_scope :user do
+    get 'recovery_password', to: 'passwords#recovery'
+  end
   namespace :api do
     namespace :v1 do
       resources :user_profiles, only: [:index, :show, :create, :update, :destroy] do

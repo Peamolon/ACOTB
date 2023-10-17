@@ -29,8 +29,12 @@ class Users::PasswordsController < Devise::PasswordsController
     super
   end
 
+  def recovery
+
+  end
+
   def update
-    self.resource = resource_class.reset_password_by_token({ reset_password_token: params[:reset_password_token],
+    self.resource = resource_class.reset_password_by_token({ reset_password_token: params[:token],
                                                              password: params[:password],
                                                              password_confirmation: params[:password_confirmation]
                                                            })
