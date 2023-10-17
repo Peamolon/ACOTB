@@ -53,7 +53,14 @@ module Api
 
       # DELETE /api/v1/activities/1
       def destroy
-        @activity.destroy
+        delete_activity_service = ::Activities::DeleteActivityService.new(@activity.id)
+        deleted_activity = delete_activity_service.call
+
+        unless deleted_activity.errors.any?
+          render json: { message: 'Activity was successfully deleted' }, status: 200
+        else
+          render json: { errors: delete_activity_service.errors.full_messages }, status: 422
+        end
       end
 
       def closest_to_today
