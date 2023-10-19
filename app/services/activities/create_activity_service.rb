@@ -1,7 +1,7 @@
 module Activities
   class CreateActivityService
     include ActiveModel::Validations
-    attr_accessor :name, :type, :delivery_date, :unity_id, :bloom_levels, :rotation_id
+    attr_accessor :name, :type, :delivery_date, :unity_id, :bloom_levels
 
     VALID_BLOOM_VERBS = %w(RECORDAR COMPRENDER APLICAR ANALIZAR EVALUAR CREAR).freeze
 
@@ -12,7 +12,6 @@ module Activities
       @unity_id = attributes[:unity_id]
       @subject_id = attributes[:subject_id]
       @bloom_levels = attributes[:bloom_levels]
-      @rotation_id = attributes[:rotation_id]
     end
 
 
@@ -30,17 +29,14 @@ module Activities
       end
 
       ActiveRecord::Base.transaction do
-        activity = Activity.new(
+        activity = Activity.create!(
           name: @name,
           type: @type,
           delivery_date: @delivery_date,
           subject_id: subject_id,
           unity_id: @unity_id,
-          rotation_id: @rotation_id
+          bloom_taxonomy_levels: bloom_levels
         )
-        if activity.save
-          create_bloom_levels(activity)
-        end
         activity
       end
     end

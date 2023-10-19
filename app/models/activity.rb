@@ -2,26 +2,24 @@
 #
 # Table name: activities
 #
-#  id            :bigint           not null, primary key
-#  delivery_date :date
-#  name          :string(200)
-#  state         :string
-#  type          :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  rotation_id   :bigint           not null
-#  subject_id    :bigint           not null
-#  unity_id      :bigint           not null
+#  id                    :bigint           not null, primary key
+#  bloom_taxonomy_levels :string           default([]), is an Array
+#  delivery_date         :date
+#  name                  :string(200)
+#  state                 :string
+#  type                  :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  subject_id            :bigint           not null
+#  unity_id              :bigint           not null
 #
 # Indexes
 #
-#  index_activities_on_rotation_id  (rotation_id)
-#  index_activities_on_subject_id   (subject_id)
-#  index_activities_on_unity_id     (unity_id)
+#  index_activities_on_subject_id  (subject_id)
+#  index_activities_on_unity_id    (unity_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (rotation_id => rotations.id)
 #  fk_rails_...  (subject_id => subjects.id)
 #  fk_rails_...  (unity_id => unities.id)
 #
@@ -29,7 +27,6 @@ class Activity < ApplicationRecord
   include AASM
   belongs_to :unity
   belongs_to :subject
-  belongs_to :rotation
   has_many :activity_califications
 
   ACTIVITY_TYPES = %w[THEORETICAL PRACTICAL THEORETICAL_PRACTICAL]
@@ -41,7 +38,7 @@ class Activity < ApplicationRecord
 
   before_validation :add_subject_rotation, on: :create
 
-  after_create :create_activity_califications
+  #after_create :create_activity_califications
 
   scope :in_progress, -> { where(state: :in_progress)}
 
@@ -101,7 +98,6 @@ class Activity < ApplicationRecord
   def add_subject_rotation
     subject_id = unity.subject_id
     self.subject_id = subject_id
-    self.rotation_id = Subject.find(subject_id).rotation.id
   end
 
   def create_activity_califications

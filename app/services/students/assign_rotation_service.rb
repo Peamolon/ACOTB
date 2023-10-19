@@ -36,7 +36,7 @@ module Students
     end
 
     def create_rotation
-      subject = Subject.exists?(@subject_id)
+      subject = Subject.find(@subject_id)
       rotation = Rotation.create!(institution_id: @institution_id,
                        student_id: @student_id,
                        subject_id: @subject_id,

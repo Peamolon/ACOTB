@@ -33,6 +33,9 @@ class Rotation < ApplicationRecord
   has_one :manager, through: :institution
   belongs_to :student
   belongs_to :subject
+  belongs_to :academic_period
+  has_many :activity_califications
+  has_many :activities, through: :activity_califications
 
 
   validates :start_date, presence: true
