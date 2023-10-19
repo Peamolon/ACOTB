@@ -1,7 +1,7 @@
 module Subjects
   class CreateSubjectService
     include ActiveModel::Validations
-    attr_accessor :name, :credits, :academic_period_info, :subject, :rubric_info, :professor_id, :rotation_id
+    attr_accessor :name, :credits, :academic_period_info, :subject, :rubric_info, :professor_id
     validates :name, presence: true
     validates :credits, presence: true
     validates :academic_period_info, presence: true
@@ -12,7 +12,6 @@ module Subjects
       @name = attributes[:name]
       @credits = attributes[:credits]
       @academic_period_info = attributes[:academic_period_info]
-      @rotation_id = attributes[:rotation_id]
       @rubric_info = attributes[:rubric_info]
       @professor_id = attributes[:professor_id]
     end
@@ -42,7 +41,7 @@ module Subjects
     end
 
     def create_subject
-      @subject = Subject.create!(credits: credits,  name: name, professor_id: professor_id, rotation_id: rotation_id)
+      @subject = Subject.create!(credits: credits,  name: name, professor_id: professor_id)
     end
 
     def create_academic_periods

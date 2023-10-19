@@ -43,7 +43,7 @@ module Users
     private
 
     def send_welcome_email
-      UserMailer.welcome_email(user).deliver_now
+      #UserMailer.welcome_email(user).deliver_now
     end
 
     def create_user_profile

@@ -1,5 +1,5 @@
 #Creating users
-100.times do
+20.times do
   user_params = {
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
@@ -16,10 +16,31 @@
   service.call
 end
 
+#Creates default user
+user_params = {
+  first_name: Faker::Name.first_name,
+  last_name: Faker::Name.last_name,
+  telephone: "3#{rand(11..20)}#{rand(0..9999999).to_s.rjust(7, '0')}",
+  role: 'student',
+  email: Faker::Internet.email,
+  username: 'student',
+  id_number: Faker::IDNumber.valid,
+  id_type: UserProfile::DOCUMENT_TYPES.sample,
+  joined_at: Faker::Date.between(from: 1.year.ago, to: Date.today)
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+
+
+names =["Hospital Universitario Centro Dermatologico Federico Lleras Acosta E.S.E","CENTRO MEDICO IMBANACO DE CALI ","SOMA","HOSPITAL NAVAL CARTAGENA ","IDIME ","SUBRED INTEGRADA DE SERVICIOS DE SALUD NORTE ","SUBRED INTEGRADA DE SERVICIOS DE SALUD SUROCCIDENTE ","SUBRED INTEGRADA DE SERVICIOS DE SALUD CENTROORIENTE ","CLINICA VASCULAR NAVARRA ","UNIVERSIDAD DEL NORTE ","CLINICOS IPS ","CAFAM"]
+
+
 #Creating Institutions
-30.times do
+names.each do |name|
   institution_params = {
-    name: Faker::Company.name,
+    name: name,
     code: Faker::Alphanumeric.alpha(number: 6).upcase,
     contact_email: Faker::Internet.email,
     contact_telephone: Faker::PhoneNumber.cell_phone,
@@ -29,62 +50,51 @@ end
   Institution.create!(institution_params)
 end
 
-#Creating rotations
-20.times do
-  rotation_params = {
-    name: Faker::Company.name,
-    start_date: Faker::Date.between(from: 1.month.ago, to: 1.month.from_now),
-    end_date: Faker::Date.between(from: 1.month.from_now, to: 3.months.from_now),
-    institution_id: rand(1..Institution.count),
-    manager_id: rand(1..Manager.count)
-  }
-
-  Rotation.create(rotation_params)
-end
-
-
 #Creating Subjects
 def create_random_subject
   subject_params = {
     name: Faker::Educator.subject,
     credits: Faker::Number.between(from: 1, to: 5) * 3,
-    rotation_id: rand(1..Rotation.count),
     manager_id: rand(1..Manager.count),
     professor_id: rand(1..Professor.count),
     academic_period_info: [
       {
-        start_date: Faker::Date.between(from: '2023-09-01', to: '2023-12-15'),
-        end_date: Faker::Date.between(from: '2023-12-16', to: '2024-04-30')
+        start_date: '01/06/2023',
+        end_date: '01/08/2023'
       },
       {
-        start_date: Faker::Date.between(from: '2024-09-01', to: '2024-12-15'),
-        end_date: Faker::Date.between(from: '2024-12-16', to: '2025-04-30')
+        start_date: '01/08/2023',
+        end_date: '01/09/2023'
+      },
+      {
+        start_date: '01/09/2023',
+        end_date: '01/12/2023'
       }
     ],
     rubric_info: [
       {
         verb: 'Recordar',
-        description: 'Recordar '+ Faker::Lorem.word
+        description: 'Recordar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Comprender',
-        description: 'Comprender '+ Faker::Lorem.sentence
+        description: 'Comprender '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Aplicar',
-        description: 'Aplicar '+ Faker::Lorem.word
+        description: 'Aplicar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Analizar',
-        description: 'Analizar '+ Faker::Lorem.word
+        description: 'Analizar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Evaluar',
-        description: 'Evaluar '+ Faker::Lorem.word
+        description: 'Evaluar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Crear',
-        description: 'Crear '+ Faker::Lorem.word
+        description: 'Crear '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
     ]
   }
@@ -92,12 +102,12 @@ def create_random_subject
   ::Subjects::CreateSubjectService.new(subject_params).call
 end
 
-100.times do
+10.times do
   create_random_subject
 end
 
 #Create Unities
-200.times do
+50.times do
   Unity.create!(
     name: Faker::Lorem.words(number: 3).join(' '),
     type: Unity::UNITY_TYPES.sample,
@@ -136,7 +146,7 @@ BLOOM_LEVELS = {
   "CREAR" => 5
 }.freeze
 
-200.times do
+20.times do
   activity_params = {
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,

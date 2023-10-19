@@ -8,22 +8,18 @@
 #  total_credits :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  professor_id  :bigint
-#  rotation_id   :bigint
+#  professor_id  :bigint           not null
 #
 # Indexes
 #
 #  index_subjects_on_professor_id  (professor_id)
-#  index_subjects_on_rotation_id   (rotation_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (professor_id => professors.id)
-#  fk_rails_...  (rotation_id => rotations.id)
 #
 class Subject < ApplicationRecord
-  belongs_to :rotation
-  belongs_to :professor, foreign_key: 'professor_id', class_name: 'Professor'
+  belongs_to :professor
   has_many :academic_periods
   has_many :rubrics
   has_many :academic_periods
@@ -44,10 +40,6 @@ class Subject < ApplicationRecord
 
   def professor_name
     professor.full_name
-  end
-
-  def institution
-    rotation.institution.name
   end
   def activities
     Activity.where(unity_id: unities.pluck(:id))
