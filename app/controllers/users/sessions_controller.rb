@@ -9,7 +9,6 @@ class Users::SessionsController < Devise::SessionsController
 
     data[:student_id] = user_profile.student.id if user_profile.student.present?
     data[:professor_id] = user_profile.professor.id if user_profile.professor.present?
-    data[:director_id] = user_profile.director.id if user_profile.director.present?
     data[:manager_id] = user_profile.manager.id if user_profile.manager.present?
 
     render json: {
