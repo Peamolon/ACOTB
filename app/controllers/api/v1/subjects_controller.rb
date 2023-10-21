@@ -6,10 +6,10 @@ module Api
 
       def index
         per_page = params[:per_page] || 10
-        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
+        @subjects = Subject.all.includes(:rubrics, :academic_periods).paginate(page: params[:page], per_page: per_page)
         total_pages = @subjects.total_pages
         render json: {
-          subjects: @subjects,
+          subjects: @subjects.as_json(include: [:rubrics, :academic_periods]),
           total_pages: total_pages
         }
       end
@@ -39,7 +39,7 @@ module Api
       end
 
       def show
-        render json: @subject, methods: [:get_rubrics]
+        render json: @subject.to_json(include: [:rubrics, :academic_periods])
       end
 
       def create

@@ -119,11 +119,14 @@ module Api
       end
 
       def activities
-        activity_califications = ActivityCalification.where(student_id: @student.id)
+        per_page = params[:per_page] || 10
+        activity_califications = ActivityCalification.where(student_id: @student.id).includes(:bloom_taxonomy_levels).paginate(page: params[:page], per_page: per_page)
 
-        render json: activity_califications, methods: [:rotation_id, :activity_name,
-                                                       :activity_type, :rubrics, :rotation,
-                                                       :bloom_taxonomy_levels, :unity_name, :subject_name]
+        total_pages = activity_califications.total_pages
+        render json: {
+          activities: activity_califications.as_json(include: :bloom_taxonomy_levels),
+          total_pages: total_pages
+        }
       end
 
       def get_activities

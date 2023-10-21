@@ -30,7 +30,7 @@ class ActivityCalification < ApplicationRecord
   include AASM
   belongs_to :activity
   belongs_to :student
-  delegate :rotation, to: :activity
+  belongs_to :rotation
   has_many :bloom_taxonomy_levels
 
   validates :notes, length: { maximum: 255 }
@@ -61,11 +61,6 @@ class ActivityCalification < ApplicationRecord
   def rubrics
     subject.rubrics
   end
-
-  def rotation
-    activity.rotation
-  end
-
   def rotation_id
     rotation.id
   end
@@ -98,6 +93,10 @@ class ActivityCalification < ApplicationRecord
 
   def student_name
     student.full_name
+  end
+
+  def as_json(options = {})
+    super(options.merge(methods: [:activity_name, :unity_name]))
   end
 
   private

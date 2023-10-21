@@ -100,7 +100,4 @@ class Activity < ApplicationRecord
     self.subject_id = subject_id
   end
 
-  def create_activity_califications
-    self.rotation.students.map{ |student| ActivityCalification.create!(student_id: student.id, activity_id: self.id)}
-  end
 end

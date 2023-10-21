@@ -8,16 +8,26 @@ module Api
       end
 
       def destroy
-        @rotation.destroy
-        head :no_content
+        delete_rotation_service = ::Rotations::DeleteRotationService.new(rotation_id: @rotation.id)
+
+        result = delete_rotation_service.call
+
+        if result[:success]
+          render json: { message: "Rotación eliminada exitosamente" }, status: :ok
+        else
+          render json: result, status: :unprocessable_entity
+        end
       end
 
       def create
-        @rotation = Rotation.new(rotation_params)
-        if @rotation.save
-          render json: @rotation, status: :created
+        rotation_service = ::Rotations::AssignRotationService.new(rotation_params)
+
+        result = rotation_service.call
+
+        if result[:success]
+          render json: result, status: :created
         else
-          render json: @rotation.errors, status: :unprocessable_entity
+          render json: result, status: :unprocessable_entity
         end
       end
 
@@ -28,19 +38,31 @@ module Api
       end
 
       def update
-        if @rotation.update(rotation_params)
-          render json: @rotation
+        rotation_service = ::Rotations::EditRotationService.new(rotation_params.merge(rotation_id: params[:id]))
+
+        result = rotation_service.call
+
+        if result[:success]
+          render json: result
         else
-          render json: @rotation.errors, status: :unprocessable_entity
+          render json: result, status: :unprocessable_entity
         end
       end
 
+
       def index
-        @rotations = Rotation.all.order('created_at DESC').paginate(page: params[:page], per_page: 10)
+        @rotations = Rotation.all.includes(activity_califications: [:activity]).order('created_at DESC').paginate(page: params[:page], per_page: 10)
         total_pages = @rotations.total_pages
 
         render json: {
-          rotations: @rotations.as_json(methods: [:institution_name, :manager_name]),
+          rotations: @rotations.as_json(
+            include: {
+              activity_califications: {
+                methods: [:activity_name, :unity_name]
+              }
+            },
+            methods: [:institution_name, :manager_name]
+          ),
           total_pages: total_pages
         }
       end
@@ -75,7 +97,14 @@ module Api
       end
 
       def rotation_params
-        params.require(:rotation).permit(:name, :start_date, :end_date, :rotation_type_id, :manager_id, :institution_id)
+        params.require(:rotation).permit(
+          :student_id,
+          :subject_id,
+          :institution_id,
+          :start_date,
+          :end_date,
+          activities_ids: []
+        )
       end
 
     end

@@ -52,11 +52,11 @@ class Rotation < ApplicationRecord
     manager.user_profile.full_name
   end
 
-  def subject
-    Subject.find(self.subject_id)
+  def subject_name
+    subject.name
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:manager_name, :institution_name]))
+    super(options.merge(methods: [:manager_name, :institution_name, :subject_name]))
   end
 end

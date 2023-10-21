@@ -22,7 +22,6 @@ class Subject < ApplicationRecord
   belongs_to :professor
   has_many :academic_periods
   has_many :rubrics
-  has_many :academic_periods
   has_many :unities
   has_many :activities
 
@@ -50,6 +49,6 @@ class Subject < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:manager, :institution, :professor_name]))
+    super(options.merge(methods: []))
   end
 end
