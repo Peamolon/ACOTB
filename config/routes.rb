@@ -53,6 +53,8 @@ Rails.application.routes.draw do
           get 'activities', to: 'students#activities'
           get 'rotations'
           get 'get_subjects_with_score'
+          get 'all_activities'
+          get 'get_rotation_info'
         end
       end
 

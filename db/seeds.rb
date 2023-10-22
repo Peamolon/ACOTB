@@ -116,26 +116,6 @@ end
     )
 end
 
-#Assing subjects to students
-def assign_rotations_to_students
-  student_ids = Student.all.pluck(:id)
-  rotation_ids = Rotation.all.pluck(:id)
-
-  max_subjects_to_assign = 4
-
-  student_ids.each do |student_id|
-    num_subjects_to_assign = rand(1..max_subjects_to_assign)
-
-    rotations_to_assign = rotation_ids.sample(num_subjects_to_assign)
-
-    ::Students::AssignRotationService.new(rotations_to_assign, [student_id]).call
-  end
-end
-
-5.times do
-  assign_rotations_to_students
-end
-
 
 BLOOM_LEVELS = {
   "RECORDAR" => 0,
@@ -146,11 +126,10 @@ BLOOM_LEVELS = {
   "CREAR" => 5
 }.freeze
 
-20.times do
+60.times do
   activity_params = {
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
-    delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
     unity_id: rand(1..Unity.count),
     bloom_levels: BLOOM_LEVELS.keys.sample(rand(1..6))
   }
@@ -159,6 +138,40 @@ BLOOM_LEVELS = {
   service.call
 end
 
+
+
+student_id = User.find_by(username: 'student').user_profile.student.id
+start_date = Date.new(2023, 7, 1)
+end_date = Date.new(2023, 12, 31)
+institutions = Institution.all.sample(5)
+
+(start_date..end_date).select { |date| date.wday == start_date.wday }.each do |week_start|
+  week_end = week_start + 6.days # End of the week
+
+  institutions.each do |institution|
+    subject = Subject.all.sample
+    activities = subject.activities
+    selected_activities = activities.sample(rand(2..3))
+
+    rotation_params = {
+      student_id: student_id,
+      subject_id: subject.id,
+      institution_id: institution.id,
+      start_date: week_start,
+      end_date: week_end,
+      activities_ids: selected_activities.pluck(:id)
+    }
+
+    rotation_service = Rotations::AssignRotationService.new(rotation_params)
+    result = rotation_service.call
+
+    if result[:success]
+      puts "Rotation created for student #{student_id} at #{institution.name} for the week starting on #{week_start}"
+    else
+      puts "Error creating rotation: #{result[:errors]}"
+    end
+  end
+end
 
 def calificate_student(student_id)
   student = Student.find(student_id)

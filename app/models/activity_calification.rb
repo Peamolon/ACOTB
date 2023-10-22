@@ -96,7 +96,7 @@ class ActivityCalification < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:activity_name, :unity_name]))
+    super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics]))
   end
 
   private

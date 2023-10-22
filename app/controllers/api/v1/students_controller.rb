@@ -6,7 +6,8 @@ module Api
       before_action :set_student, only: [:show, :update, :get_general_score,
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
-                                         :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score]
+                                         :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
+                                         :get_rotation_info, :all_activities]
       def index
         @students = Student.all
         render json: @students
@@ -62,7 +63,7 @@ module Api
       end
 
       def rotations
-        rotations = @student.rotations.paginate(page: params[:page], per_page: 5)
+        rotations = @student.rotations.order(start_date: :desc).paginate(page: params[:page], per_page: 10)
 
         total_pages = rotations.total_pages
 
@@ -129,6 +130,19 @@ module Api
         }
       end
 
+      def all_activities
+        activity_califications = ActivityCalification.where(student_id: @student.id).includes(:rotation).includes(:bloom_taxonomy_levels)
+
+        render json: activity_califications.as_json(
+          include:{
+            rotation: {
+              methods: [:manager_name, :institution_name]
+            },
+            bloom_taxonomy_levels: {  }
+          }
+        )
+      end
+
       def get_activities
         @activity_califications = @student.activity_califications.includes(:activity)
         activity_califications_by_unity = @activity_califications.group_by { |calification| calification.unity }
@@ -138,6 +152,17 @@ module Api
       def get_general_score
         result = ::ActivityCalifications::CalculateBloomTaxonomyAverageService.new(@student.activity_califications).call
         render json: result
+      end
+
+      def get_rotation_info
+        today = Date.today
+        current_rotation = @student.rotations.where("start_date <= ? AND end_date >= ?", today, today).order(:start_date).first
+        next_rotation = @student.rotations.where("start_date > ?", today).order(:start_date).first
+
+        render json: {
+          current_rotation: current_rotation,
+          next_rotation: next_rotation
+        }
       end
 
 

@@ -78,7 +78,14 @@ module Api
       end
 
       def rotation_names
-        render json: Rotation.all.pluck(:id, :name)
+        rotations = Rotation.all.pluck(:id)
+
+        # Transformar los resultados en el formato deseado
+        mock_data = rotations.each_with_object([]) do |id, result|
+          result << { id: id, name: 'Nombre Genérico' }  # Agregar un nombre genérico a cada id
+        end
+
+        render json: mock_data
       end
 
       def students
