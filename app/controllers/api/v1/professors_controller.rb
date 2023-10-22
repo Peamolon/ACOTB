@@ -8,7 +8,7 @@ module Api
       #before_action :authenticate_user!
 
       def index
-
+        render json: Professor.all
       end
 
       def professor_count

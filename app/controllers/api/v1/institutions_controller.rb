@@ -11,6 +11,10 @@ module Api
         }
       end
 
+      def list
+        render json: Institution.all
+      end
+
       def institution_names
         render json: Institution.all.pluck(:id, :name)
       end
@@ -35,6 +39,11 @@ module Api
 
       def destroy
         institution = Institution.find(params[:id])
+        if institution.rotations.present?
+          render json: { errors: 'La institucion tiene rotaciones activas' }, status: :unprocessable_entity
+          return
+        end
+
         if institution.destroy
           render json: { message: 'Institución eliminada correctamente' }, status: :ok
         else

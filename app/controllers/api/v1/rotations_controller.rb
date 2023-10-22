@@ -1,7 +1,7 @@
 module Api
   module V1
     class RotationsController < ApplicationController
-      before_action :set_rotation, only: [:show, :update, :destroy, :subjects, :students]
+      before_action :set_rotation, only: [:show, :update, :destroy, :subjects, :students, :activities]
 
       def show
         render json: @rotation
@@ -86,6 +86,12 @@ module Api
         end
 
         render json: mock_data
+      end
+
+      def activities
+        activities = @rotation.activities
+
+        render json: activities
       end
 
       def students

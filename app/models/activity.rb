@@ -4,7 +4,6 @@
 #
 #  id                    :bigint           not null, primary key
 #  bloom_taxonomy_levels :string           default([]), is an Array
-#  delivery_date         :date
 #  name                  :string(200)
 #  state                 :string
 #  type                  :string

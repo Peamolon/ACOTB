@@ -9,6 +9,18 @@ module Api
                                          :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
                                          :get_rotation_info, :all_activities]
       def index
+        @students = Student.all.paginate(page: params[:page], per_page: 10)
+        total_pages = @students.total_pages
+
+        response_hash = {
+          students: @students,
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
+      end
+
+      def list
         @students = Student.all
         render json: @students
       end

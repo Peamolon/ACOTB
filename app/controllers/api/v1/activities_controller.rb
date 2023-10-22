@@ -16,23 +16,26 @@ module Api
 
       # POST /api/v1/activities
       def create
-        create_activity_service = Activities::CreateActivityService.new(create_activity_params)
+        create_activity_service = Activities::CreateActivityService.new(create_activity_params.merge(activity_id: @activity.id))
 
         result = create_activity_service.call
         if result.errors.any?
           render json: { errors: create_activity_service.errors.full_messages }, status: 422
         else
-          render json: {message: 'Activity was successfully created', activity: result}, status: 200
+          render json: {message: 'Actividad creada con exito', activity: result}, status: 200
         end
 
       end
 
       # PATCH/PUT /api/v1/activities/1
       def update
-        if @activity.update(activity_params)
-          render json: @activity
+        edit_activity_service = Activities::EditActivityService.new(@activity.id, update_activity_params)
+
+        result = edit_activity_service.call
+        if result.errors.any?
+          render json: { errors: edit_activity_service.errors.full_messages }, status: 422
         else
-          render json: @activity.errors, status: :unprocessable_entity
+          render json: {message: 'Actividad editada con exito', activity: result}, status: 200
         end
       end
 
@@ -88,11 +91,14 @@ module Api
         params.require(:activity).permit(:name, :type, :delivery_date)
       end
 
+      def update_activity_params
+        params.require(:activity).permit(:name, :type, bloom_levels: [])
+      end
+
       def create_activity_params
         params.require(:activity).permit(
           :name,
           :type,
-          :delivery_date,
           :unity_id,
           :rotation_id,
           bloom_levels: []

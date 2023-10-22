@@ -1,14 +1,13 @@
 module Activities
   class CreateActivityService
     include ActiveModel::Validations
-    attr_accessor :name, :type, :delivery_date, :unity_id, :bloom_levels
+    attr_accessor :name, :type, :unity_id, :bloom_levels
 
     VALID_BLOOM_VERBS = %w(RECORDAR COMPRENDER APLICAR ANALIZAR EVALUAR CREAR).freeze
 
     def initialize(attributes = {})
       @name = attributes[:name]
       @type = attributes[:type]
-      @delivery_date = attributes[:delivery_date]
       @unity_id = attributes[:unity_id]
       @subject_id = attributes[:subject_id]
       @bloom_levels = attributes[:bloom_levels]
@@ -16,15 +15,15 @@ module Activities
 
 
     def call
-      errors.add(:bloom_levels, 'Can not repeat the verb') unless unique_bloom_levels
-      errors.add(:type, 'is invalid') unless  Activity::ACTIVITY_TYPES.include?(type)
-      errors.add(:unity_id, 'must exist') unless  Unity.exists?(id: unity_id)
+      errors.add(:bloom_levels, 'No se pueden repetir los verbos de Bloom') unless unique_bloom_levels
+      errors.add(:type, 'Tipo de actividad inválido') unless  Activity::ACTIVITY_TYPES.include?(type)
+      errors.add(:unity_id, 'Debe existir') unless  Unity.exists?(id: unity_id)
 
       unity = Unity.find(unity_id)
       subject_id = unity.subject.id
 
       unless valid_bloom_levels
-        errors.add(:bloom_levels, 'No valid verbs are included')
+        errors.add(:bloom_levels, 'Hay verbos inválidos')
         return self
       end
 
@@ -32,7 +31,6 @@ module Activities
         activity = Activity.create!(
           name: @name,
           type: @type,
-          delivery_date: @delivery_date,
           subject_id: subject_id,
           unity_id: @unity_id,
           bloom_taxonomy_levels: bloom_levels

@@ -14,18 +14,17 @@ module Api
         }
       end
 
+      def list
+        render json: Subject.all
+      end
+
       def get_unities_by_subject
         render json: @subject.unities
       end
 
       def activities
-        per_page = params[:per_page] || 10
-        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
-        total_pages = @subjects.total_pages
-        render json: {
-          subjects: @subjects,
-          total_pages: total_pages
-        }
+        activities = @subject.activities
+        render json: activities
       end
 
       def get_activities
@@ -82,7 +81,7 @@ module Api
       end
 
       def subject_params
-        params.require(:subject).permit(:credits, :name)
+        params.require(:subject).permit(:credits, :name, :professor_id)
       end
 
       def create_subject_params
