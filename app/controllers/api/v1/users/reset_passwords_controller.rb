@@ -11,10 +11,10 @@ module Api
             new_password = params[:new_password]
             User.update(password: new_password)
             render json: {  message: 'Your password has been updated successfully'},
-                   status: 200
+                            status: :ok
           else
             render json: { message: "Password does not match with the registered one" },
-                   status: :unprocessable_entity
+                           status: :unprocessable_entity
           end
         end
 

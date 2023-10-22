@@ -8,20 +8,12 @@ class Users::PasswordsController < Devise::PasswordsController
     if user.present?
       mail = user.try(:send_reset_password_instructions)
       if mail.present?
-        render json: {
-          status: { code: 200, message: 'Reset password instructions were sent '}
-        }, status: :ok
+        render json: { message: 'Reset password instructions were sent ' } , status: :ok
       else
-        render json: {
-          status: { message: "Something went wrong",
-                    status: :unprocessable_entity }
-        }
+        render json: { message: "Something went wrong"} , status: :unprocessable_entity
       end
     else
-      render json: {
-        status: { code: 400, message: "Email not found",
-                  status: :ok }
-      }
+      render json: { message: "Email not found"} , status: :not_found
     end
   end
 
