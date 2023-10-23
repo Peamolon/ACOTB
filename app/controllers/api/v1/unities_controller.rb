@@ -19,8 +19,22 @@ module Api
       end
 
       def update
-        if @unity.update(unity_params)
-          render json: @unity
+        @unity = Unity.find(params[:id])
+
+        if unity_params[:period].present?
+          academic_period = @unity.subject.academic_periods.find_by(number: unity_params[:period])
+          if academic_period.nil?
+            render json: { error: 'No existe ese corte en la materia' }, status: 422
+            return
+          end
+        else
+          academic_period = @unity.academic_period
+        end
+
+        unity_params_copy = unity_params.except(:period)
+
+        if @unity.update(unity_params_copy.merge(academic_period_id: academic_period.id))
+          render json: @unity, status: :ok
         else
           render json: @unity.errors, status: :unprocessable_entity
         end
@@ -30,14 +44,19 @@ module Api
       def create
         subject_id = unity_params[:subject_id]
         subject = Subject.find(subject_id)
-        current_academic_period = subject.active_academic_period
-
-        if current_academic_period.nil?
-          render json: { error: 'No active period for today' }, status: 422
+        unless unity_params[:period].present?
+          render json: { error: 'Corte es necesario' }, status: 422
           return
         end
+        academic_period = subject.academic_periods.find_by(number: unity_params[:period])
 
-        @unity = Unity.new(unity_params.merge(academic_period_id: current_academic_period.id))
+        if academic_period.nil?
+          render json: { error: 'No existe ese corte en la materia' }, status: 422
+          return
+        end
+        unity_params_copy = unity_params.except(:period)
+
+        @unity = Unity.new(unity_params_copy.merge(academic_period_id: academic_period.id))
         if @unity.save
           render json: @unity, status: :created
         else
@@ -79,7 +98,7 @@ module Api
       private
 
       def unity_params
-        params.require(:unity).permit(:type, :name, :subject_id)
+        params.require(:unity).permit(:type, :name, :subject_id, :period)
       end
 
       def set_unity

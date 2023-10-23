@@ -6,7 +6,7 @@ module Api
 
       def index
         per_page = params[:per_page] || 10
-        @subjects = Subject.all.includes(:rubrics, :academic_periods).paginate(page: params[:page], per_page: per_page)
+        @subjects = Subject.all.order('updated_at DESC').includes(:rubrics, :academic_periods).paginate(page: params[:page], per_page: per_page)
         total_pages = @subjects.total_pages
         render json: {
           subjects: @subjects.as_json(include: [:rubrics, :academic_periods]),
@@ -52,7 +52,7 @@ module Api
           if result.errors.any?
             render json: { errors: create_subject_service.errors.full_messages }, status: 400
           else
-            render json: {message: 'Subject was successfully created', subject: result, rubrics: result.rubrics}, status: 200
+            render json: {message: 'Subject was successfully created', subject: result}, status: 200
           end
         else
           render json: { errors: create_subject_service.errors.full_messages }, status: 400
@@ -66,7 +66,7 @@ module Api
         if result.errors.any?
           render json: { errors: edit_service.errors.full_messages }, status: 400
         else
-          render json: {message: 'Materia editada con exito', subject: result, rubrics: result.rubrics}, status: 200
+          render json: {message: 'Materia editada con exito', subject: result}, status: 200
         end
       end
 
