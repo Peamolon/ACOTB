@@ -54,6 +54,10 @@ class ActivityCalification < ApplicationRecord
     bloom_taxonomy_levels.order(:level)
   end
 
+  def academic_period
+    rotation.academic_period
+  end
+
   def activity_name
     activity.name
   end
@@ -96,7 +100,7 @@ class ActivityCalification < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics]))
+    super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics, :academic_period]))
   end
 
   private

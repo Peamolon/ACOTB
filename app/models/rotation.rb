@@ -56,7 +56,11 @@ class Rotation < ApplicationRecord
     subject.name
   end
 
+  def academic_period_number
+    academic_period.number
+  end
+
   def as_json(options = {})
-    super(options.merge(methods: [:manager_name, :institution_name, :subject_name]))
+    super(options.merge(methods: [:manager_name, :institution_name, :subject_name, :academic_period_number]))
   end
 end

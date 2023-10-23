@@ -16,7 +16,7 @@ module Api
 
       # POST /api/v1/activities
       def create
-        create_activity_service = Activities::CreateActivityService.new(create_activity_params.merge(activity_id: @activity.id))
+        create_activity_service = Activities::CreateActivityService.new(create_activity_params)
 
         result = create_activity_service.call
         if result.errors.any?

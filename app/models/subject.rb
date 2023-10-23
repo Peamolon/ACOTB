@@ -32,6 +32,12 @@ class Subject < ApplicationRecord
     end.max_by { |academic_period| academic_period.end_date }
   end
 
+  def academic_period_for_date(date)
+    academic_periods.find do |academic_period|
+      academic_period.start_date <= date && academic_period.end_date >= date
+    end
+  end
+
 
   def manager
     rotation.manager.full_name
