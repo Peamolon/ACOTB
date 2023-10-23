@@ -6,8 +6,21 @@ module Api
       before_action :set_student, only: [:show, :update, :get_general_score,
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
-                                         :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score]
+                                         :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
+                                         :get_rotation_info, :all_activities]
       def index
+        @students = Student.all.paginate(page: params[:page], per_page: 10)
+        total_pages = @students.total_pages
+
+        response_hash = {
+          students: @students,
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
+      end
+
+      def list
         @students = Student.all
         render json: @students
       end
@@ -62,7 +75,7 @@ module Api
       end
 
       def rotations
-        rotations = @student.rotations.paginate(page: params[:page], per_page: 5)
+        rotations = @student.rotations.order(start_date: :desc).paginate(page: params[:page], per_page: 10)
 
         total_pages = rotations.total_pages
 
@@ -76,14 +89,14 @@ module Api
 
       def get_subjects_with_score
         professor_id = params[:professor_id]
-        rotation_id = params[:rotation_id]
+        subject_id = params[:rotation_id]
         institution_id = params[:institution_id]
 
         subjects = @student.subjects
 
         subjects = subjects.where(professor_id: professor_id) if professor_id.present?
 
-        subjects = subjects.joins(:rotation).where("rotations.id" => rotation_id) if rotation_id.present?
+        subjects = subjects.where(id: subject_id) if subject_id.present?
 
         subjects = subjects.joins(rotation: :institution).where("institutions.id" => institution_id) if institution_id.present?
 
@@ -119,11 +132,27 @@ module Api
       end
 
       def activities
-        activity_califications = ActivityCalification.where(student_id: @student.id)
+        per_page = params[:per_page] || 10
+        activity_califications = ActivityCalification.where(student_id: @student.id).includes(:bloom_taxonomy_levels).paginate(page: params[:page], per_page: per_page)
 
-        render json: activity_califications, methods: [:rotation_id, :activity_name,
-                                                       :activity_type, :rubrics, :rotation,
-                                                       :bloom_taxonomy_levels, :unity_name, :subject_name]
+        total_pages = activity_califications.total_pages
+        render json: {
+          activities: activity_califications.as_json(include: :bloom_taxonomy_levels),
+          total_pages: total_pages
+        }
+      end
+
+      def all_activities
+        activity_califications = ActivityCalification.where(student_id: @student.id).includes(:rotation).includes(:bloom_taxonomy_levels)
+
+        render json: activity_califications.as_json(
+          include:{
+            rotation: {
+              methods: [:manager_name, :institution_name]
+            },
+            bloom_taxonomy_levels: {  }
+          }
+        )
       end
 
       def get_activities
@@ -135,6 +164,17 @@ module Api
       def get_general_score
         result = ::ActivityCalifications::CalculateBloomTaxonomyAverageService.new(@student.activity_califications).call
         render json: result
+      end
+
+      def get_rotation_info
+        today = Date.today
+        current_rotation = @student.rotations.where("start_date <= ? AND end_date >= ?", today, today).order(:start_date).first
+        next_rotation = @student.rotations.where("start_date > ?", today).order(:start_date).first
+
+        render json: {
+          current_rotation: current_rotation,
+          next_rotation: next_rotation
+        }
       end
 
 

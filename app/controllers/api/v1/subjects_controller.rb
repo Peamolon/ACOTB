@@ -6,12 +6,16 @@ module Api
 
       def index
         per_page = params[:per_page] || 10
-        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
+        @subjects = Subject.all.order('updated_at DESC').includes(:rubrics, :academic_periods).paginate(page: params[:page], per_page: per_page)
         total_pages = @subjects.total_pages
         render json: {
-          subjects: @subjects,
+          subjects: @subjects.as_json(include: [:rubrics, :academic_periods]),
           total_pages: total_pages
         }
+      end
+
+      def list
+        render json: Subject.all
       end
 
       def get_unities_by_subject
@@ -19,13 +23,8 @@ module Api
       end
 
       def activities
-        per_page = params[:per_page] || 10
-        @subjects = Subject.all.paginate(page: params[:page], per_page: per_page)
-        total_pages = @subjects.total_pages
-        render json: {
-          subjects: @subjects,
-          total_pages: total_pages
-        }
+        activities = @subject.activities
+        render json: activities
       end
 
       def get_activities
@@ -39,7 +38,11 @@ module Api
       end
 
       def show
-        render json: @subject, methods: [:get_rubrics]
+        render json: @subject.to_json(include: [:rubrics, :academic_periods])
+      end
+
+      def subject_names
+        render json: Subject.pluck(:id, :name)
       end
 
       def create
@@ -49,7 +52,7 @@ module Api
           if result.errors.any?
             render json: { errors: create_subject_service.errors.full_messages }, status: 400
           else
-            render json: {message: 'Subject was successfully created'}, status: 200
+            render json: {message: 'Subject was successfully created', subject: result}, status: 200
           end
         else
           render json: { errors: create_subject_service.errors.full_messages }, status: 400
@@ -58,10 +61,12 @@ module Api
       end
 
       def update
-        if @subject.update(subject_params)
-          render json: @subject
+        edit_service = Subjects::EditSubjectService.new(@subject, subject_params)
+        result = edit_service.call
+        if result.errors.any?
+          render json: { errors: edit_service.errors.full_messages }, status: 400
         else
-          render json: @subject.errors, status: :unprocessable_entity
+          render json: {message: 'Materia editada con exito', subject: result}, status: 200
         end
       end
 
@@ -82,7 +87,7 @@ module Api
       end
 
       def subject_params
-        params.require(:subject).permit(:credits, :name)
+        params.require(:subject).permit(:name, :credits, academic_period_info: [:number, :start_date, :end_date], rubric_info: [:verb, :description])
       end
 
       def create_subject_params

@@ -6,7 +6,7 @@
 #  code              :string(32)
 #  contact_email     :string(128)
 #  contact_telephone :string(30)
-#  name              :string(64)
+#  name              :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  manager_id        :bigint           not null
@@ -21,6 +21,7 @@
 #
 class Institution < ApplicationRecord
   belongs_to :manager
+  has_many :rotations
   validates :name, presence: true, length: { maximum: 100 }
   validates :code, presence: true, length: { maximum: 100 }
   validates :contact_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }

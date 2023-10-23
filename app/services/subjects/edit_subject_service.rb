@@ -1,59 +1,46 @@
 module Subjects
-  class CreateSubjectService
+  class EditSubjectService
     include ActiveModel::Validations
-    attr_accessor :name, :credits, :academic_period_info, :subject, :rubric_info, :professor_id
+
+    attr_accessor :subject, :name, :credits, :academic_period_info, :rubric_info
+
     validates :name, presence: true
     validates :credits, presence: true
-    validates :academic_period_info, presence: true
-    validates :rubric_info, presence: true
-    validates :professor_id, presence: true
 
-    def initialize(attributes = {})
+    def initialize(subject, attributes = {})
+      @subject = subject
       @name = attributes[:name]
       @credits = attributes[:credits]
       @academic_period_info = attributes[:academic_period_info]
       @rubric_info = attributes[:rubric_info]
-      @professor_id = attributes[:professor_id]
     end
 
     def call
-      errors.add(:professor_id, 'must exist') unless Professor.exists?(id: professor_id)
+      if rubric_info.present?
+        has_valid_verbs?
 
-      has_valid_verbs?
-      verbs_are_completed?
+        verbs_are_completed?
+      end
 
       unless errors.any?
         ActiveRecord::Base.transaction do
-          create_subject
-          create_academic_periods
-          create_rubric
-          return subject
+          subject.update(name: name, credits: credits)
+
+          update_rubrics if rubric_info.present?
+
+          update_academic_periods if academic_period_info.present?
+          subject
         end
       else
         self
       end
 
+    rescue ActiveRecord::RecordInvalid => e
+      errors.add(:base, e.message)
+      false
     end
 
     private
-
-    def create_rubric
-      rubric_info.each_with_index do |info, index|
-        Rubric.create!(verb: info[:verb], level: index, description: info[:description], subject_id: subject.id)
-      end
-    end
-
-    def create_subject
-      @subject = Subject.create!(credits: credits,  name: name, professor_id: professor_id)
-    end
-
-    def create_academic_periods
-      academic_period_info.each_with_index do |info, index|
-        AcademicPeriod.create!(number: (index + 1), start_date: info[:start_date], end_date: info[:end_date], subject_id: subject.id)
-      end
-    end
-
-    #Validations
 
     def verbs_are_completed?
       valid_verbs = Rubric::LEVELS
@@ -79,6 +66,20 @@ module Subjects
         end
       end
       return true
+    end
+
+    def update_rubrics
+      rubric_info.each do |info|
+        rubric = subject.rubrics.find_by(verb: info[:verb])
+        rubric.update(description: info[:description]) if rubric
+      end
+    end
+
+    def update_academic_periods
+      academic_period_info.each do |info|
+        academic_period = subject.academic_periods.find_by(number: info[:number])
+        academic_period.update(start_date: info[:start_date], end_date: info[:end_date]) if academic_period
+      end
     end
   end
 end

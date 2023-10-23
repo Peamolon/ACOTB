@@ -78,8 +78,6 @@ class UserProfile < ApplicationRecord
         Professor.create!(user_profile_id: self.id)
       when :manager
         Manager.create!(user_profile_id: self.id)
-      when :director
-        Director.create!(user_profile_id: self.id)
       end
     rescue
       raise ArgumentError

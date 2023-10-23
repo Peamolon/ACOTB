@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       resources :institutions, only: [:index, :show, :create, :update, :destroy] do
         collection do
           get 'institution_names'
+          get 'list'
         end
       end
       resources :subjects, only: [:index, :show, :create, :update, :destroy] do
@@ -34,11 +35,16 @@ Rails.application.routes.draw do
           get 'activities'
           get 'get_activities'
         end
+        collection do
+          get 'list'
+          get 'subject_names'
+        end
       end
       resources :students, only: [:index, :show, :update] do
         collection do
           get 'get_student_count'
           get 'top_students'
+          get 'list'
         end
 
         member do
@@ -53,6 +59,8 @@ Rails.application.routes.draw do
           get 'activities', to: 'students#activities'
           get 'rotations'
           get 'get_subjects_with_score'
+          get 'all_activities'
+          get 'get_rotation_info'
         end
       end
 
@@ -88,6 +96,7 @@ Rails.application.routes.draw do
         member do
           get 'subjects'
           get 'students'
+          get 'activities'
         end
       end
       resources :rubric_rotation_scores, only:[:create, :update, :destroy]

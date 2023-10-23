@@ -8,25 +8,20 @@
 #  total_credits :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  professor_id  :bigint
-#  rotation_id   :bigint
+#  professor_id  :bigint           not null
 #
 # Indexes
 #
 #  index_subjects_on_professor_id  (professor_id)
-#  index_subjects_on_rotation_id   (rotation_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (professor_id => professors.id)
-#  fk_rails_...  (rotation_id => rotations.id)
 #
 class Subject < ApplicationRecord
-  belongs_to :rotation
-  belongs_to :professor, foreign_key: 'professor_id', class_name: 'Professor'
+  belongs_to :professor
   has_many :academic_periods
   has_many :rubrics
-  has_many :academic_periods
   has_many :unities
   has_many :activities
 
@@ -37,6 +32,12 @@ class Subject < ApplicationRecord
     end.max_by { |academic_period| academic_period.end_date }
   end
 
+  def academic_period_for_date(date)
+    academic_periods.find do |academic_period|
+      academic_period.start_date <= date && academic_period.end_date >= date
+    end
+  end
+
 
   def manager
     rotation.manager.full_name
@@ -44,10 +45,6 @@ class Subject < ApplicationRecord
 
   def professor_name
     professor.full_name
-  end
-
-  def institution
-    rotation.institution.name
   end
   def activities
     Activity.where(unity_id: unities.pluck(:id))
@@ -58,6 +55,8 @@ class Subject < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:manager, :institution, :professor_name]))
+    super(options.merge(
+      include: { rubrics: { only: [:level, :verb, :description] } }
+    ))
   end
 end

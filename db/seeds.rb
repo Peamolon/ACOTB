@@ -1,5 +1,6 @@
 #Creating users
-100.times do
+=begin
+20.times do
   user_params = {
     first_name: Faker::Name.first_name,
     last_name: Faker::Name.last_name,
@@ -15,11 +16,63 @@
   service = ::Users::UserProfileCreatorService.new(user_params)
   service.call
 end
+=end
+#Creates default user
+
+user_params = {
+  first_name: 'Sergio',
+  last_name: 'Peña',
+  telephone: "3227755151",
+  role: 'student',
+  email: 'spenaa@unbosque.edu.co',
+  username: 'student',
+  id_number: '1007351989',
+  id_type: "CC",
+  joined_at: Date.today
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+user_params = {
+  first_name: 'Juan',
+  last_name: 'Peña',
+  telephone: "3209357918",
+  role: 'manager',
+  email: 'jcpenap@unbosque.edu.co',
+  username: 'professor',
+  id_number: '1004351989',
+  id_type: "CC",
+  joined_at: Date.today
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+user_params = {
+  first_name: 'Briannys',
+  last_name: 'Paez',
+  telephone: "3209357918",
+  role: 'manager',
+  email: 'jcpenap@unbosque.edu.co',
+  username: 'professor',
+  id_number: '1004351989',
+  id_type: "CC",
+  joined_at: Date.today
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+
+
+names =["Hospital Universitario Centro Dermatologico Federico Lleras Acosta E.S.E","CENTRO MEDICO IMBANACO DE CALI ","SOMA","HOSPITAL NAVAL CARTAGENA ","IDIME ","SUBRED INTEGRADA DE SERVICIOS DE SALUD NORTE ","SUBRED INTEGRADA DE SERVICIOS DE SALUD SUROCCIDENTE ","SUBRED INTEGRADA DE SERVICIOS DE SALUD CENTROORIENTE ","CLINICA VASCULAR NAVARRA ","UNIVERSIDAD DEL NORTE ","CLINICOS IPS ","CAFAM"]
+
 
 #Creating Institutions
-30.times do
+names.each do |name|
   institution_params = {
-    name: Faker::Company.name,
+    name: name,
     code: Faker::Alphanumeric.alpha(number: 6).upcase,
     contact_email: Faker::Internet.email,
     contact_telephone: Faker::PhoneNumber.cell_phone,
@@ -29,62 +82,51 @@ end
   Institution.create!(institution_params)
 end
 
-#Creating rotations
-20.times do
-  rotation_params = {
-    name: Faker::Company.name,
-    start_date: Faker::Date.between(from: 1.month.ago, to: 1.month.from_now),
-    end_date: Faker::Date.between(from: 1.month.from_now, to: 3.months.from_now),
-    institution_id: rand(1..Institution.count),
-    manager_id: rand(1..Manager.count)
-  }
-
-  Rotation.create(rotation_params)
-end
-
-
 #Creating Subjects
 def create_random_subject
   subject_params = {
     name: Faker::Educator.subject,
     credits: Faker::Number.between(from: 1, to: 5) * 3,
-    rotation_id: rand(1..Rotation.count),
     manager_id: rand(1..Manager.count),
     professor_id: rand(1..Professor.count),
     academic_period_info: [
       {
-        start_date: Faker::Date.between(from: '2023-09-01', to: '2023-12-15'),
-        end_date: Faker::Date.between(from: '2023-12-16', to: '2024-04-30')
+        start_date: '01/06/2023',
+        end_date: '01/08/2023'
       },
       {
-        start_date: Faker::Date.between(from: '2024-09-01', to: '2024-12-15'),
-        end_date: Faker::Date.between(from: '2024-12-16', to: '2025-04-30')
+        start_date: '01/08/2023',
+        end_date: '01/09/2023'
+      },
+      {
+        start_date: '01/09/2023',
+        end_date: '01/12/2023'
       }
     ],
     rubric_info: [
       {
         verb: 'Recordar',
-        description: 'Recordar '+ Faker::Lorem.word
+        description: 'Recordar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Comprender',
-        description: 'Comprender '+ Faker::Lorem.sentence
+        description: 'Comprender '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Aplicar',
-        description: 'Aplicar '+ Faker::Lorem.word
+        description: 'Aplicar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Analizar',
-        description: 'Analizar '+ Faker::Lorem.word
+        description: 'Analizar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Evaluar',
-        description: 'Evaluar '+ Faker::Lorem.word
+        description: 'Evaluar '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
       {
         verb: 'Crear',
-        description: 'Crear '+ Faker::Lorem.word
+        description: 'Crear '+ Faker::Lorem.paragraph(sentence_count: 10)
       },
     ]
   }
@@ -92,38 +134,18 @@ def create_random_subject
   ::Subjects::CreateSubjectService.new(subject_params).call
 end
 
-100.times do
+10.times do
   create_random_subject
 end
 
 #Create Unities
-200.times do
+50.times do
   Unity.create!(
     name: Faker::Lorem.words(number: 3).join(' '),
     type: Unity::UNITY_TYPES.sample,
     academic_period_id: AcademicPeriod.all.sample.id,
     subject_id: Subject.all.sample.id,
     )
-end
-
-#Assing subjects to students
-def assign_rotations_to_students
-  student_ids = Student.all.pluck(:id)
-  rotation_ids = Rotation.all.pluck(:id)
-
-  max_subjects_to_assign = 4
-
-  student_ids.each do |student_id|
-    num_subjects_to_assign = rand(1..max_subjects_to_assign)
-
-    rotations_to_assign = rotation_ids.sample(num_subjects_to_assign)
-
-    ::Students::AssignRotationService.new(rotations_to_assign, [student_id]).call
-  end
-end
-
-5.times do
-  assign_rotations_to_students
 end
 
 
@@ -136,11 +158,10 @@ BLOOM_LEVELS = {
   "CREAR" => 5
 }.freeze
 
-200.times do
+60.times do
   activity_params = {
     name: Faker::Lorem.sentence(word_count: 16),
     type: Activity::ACTIVITY_TYPES.sample,
-    delivery_date: Faker::Date.between(from: Date.today, to: Date.today + 30.days),
     unity_id: rand(1..Unity.count),
     bloom_levels: BLOOM_LEVELS.keys.sample(rand(1..6))
   }
@@ -149,6 +170,40 @@ BLOOM_LEVELS = {
   service.call
 end
 
+
+
+student_id = User.find_by(username: 'student').user_profile.student.id
+start_date = Date.new(2023, 7, 1)
+end_date = Date.new(2023, 12, 31)
+institutions = Institution.all.sample(5)
+
+(start_date..end_date).select { |date| date.wday == start_date.wday }.each do |week_start|
+  week_end = week_start + 6.days # End of the week
+
+  institutions.each do |institution|
+    subject = Subject.all.sample
+    activities = subject.activities
+    selected_activities = activities.sample(rand(2..3))
+
+    rotation_params = {
+      student_id: student_id,
+      subject_id: subject.id,
+      institution_id: institution.id,
+      start_date: week_start,
+      end_date: week_end,
+      activities_ids: selected_activities.pluck(:id)
+    }
+
+    rotation_service = Rotations::AssignRotationService.new(rotation_params)
+    result = rotation_service.call
+
+    if result[:success]
+      puts "Rotation created for student #{student_id} at #{institution.name} for the week starting on #{week_start}"
+    else
+      puts "Error creating rotation: #{result[:errors]}"
+    end
+  end
+end
 
 def calificate_student(student_id)
   student = Student.find(student_id)
