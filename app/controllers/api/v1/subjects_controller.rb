@@ -61,10 +61,12 @@ module Api
       end
 
       def update
-        if @subject.update(subject_params)
-          render json: @subject
+        edit_service = Subjects::EditSubjectService.new(@subject, subject_params)
+        result = edit_service.call
+        if result.errors.any?
+          render json: { errors: edit_service.errors.full_messages }, status: 400
         else
-          render json: @subject.errors, status: :unprocessable_entity
+          render json: {message: 'Materia editada con exito', subject: result, rubrics: result.rubrics}, status: 200
         end
       end
 
@@ -85,7 +87,7 @@ module Api
       end
 
       def subject_params
-        params.require(:subject).permit(:credits, :name, :professor_id)
+        params.require(:subject).permit(:name, :credits, academic_period_info: [:number, :start_date, :end_date], rubric_info: [:verb, :description])
       end
 
       def create_subject_params
