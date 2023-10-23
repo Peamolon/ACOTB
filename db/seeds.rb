@@ -1,4 +1,5 @@
 #Creating users
+=begin
 20.times do
   user_params = {
     first_name: Faker::Name.first_name,
@@ -15,18 +16,49 @@
   service = ::Users::UserProfileCreatorService.new(user_params)
   service.call
 end
-
+=end
 #Creates default user
+
 user_params = {
-  first_name: Faker::Name.first_name,
-  last_name: Faker::Name.last_name,
-  telephone: "3#{rand(11..20)}#{rand(0..9999999).to_s.rjust(7, '0')}",
+  first_name: 'Sergio',
+  last_name: 'Peña',
+  telephone: "3227755151",
   role: 'student',
-  email: Faker::Internet.email,
+  email: 'spenaa@unbosque.edu.co',
   username: 'student',
-  id_number: Faker::IDNumber.valid,
-  id_type: UserProfile::DOCUMENT_TYPES.sample,
-  joined_at: Faker::Date.between(from: 1.year.ago, to: Date.today)
+  id_number: '1007351989',
+  id_type: "CC",
+  joined_at: Date.today
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+user_params = {
+  first_name: 'Juan',
+  last_name: 'Peña',
+  telephone: "3209357918",
+  role: 'manager',
+  email: 'jcpenap@unbosque.edu.co',
+  username: 'professor',
+  id_number: '1004351989',
+  id_type: "CC",
+  joined_at: Date.today
+}
+
+service = ::Users::UserProfileCreatorService.new(user_params)
+service.call
+
+user_params = {
+  first_name: 'Briannys',
+  last_name: 'Paez',
+  telephone: "3209357918",
+  role: 'manager',
+  email: 'jcpenap@unbosque.edu.co',
+  username: 'professor',
+  id_number: '1004351989',
+  id_type: "CC",
+  joined_at: Date.today
 }
 
 service = ::Users::UserProfileCreatorService.new(user_params)
