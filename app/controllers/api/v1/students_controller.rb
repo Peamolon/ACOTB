@@ -89,14 +89,14 @@ module Api
 
       def get_subjects_with_score
         professor_id = params[:professor_id]
-        rotation_id = params[:rotation_id]
+        subject_id = params[:rotation_id]
         institution_id = params[:institution_id]
 
         subjects = @student.subjects
 
         subjects = subjects.where(professor_id: professor_id) if professor_id.present?
 
-        subjects = subjects.joins(:rotation).where("rotations.id" => rotation_id) if rotation_id.present?
+        subjects = subjects.where(id: subject_id) if subject_id.present?
 
         subjects = subjects.joins(rotation: :institution).where("institutions.id" => institution_id) if institution_id.present?
 

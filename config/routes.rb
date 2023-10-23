@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         end
         collection do
           get 'list'
+          get 'subject_names'
         end
       end
       resources :students, only: [:index, :show, :update] do

@@ -41,6 +41,10 @@ module Api
         render json: @subject.to_json(include: [:rubrics, :academic_periods])
       end
 
+      def subject_names
+        render json: Subject.pluck(:id, :name)
+      end
+
       def create
         create_subject_service = ::Subjects::CreateSubjectService.new(create_subject_params)
         if create_subject_service.valid?
@@ -48,7 +52,7 @@ module Api
           if result.errors.any?
             render json: { errors: create_subject_service.errors.full_messages }, status: 400
           else
-            render json: {message: 'Subject was successfully created', subject: result}, status: 200
+            render json: {message: 'Subject was successfully created', subject: result, rubrics: result.rubrics}, status: 200
           end
         else
           render json: { errors: create_subject_service.errors.full_messages }, status: 400
