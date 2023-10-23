@@ -29,7 +29,7 @@ module Subjects
           create_rubric
         end
       end
-      self
+      subject
     end
 
     private
