@@ -35,8 +35,20 @@ class Manager < ApplicationRecord
     "#{user_profile.first_name} #{user_profile.last_name}"
   end
 
-  def email
-    user_profile.user.email
+  def id_number
+    user_profile.id_number
+  end
+
+  def id_type
+    user_profile.id_type
+  end
+
+  def telephone
+    user_profile.telephone
+  end
+
+  def as_json(options = {})
+    super(options.merge(methods: [:full_name, :telephone, :id_number, :id_type]))
   end
 
   private
