@@ -111,12 +111,9 @@ module Api
 
       def rotation_params
         params.require(:rotation).permit(
-          :student_id,
-          :subject_id,
-          :institution_id,
           :start_date,
           :end_date,
-          activities_ids: []
+          :student_id
         )
       end
 
