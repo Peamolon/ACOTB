@@ -45,13 +45,13 @@ module Api
         subject_id = unity_params[:subject_id]
         subject = Subject.find(subject_id)
         unless unity_params[:period].present?
-          render json: { error: 'Corte es necesario' }, status: 422
+          render json: { error: 'Corte es necesario' }, status: 400
           return
         end
         academic_period = subject.academic_periods.find_by(number: unity_params[:period])
 
         if academic_period.nil?
-          render json: { error: 'No existe ese corte en la materia' }, status: 422
+          render json: { error: 'No existe ese corte en la materia' }, status: 400
           return
         end
         unity_params_copy = unity_params.except(:period)
@@ -84,13 +84,13 @@ module Api
 
       def destroy
         if @unity.activities.present?
-          render json: { error: 'Unity has active activities' }, status: 422
+          render json: { error: 'Unity has active activities' }, status: 400
           return
         end
         if @unity.destroy
           render json: { message: 'Unity was destroyed' }, status: 200
         else
-          render json: { error: 'Something went wrong' }, status: 422
+          render json: { error: 'Something went wrong' }, status: 400
         end
       end
 
