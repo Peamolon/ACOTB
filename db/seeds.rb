@@ -53,8 +53,8 @@ user_params = {
   first_name: 'Briannys',
   last_name: 'Paez',
   telephone: "3209357918",
-  role: 'manager',
-  email: 'jcpenap@unbosque.edu.co',
+  role: 'professor',
+  email: 'bpaezm@unbosque.edu.co',
   username: 'professor',
   id_number: '1004351989',
   id_type: "CC",
@@ -76,7 +76,7 @@ names.each do |name|
     code: Faker::Alphanumeric.alpha(number: 6).upcase,
     contact_email: Faker::Internet.email,
     contact_telephone: Faker::PhoneNumber.cell_phone,
-    manager_id: Manager.all.sample.id
+    manager_id: Manager.first.id
   }
 
   Institution.create!(institution_params)

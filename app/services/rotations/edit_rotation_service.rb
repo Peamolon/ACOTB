@@ -61,7 +61,7 @@ module Rotations
 
     def activities_are_valid?
       activities = Activity.where(id: @activities_ids)
-      if activities.pluck(:subject_id).size == 1
+      if activities.pluck(:subject_id).uniq.size == 1
         if activities.first.subject_id == @subject_id
           return true
         end
