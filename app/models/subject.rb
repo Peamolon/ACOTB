@@ -56,7 +56,12 @@ class Subject < ApplicationRecord
 
   def as_json(options = {})
     super(options.merge(
-      include: { rubrics: { only: [:level, :verb, :description] } }
+      include: {
+        rubrics: {
+          only: [:level, :verb, :description]
+        } ,
+        academic_periods: {}
+      }
     ))
   end
 end
