@@ -2,7 +2,7 @@ module Api
   module V1
     class InstitutionsController < ApplicationController
       def index
-        institutions = Institution.paginate(page: params[:page], per_page: 10)
+        institutions = Institution.all.order(updated_at: :desc).paginate(page: params[:page], per_page: 10)
         total_pages = institutions.total_pages
 
         render json: {
