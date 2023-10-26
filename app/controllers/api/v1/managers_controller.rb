@@ -51,8 +51,9 @@ module Api
           rotations: rotations.as_json(
             include: {
               activity_califications: {
-                include: :bloom_taxonomy_levels
-              }
+                include: :bloom_taxonomy_levels,
+                methods: [:activity_name]
+              },
             }
           ),
           total_pages: total_pages
