@@ -21,7 +21,7 @@ module Rotations
       if @errors.empty?
         rotation = create_rotation
         create_activity_califications(rotation)
-        { success: true, message: 'Rotation creada con exito' }
+        rotation
       else
         { errors: @errors }
       end

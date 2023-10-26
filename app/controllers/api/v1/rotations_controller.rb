@@ -24,7 +24,7 @@ module Api
 
         result = rotation_service.call
 
-        if result[:success]
+        if result.is_a?(Rotation)
           render json: result, status: :created
         else
           render json: result, status: :unprocessable_entity
