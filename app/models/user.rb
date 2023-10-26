@@ -30,6 +30,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :lockable,
          :jwt_authenticatable, jwt_revocation_strategy: self
   has_one :user_profile
+  has_one :student, through: :user_profile
+  has_one :manager, through: :user_profile
+  has_one :professor, through: :user_profile
+
   validates :username, presence: true, on: :create, uniqueness: true
 
   def current_profile
