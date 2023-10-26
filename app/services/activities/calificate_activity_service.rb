@@ -16,6 +16,15 @@ module Activities
 
     def call
       errors.add(:activity_calification_id, ' ya está calificado') if activity_calification.state == 'graded'
+      unless percentages.present?
+        errors.add(:percentages, 'No tiene porcentajes los niveles de bloom')
+        return self
+      end
+
+      unless comments.present?
+        errors.add(:percentages, 'No tienen comentarios los niveles de bloom')
+        return self
+      end
 
       unless errors.any?
         bloom_taxonomy_levels = activity_calification.bloom_taxonomy_levels

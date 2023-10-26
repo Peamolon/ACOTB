@@ -21,7 +21,7 @@ module Api
         if result.errors.any?
           render json: { errors: result.errors.full_messages }, status: 422
         else
-          render json: {message: 'Calificated'}, status: 200
+          render json: {message: 'actividad calificada'}, status: 200
         end
       end
 
@@ -40,13 +40,21 @@ module Api
         render json: pending_activities
       end
 
+
       def rotations_with_activities
-        rotations = @manager.rotations.includes(:activity_califications)
-                            .next_and_past_week_rotations.order(start_date: :asc).paginate(page: params[:page], per_page: 10)
+        rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels)
+                            .next_and_past_week_rotations.order(start_date: :asc)
+                            .paginate(page: params[:page], per_page: 10)
         total_pages = rotations.total_pages
 
         response_hash = {
-          rotations: rotations.as_json(include: :activity_califications),
+          rotations: rotations.as_json(
+            include: {
+              activity_califications: {
+                include: :bloom_taxonomy_levels
+              }
+            }
+          ),
           total_pages: total_pages
         }
 
