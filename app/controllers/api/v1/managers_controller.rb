@@ -21,7 +21,7 @@ module Api
         if result.errors.any?
           render json: { errors: result.errors.full_messages }, status: 422
         else
-          render json: {message: 'actividad calificada'}, data: result, status: 200
+          render json: result.activity_calification , status: 200
         end
       end
 
