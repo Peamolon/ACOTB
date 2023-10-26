@@ -9,6 +9,7 @@ module ActivityCalifications
       academic_periods.each do |academic_period|
         data[academic_period.number] = {} # Crear un nodo para el academic_period
         activity_califications = ActivityCalification.where(student_id: student_id)
+                                                     .where(state: :graded)
                                                      .joins(:activity, :rotation)
                                                      .where(activities: { subject_id: subject.id })
                                                      .where(rotations: { academic_period_id: academic_period.id })

@@ -92,7 +92,7 @@ module Api
         subject_id = params[:rotation_id]
         institution_id = params[:institution_id]
 
-        subjects = @student.subjects
+        subjects = @student.subjects.uniq
 
         subjects = subjects.where(professor_id: professor_id) if professor_id.present?
 
@@ -120,7 +120,7 @@ module Api
         subject_id = params[:rotation_id]
         institution_id = params[:institution_id]
 
-        subjects = @student.subjects
+        subjects = @student.subjects.uniq
 
         subjects = subjects.where(professor_id: professor_id) if professor_id.present?
 

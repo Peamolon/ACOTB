@@ -34,6 +34,7 @@ class Activity < ApplicationRecord
   validates :name, presence: true, length: { maximum: 200 }
   validates :type, presence: true, inclusion:{in: ACTIVITY_TYPES, message: "invalid activity type"}
   validates :unity, presence: true
+  validates :bloom_taxonomy_levels, presence: true
 
   before_validation :add_subject_rotation, on: :create
 
