@@ -41,6 +41,7 @@ module Activities
               bloom_taxonomy_level.update(percentage: percentage, comment: comment)
             end
             activity_calification.complete!
+            @activity_calification
           end
         end
       end

@@ -54,7 +54,7 @@ class Rotation < ApplicationRecord
 
   def graded_percentage
     graded_califications = activity_califications.where(state: 'graded')
-    return Float(graded_califications.count.to_f / activity_califications.count.to_f)
+    return Float((graded_califications.count.to_f / activity_califications.count.to_f) * 100)
   end
 
   def institution_name
