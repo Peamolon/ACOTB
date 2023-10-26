@@ -16,7 +16,6 @@ module Rotations
       add_error("subject_id", "Materia no existe") unless Subject.exists?(@subject_id)
       add_error("institution_id", "Ips no existe") unless Institution.exists?(@institution_id)
       add_error("activities_ids", "Hay actividades que no pertenecen a la materia seleccionada") unless activities_are_valid?
-      add_error("subject_id", "Periodo de rotación no válido") unless Subject.find(@subject_id).active_academic_period.present?
       add_error("subject_id", "La materia no tiene un corte válido para las fechas de la rotación") unless Subject.find(@subject_id).academic_period_for_date(@start_date).present?
 
       if @errors.empty?
