@@ -3,6 +3,7 @@
 # Table name: bloom_taxonomy_levels
 #
 #  id                       :bigint           not null, primary key
+#  comment                  :text
 #  level                    :integer
 #  percentage               :integer
 #  verb                     :string

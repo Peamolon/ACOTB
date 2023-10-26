@@ -1,11 +1,12 @@
-module Activities
-  class CalificateActivityService
+module ActivityCalifications
+  class EditActivityCalificationService
     include ActiveModel::Validations
     attr_accessor :activity_calification_id, :percentages, :activity_calification, :comments
 
     validates :percentages, presence: true
     validates :comments, presence: true
     validate :validate_verbs_presence
+    validate :validate_calification_state
 
     def initialize(attributes = {})
       @activity_calification_id = attributes[:activity_calification_id]
@@ -15,8 +16,6 @@ module Activities
     end
 
     def call
-      errors.add(:activity_calification_id, ' ya está calificado') if activity_calification.state == 'graded'
-
       unless errors.any?
         bloom_taxonomy_levels = activity_calification.bloom_taxonomy_levels
 
@@ -30,8 +29,8 @@ module Activities
               comment = get_level_comment(verb)
 
               bloom_taxonomy_level.update(percentage: percentage, comment: comment)
+              activity_calification
             end
-            activity_calification.complete!
           end
         end
       end
@@ -61,8 +60,12 @@ module Activities
       end
 
       if verb_errors.present?
-        errors.add(:percentages, "Los siguientes verbos faltan por comentario o calificacion: #{verb_errors.join(', ')}")
+        errors.add(:percentages, "Los siguientes verbos faltan por comentario o calificación: #{verb_errors.join(', ')}")
       end
+    end
+
+    def validate_calification_state
+      errors.add(:activity_calification_id, ' no está calificado') unless activity_calification.state == 'graded'
     end
   end
 end

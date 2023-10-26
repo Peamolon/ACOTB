@@ -30,6 +30,10 @@ class Student < ApplicationRecord
     "#{user_profile.first_name} #{user_profile.last_name}"
   end
 
+  def hola
+    "hola"
+  end
+
   def telephone
     user_profile.telephone
   end

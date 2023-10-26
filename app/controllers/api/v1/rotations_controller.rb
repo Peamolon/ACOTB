@@ -80,7 +80,6 @@ module Api
       def rotation_names
         rotations = Rotation.all.pluck(:id)
 
-        # Transformar los resultados en el formato deseado
         mock_data = rotations.each_with_object([]) do |id, result|
           result << { id: id, name: 'Nombre Genérico' }  # Agregar un nombre genérico a cada id
         end
@@ -113,7 +112,10 @@ module Api
         params.require(:rotation).permit(
           :start_date,
           :end_date,
-          :student_id
+          :student_id,
+          :subject_id,
+          :institution_id,
+          activities_ids: []
         )
       end
 

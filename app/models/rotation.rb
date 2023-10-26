@@ -44,6 +44,19 @@ class Rotation < ApplicationRecord
   scope :active, -> { where(state: :active) }
   scope :no_active, -> { where(state: :no_active) }
 
+  scope :next_and_past_week_rotations, -> {
+    today = Date.current
+    start_of_next_week = today.beginning_of_week(:sunday) + 1.week
+    end_of_next_week = start_of_next_week.end_of_week(:sunday)
+
+    where("start_date >= ? AND start_date <= ?", today, end_of_next_week)
+  }
+
+  def graded_percentage
+    graded_califications = activity_califications.where(state: 'graded')
+    return Float(graded_califications.count.to_f / activity_califications.count.to_f)
+  end
+
   def institution_name
     institution.name
   end
@@ -65,6 +78,8 @@ class Rotation < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:manager_name, :institution_name, :subject_name, :academic_period_number, :student_name]))
+    super(options.merge(methods: [:manager_name, :institution_name,
+                                  :subject_name, :academic_period_number,
+                                  :student_name, :graded_percentage]))
   end
 end

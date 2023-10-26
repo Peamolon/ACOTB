@@ -61,6 +61,7 @@ Rails.application.routes.draw do
           get 'get_subjects_with_score'
           get 'all_activities'
           get 'get_rotation_info'
+          get 'get_subjects_with_score_by_period'
         end
       end
 
@@ -127,6 +128,7 @@ Rails.application.routes.draw do
         collection do
           get 'get_manager_names'
           post 'calificate'
+          patch 'edit_calification'
         end
         member do
           get 'unities'
@@ -137,6 +139,7 @@ Rails.application.routes.draw do
           get 'get_manager_count'
           get 'get_next_activities'
           get 'get_rotations_with_subjects'
+          get 'rotations_with_activities'
         end
       end
       resources :directors, only: [:index, :show, :create, :update]

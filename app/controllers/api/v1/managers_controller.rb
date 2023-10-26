@@ -3,7 +3,8 @@ module Api
     class ManagersController < ApplicationController
       before_action :set_manager, only: [:show, :update, :unities, :students,
                                          :activities, :activity_califications, :pending_activities,
-                                         :get_manager_count, :get_next_activities, :get_rotations_with_subjects]
+                                         :get_manager_count, :get_next_activities, :get_rotations_with_subjects,
+                                         :rotations_with_activities]
 
       def index
         @managers = Manager.all
@@ -24,9 +25,32 @@ module Api
         end
       end
 
+      def edit_calification
+        service = ::ActivityCalifications::EditActivityCalificationService.new(edit_calificate_params)
+        result = service.call
+        if result.errors.any?
+          render json: { errors: result.errors.full_messages }, status: 422
+        else
+          render json: {message: 'Actividad editada', data: result.activity_calification.as_json(except: :rubrics)}, status: 200
+        end
+      end
+
       def pending_activities
         pending_activities = @manager.activities.where(state: :pending).limit(10)
         render json: pending_activities
+      end
+
+      def rotations_with_activities
+        rotations = @manager.rotations.includes(:activity_califications)
+                            .next_and_past_week_rotations.order(start_date: :asc).paginate(page: params[:page], per_page: 10)
+        total_pages = rotations.total_pages
+
+        response_hash = {
+          rotations: rotations.as_json(include: :activity_califications),
+          total_pages: total_pages
+        }
+
+        render json: response_hash || []
       end
 
       def get_rotations_with_subjects
@@ -88,18 +112,28 @@ module Api
       end
 
       def students
-        @students_ids = @manager.subjects.map(&:students).flatten.pluck(:id)
-        @students = Student.where(id: @students_ids).paginate(page: params[:page], per_page: 10)
+        @students = Student.includes(rotations: :institution).where(institutions: { manager_id: @manager.id }).paginate(page: params[:page], per_page: 10)
 
         total_pages = @students.total_pages
 
-        response_hash = {
-          students: @students,
+        students_with_rotations = @students.map do |student|
+          {
+            id: student.id,
+            name: student.full_name,
+            telephone: student.telephone,
+            id_number: student.id_number,
+            id_type: student.id_type,
+            rotations: student.rotations.includes(:institution).where(institutions: { manager_id: @manager.id })
+          }
+        end
+
+        render json: {
+          students: students_with_rotations,
           total_pages: total_pages
         }
-
-        render json: response_hash
       end
+
+
 
       def activities
         rotations_ids = @manager.rotations.pluck(:id)
@@ -149,7 +183,11 @@ module Api
       private
 
       def calificate_params
-        params.require(:calificate).permit(:activity_calification_id, percentages: {})
+        params.require(:calificate).permit(:activity_calification_id, percentages: {}, comments: {})
+      end
+
+      def edit_calificate_params
+        params.require(:activity_calification).permit(:activity_calification_id, percentages: {}, comments: {})
       end
 
       def set_manager

@@ -38,11 +38,6 @@ class Subject < ApplicationRecord
     end
   end
 
-
-  def manager
-    rotation.manager.full_name
-  end
-
   def professor_name
     professor.full_name
   end
@@ -61,7 +56,8 @@ class Subject < ApplicationRecord
           only: [:level, :verb, :description]
         } ,
         academic_periods: {}
-      }
+      },
+      methods: [:professor_name]
     ))
   end
 end

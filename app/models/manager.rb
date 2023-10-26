@@ -20,8 +20,8 @@ class Manager < ApplicationRecord
   belongs_to :user_profile
   after_create :set_manager_role
   validate :unique_user_profile
-  has_many :rotations
-  has_many :activities, through: :rotations
+  has_many :institutions
+  has_many :rotations, through: :institutions
 
   def subjects
     rotations.map{|rotation| rotation.subjects}
