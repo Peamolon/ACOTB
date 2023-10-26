@@ -60,7 +60,7 @@ module Api
             professor_name: subject.professor_name,
             name: subject.name,
             credits: subject.credits,
-            students: Student.joins(:rotations).where(rotations: {subject_id: subject.id})
+            students: Student.joins(:rotations).where(rotations: {subject_id: subject.id}).uniq
           }
         end
 
