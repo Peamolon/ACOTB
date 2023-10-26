@@ -7,7 +7,7 @@ module Api
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
                                          :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
-                                         :get_rotation_info, :all_activities]
+                                         :get_rotation_info, :all_activities, :get_subjects_with_score_by_period]
       def index
         @students = Student.all.paginate(page: params[:page], per_page: 10)
         total_pages = @students.total_pages
@@ -87,6 +87,34 @@ module Api
         render json: response_hash || []
       end
 
+      def get_subjects_with_score_by_period
+        professor_id = params[:professor_id]
+        subject_id = params[:rotation_id]
+        institution_id = params[:institution_id]
+
+        subjects = @student.subjects
+
+        subjects = subjects.where(professor_id: professor_id) if professor_id.present?
+
+        subjects = subjects.where(id: subject_id) if subject_id.present?
+
+        #subjects = subjects.joins(:institution).where("institutions.id" => institution_id) if institution_id.present?
+
+        subjects = subjects.paginate(page: params[:page], per_page: 1)
+
+        total_pages = subjects.total_pages
+
+        response_hash = subjects.map do |subject|
+          bloom_data = ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectAndPeriodService.student_evolutions(@student.id, subject.id)
+          {
+            subject: subject,
+            bloom_data: bloom_data
+          }
+        end
+
+        render json: { subjects: response_hash, total_pages: total_pages } || { subjects: [], total_pages: 0 }
+      end
+
       def get_subjects_with_score
         professor_id = params[:professor_id]
         subject_id = params[:rotation_id]
@@ -98,7 +126,7 @@ module Api
 
         subjects = subjects.where(id: subject_id) if subject_id.present?
 
-        subjects = subjects.joins(rotation: :institution).where("institutions.id" => institution_id) if institution_id.present?
+        #subjects = subjects.joins(:institution).where("institutions.id" => institution_id) if institution_id.present?
 
         subjects = subjects.paginate(page: params[:page], per_page: 3)
 
