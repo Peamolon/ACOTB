@@ -937,5 +937,6 @@ def calificate_student(student_id)
     end
     activity_calification.complete! if activity_calification.state == "no_grade"
     activity_calification.update(numeric_grade: rand(1..5))
+    activity_calification.update(calification_date: activity_calification.rotation.end_date)
   end
 end
