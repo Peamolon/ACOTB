@@ -122,6 +122,7 @@ Rails.application.routes.draw do
           get 'get_professor_count'
           get 'get_closest_activities'
           get 'subjects'
+          get 'students_by_subject'
         end
       end
       resources :managers, only: [:index, :show, :create, :update] do

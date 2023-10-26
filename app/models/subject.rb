@@ -24,6 +24,7 @@ class Subject < ApplicationRecord
   has_many :rubrics
   has_many :unities
   has_many :activities
+  has_many :rotations
 
   def active_academic_period
     today = Date.today
