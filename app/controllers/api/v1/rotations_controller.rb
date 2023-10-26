@@ -88,9 +88,9 @@ module Api
       end
 
       def activities
-        activities = @rotation.activities
+        activities = @rotation.activity_califications.joins(:bloom_taxonomy_levels)
 
-        render json: activities
+        render json: activities.as_json(include: :bloom_taxonomy_levels)
       end
 
       def students
