@@ -20,11 +20,11 @@ end
 
 user_params = {
   first_name: 'Sergio',
-  last_name: 'Peña',
+  last_name: 'Peña', 
   telephone: "3227755151",
   role: 'student',
-  email: 'spenaa@unbosque.edu.co',
-  username: 'student',
+  email: 'spenaamedicina@unbosque.edu.co',
+  username: 'sergio',
   id_number: '1007351989',
   id_type: "CC",
   joined_at: Date.today
@@ -959,3 +959,38 @@ create_semiologia_rotation
 
 User.all.each{|student| calificate_student(student.id)}
 
+
+
+
+def create_semiologia_rotation_by_student(student)
+  semiologia_subject = Subject.find_by(name: "Semiología")
+  unities = semiologia_subject.unities.includes(:academic_period).order('academic_periods.start_date')
+  unities.each do |unity|
+    start_period = unity.academic_period.start_date
+    end_period = unity.academic_period.end_date
+    (start_period.to_date..end_period.to_date).select { |date| date.wday.between?(1, 5) }.each do |week_start|
+      week_end = week_start + 4.days
+      current_period = AcademicPeriod.where(subject_id: semiologia_subject.id).find { |period| period.start_date <= week_start && period.end_date >= week_start }
+      unity = Unity.joins(:academic_period).where(academic_periods: {number: current_period.number}).sample
+
+      institution = Institution.all.sample
+      next unless unity.present?
+
+      selected_activities = unity.activities
+
+      next unless selected_activities.present?
+
+      rotation_params = {
+        student_id: student.id,
+        subject_id: semiologia_subject.id,
+        institution_id: institution.id,
+        start_date: week_start,
+        end_date: week_end,
+        activities_ids: selected_activities.pluck(:id)
+      }
+      rotation_service = Rotations::AssignRotationService.new(rotation_params).call
+
+      puts "Rotacion creada para periodo #{week_start} #{week_end}"
+    end
+  end
+end
