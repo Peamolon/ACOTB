@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :csv do
         collection do
           post 'create_rotations'
+          post 'create_user_batch'
         end
       end
       resources :roles, only: [:index]
