@@ -235,11 +235,11 @@ module Api
       private
 
       def calificate_params
-        params.require(:calificate).permit(:grade, :activity_calification_id, percentages: {}, comments: {})
+        params.require(:calificate).permit(:numeric_grade, :activity_calification_id, percentages: {}, comments: {})
       end
 
       def edit_calificate_params
-        params.require(:activity_calification).permit(:grade,:activity_calification_id, percentages: {}, comments: {})
+        params.require(:activity_calification).permit(:numeric_grade,:activity_calification_id, percentages: {}, comments: {})
       end
 
       def set_manager

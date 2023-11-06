@@ -1,11 +1,11 @@
 module ActivityCalifications
   class EditActivityCalificationService
     include ActiveModel::Validations
-    attr_accessor :activity_calification_id, :percentages, :activity_calification, :comments, :grade
+    attr_accessor :activity_calification_id, :percentages, :activity_calification, :comments, :numeric_grade
 
     validates :percentages, presence: true
     validates :comments, presence: true
-    validates :grade, presence: true
+    validates :numeric_grade, presence: true
     validate :validate_verbs_presence
     validate :validate_calification_state
 
@@ -14,7 +14,7 @@ module ActivityCalifications
       @percentages = attributes[:percentages]
       @comments = attributes[:comments]
       @activity_calification = ActivityCalification.find(@activity_calification_id)
-      @grade = attributes[:grade]
+      @numeric_grade = attributes[:numeric_grade]
     end
 
     def call
@@ -31,7 +31,7 @@ module ActivityCalifications
               comment = get_level_comment(verb)
 
               bloom_taxonomy_level.update(percentage: percentage, comment: comment)
-              activity_calification.update(numeric_grade: grade)
+              activity_calification.update(numeric_grade: numeric_grade)
               activity_calification
             end
           end
