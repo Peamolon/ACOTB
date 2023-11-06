@@ -44,7 +44,19 @@ module Api
       def rotations_with_activities
         rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels)
                             .order(start_date: :asc)
-                            .paginate(page: params[:page], per_page: 10)
+
+        rotations = rotations.joins(student: :user_profile).where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:student_name].downcase}%") if params[:student_name].present?
+
+        rotations = rotations.joins(student: :user_profile).where("LOWER(user_profiles.id_number) LIKE ?", "%#{params[:id_number].downcase}%") if params[:id_number].present?
+
+        if params[:start_date].present? && params[:end_date].present?
+          start_date = Date.parse(params[:start_date]) rescue nil
+          end_date = Date.parse(params[:end_date]) rescue nil
+
+          rotations = rotations.where("start_date >= ? AND end_date <= ?", start_date, end_date) if start_date && end_date
+        end
+
+        rotations = rotations.paginate(page: params[:page], per_page: 10)
         #.next_and_past_week_rotations.order(start_date: :asc)
         total_pages = rotations.total_pages
 
