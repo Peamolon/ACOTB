@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_25_233206) do
+ActiveRecord::Schema.define(version: 2023_11_06_170740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(version: 2023_10_25_233206) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "state"
     t.bigint "academic_period_id", null: false
+    t.float "numeric_grade"
     t.index ["academic_period_id"], name: "index_rotations_on_academic_period_id"
     t.index ["institution_id"], name: "index_rotations_on_institution_id"
     t.index ["student_id"], name: "index_rotations_on_student_id"

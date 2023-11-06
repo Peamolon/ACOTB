@@ -4,6 +4,7 @@
 #
 #  id                 :bigint           not null, primary key
 #  end_date           :date
+#  numeric_grade      :float
 #  start_date         :date
 #  state              :string
 #  created_at         :datetime         not null

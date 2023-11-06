@@ -32,6 +32,7 @@ class ActivityCalification < ApplicationRecord
   belongs_to :student
   belongs_to :rotation
   has_many :bloom_taxonomy_levels
+  after_update :check_rotation_numeric_grade
 
   validates :notes, length: { maximum: 255 }
 
@@ -107,6 +108,16 @@ class ActivityCalification < ApplicationRecord
     super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics, :academic_period, :graded_percentage]))
   end
 
-  private
+  #private
+
+  def check_rotation_numeric_grade
+    unless rotation.activity_califications.where(state: :no_grade).present?
+      total = rotation.activity_califications.sum(:numeric_grade).to_i
+      if total > 0
+        numeric_grade = Float(total / rotation.activity_califications.count)
+        rotation.update(numeric_grade: numeric_grade)
+      end
+    end
+  end
 
 end
