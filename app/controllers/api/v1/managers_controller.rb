@@ -43,8 +43,9 @@ module Api
 
       def rotations_with_activities
         rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels)
-                            .next_and_past_week_rotations.order(start_date: :asc)
+                            .order(start_date: :asc)
                             .paginate(page: params[:page], per_page: 10)
+        #.next_and_past_week_rotations.order(start_date: :asc)
         total_pages = rotations.total_pages
 
         response_hash = {
