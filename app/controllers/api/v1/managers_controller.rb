@@ -136,6 +136,10 @@ module Api
       def students
         @students = Student.includes(rotations: :institution).where(institutions: { manager_id: @manager.id }).paginate(page: params[:page], per_page: 10)
 
+        @students = @students.joins(:user_profile).where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:student_name].downcase}%") if params[:student_name].present?
+
+        @students = @students.joins(:user_profile).where("LOWER(user_profiles.id_number) LIKE ?", "%#{params[:id_number].downcase}%") if params[:id_number].present?
+
         total_pages = @students.total_pages
 
         students_with_rotations = @students.map do |student|
