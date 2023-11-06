@@ -142,6 +142,7 @@ Rails.application.routes.draw do
           get 'get_next_activities'
           get 'get_rotations_with_subjects'
           get 'rotations_with_activities'
+          get 'next_rotations'
         end
       end
       resources :directors, only: [:index, :show, :create, :update]

@@ -4,7 +4,7 @@ module Api
       before_action :set_manager, only: [:show, :update, :unities, :students,
                                          :activities, :activity_califications, :pending_activities,
                                          :get_manager_count, :get_next_activities, :get_rotations_with_subjects,
-                                         :rotations_with_activities]
+                                         :rotations_with_activities, :next_rotations]
 
       def index
         @managers = Manager.all
@@ -38,6 +38,36 @@ module Api
       def pending_activities
         pending_activities = @manager.activities.where(state: :pending).limit(10)
         render json: pending_activities
+      end
+
+      def next_rotations
+        rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels, subject: :rubrics)
+                            .next_and_past_week_rotations.order(start_date: :asc)
+                            .joins(:activity_califications).where(activity_califications: {state: :no_grade})
+
+        rotations = rotations.joins(student: :user_profile).where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:student_name].downcase}%") if params[:student_name].present?
+
+        rotations = rotations.joins(student: :user_profile).where("LOWER(user_profiles.id_number) LIKE ?", "%#{params[:id_number].downcase}%") if params[:id_number].present?
+
+        rotations = rotations.paginate(page: params[:page], per_page: 10)
+        total_pages = rotations.total_pages
+
+        response_hash = {
+          rotations: rotations.as_json(
+            include: {
+
+              subject: {
+                include: :rubrics
+              },
+              activity_califications: {
+                include: :bloom_taxonomy_levels,
+                methods: [:activity_name]
+              },
+            }
+          ),
+          total_pages: total_pages
+        }
+        render json: response_hash || []
       end
 
 
@@ -112,23 +142,15 @@ module Api
 
       def get_manager_count
         subjects = @manager.subjects
-
-        rotations = @manager.rotations
-
         activities = Activity.where(subject: subjects)
+        activity_califications = ActivityCalification.where(activity: activities)
+        no_graded_activities = activity_califications.where(state: :no_grade).count
 
-        no_calification_count = activities.joins(:activity_califications)
-                                          .where(activity_califications: {state: :no_grade}).count
-
-        calification_count = activities.joins(:activity_califications)
-                                       .where(activity_califications: {state: :grade}).count
-
-        student_count = Student.joins(:rotations).where(rotations: {id: rotations.pluck(:id)}).count
+        graded_activities = activity_califications.where(state: :graded).count
 
         render json: {
-          no_calification_count: no_calification_count,
-          calification_count: calification_count,
-          student_count: student_count
+          no_graded_activities: no_graded_activities,
+          graded_activities: graded_activities,
         }
       end
 
@@ -213,11 +235,11 @@ module Api
       private
 
       def calificate_params
-        params.require(:calificate).permit(:activity_calification_id, percentages: {}, comments: {})
+        params.require(:calificate).permit(:grade, :activity_calification_id, percentages: {}, comments: {})
       end
 
       def edit_calificate_params
-        params.require(:activity_calification).permit(:activity_calification_id, percentages: {}, comments: {})
+        params.require(:activity_calification).permit(:grade,:activity_calification_id, percentages: {}, comments: {})
       end
 
       def set_manager

@@ -22,10 +22,7 @@ class Manager < ApplicationRecord
   validate :unique_user_profile
   has_many :institutions
   has_many :rotations, through: :institutions
-
-  def subjects
-    rotations.map{|rotation| rotation.subjects}
-  end
+  has_many :subjects, through: :rotations
 
   def fully_registered?
     position.present?
