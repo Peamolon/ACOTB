@@ -42,7 +42,7 @@ module Api
 
 
       def rotations_with_activities
-        rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels)
+        rotations = @manager.rotations.includes(activity_califications: :bloom_taxonomy_levels, subject: :rubrics)
                             .order(start_date: :asc)
 
         rotations = rotations.joins(student: :user_profile).where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:student_name].downcase}%") if params[:student_name].present?
@@ -63,6 +63,10 @@ module Api
         response_hash = {
           rotations: rotations.as_json(
             include: {
+
+              subject: {
+                include: :rubrics
+              },
               activity_califications: {
                 include: :bloom_taxonomy_levels,
                 methods: [:activity_name]
