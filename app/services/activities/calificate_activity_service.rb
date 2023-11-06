@@ -23,8 +23,8 @@ module Activities
         return self
       end
 
-      unless grade.present?
-        errors.add(:grade, 'Falta la nota final')
+      unless numeric_grade.present?
+        errors.add(:numeric_grade, 'Falta la nota final')
         return self
       end
 
