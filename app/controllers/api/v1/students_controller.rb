@@ -62,10 +62,7 @@ module Api
       end
 
       def get_next_activity
-        @activity = @student.activities.where("delivery_date >= ?", Date.today).order(delivery_date: :asc).first
-        render json: {
-          'next_activity': @activity || []
-        }
+        render json: []
       end
 
       def get_subject_scores
