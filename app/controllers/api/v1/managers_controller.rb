@@ -21,7 +21,7 @@ module Api
         if result.errors.any?
           render json: { errors: result.errors.full_messages }, status: 422
         else
-          render json: result.activity_calification.as_json(include: :bloom_taxonomy_levels) , status: 200
+          render json: result.activity_calification.as_json(include: [:bloom_taxonomy_levels, :rotation]) , status: 200
         end
       end
 

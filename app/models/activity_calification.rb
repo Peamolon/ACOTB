@@ -50,6 +50,10 @@ class ActivityCalification < ApplicationRecord
     end
   end
 
+  def graded_percentage
+    rotation.graded_percentage
+  end
+
   def order_bloom_taxonomy_level
     bloom_taxonomy_levels.order(:level)
   end
@@ -100,7 +104,7 @@ class ActivityCalification < ApplicationRecord
   end
 
   def as_json(options = {})
-    super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics, :academic_period]))
+    super(options.merge(methods: [:activity_name, :unity_name, :subject_name, :activity_type, :rubrics, :academic_period, :graded_percentage]))
   end
 
   private
