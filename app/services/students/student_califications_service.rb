@@ -12,7 +12,7 @@ module Students
 
       califications_hash = generate_califications_hash(average_califications)
 
-      { califications: califications_hash }
+      califications_hash
     end
 
     private
@@ -52,8 +52,13 @@ module Students
 
       academic_period_numbers.each do |academic_period_number|
         califications_hash["academic_period_#{academic_period_number}"] = {}
+        activity_calification = ActivityCalification
+                                  .joins(rotation: { academic_period: :subject })
+                                  .where(student_id: @student_id, rotations: { subject_id: @subject_id, state: :no_grade })
+                                  .where('academic_periods.number = (?)', academic_period_number)
+                                  .exists?
 
-        if average_califications[academic_period_number].nil? || average_califications[academic_period_number] == 0
+        if activity_calification
           califications_hash["academic_period_#{academic_period_number}"][:grade] = 0
           califications_hash["academic_period_#{academic_period_number}"][:message] = "incomplete"
         else
@@ -61,7 +66,6 @@ module Students
           califications_hash["academic_period_#{academic_period_number}"][:message] = "complete"
         end
       end
-
       califications_hash
     end
   end
