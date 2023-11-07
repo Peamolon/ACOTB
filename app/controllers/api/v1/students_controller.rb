@@ -139,8 +139,10 @@ module Api
         total_pages = subjects.total_pages
 
         response_hash = subjects.map do |subject|
+          califications = ::Students::StudentCalificationsService.new(student_id: @student.id, subject_id: subject.id).calculate_califications
           bloom_data = ActivityCalifications::CalculateBloomTaxonomyAverageBySubjectService.student_evolutions(@student.id, subject.id)
           {
+            califications: califications,
             subject: subject,
             bloom_data: bloom_data
           }
