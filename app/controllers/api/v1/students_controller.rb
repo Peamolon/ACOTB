@@ -7,7 +7,7 @@ module Api
                                          :get_activities, :get_subjects, :get_activities_count,
                                          :get_next_activity, :activity_calification, :get_general_score,
                                          :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
-                                         :get_rotation_info, :all_activities, :get_subjects_with_score_by_period]
+                                         :get_rotation_info, :all_activities, :get_subjects_with_score_by_period, :califications]
       def index
         @students = Student.all.paginate(page: params[:page], per_page: 10)
         total_pages = @students.total_pages
@@ -50,6 +50,15 @@ module Api
           complete_activities_count: @complete_activities
         }
       end
+
+      def califications
+        califications_service = ::Students::StudentCalificationsService.new(califications_params.merge(student_id: @student.id))
+        califications = califications_service.calculate_califications
+
+        render json: califications
+      end
+
+
 
       def get_student_count
         render json: {
@@ -231,6 +240,10 @@ module Api
 
       def student_params
         params.require(:student).permit(:user_profile_id, :semester)
+      end
+
+      def califications_params
+        params.require(:student).permit(:subject_id, :student_id)
       end
 
     end

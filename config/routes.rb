@@ -63,6 +63,7 @@ Rails.application.routes.draw do
           get 'all_activities'
           get 'get_rotation_info'
           get 'get_subjects_with_score_by_period'
+          get 'califications'
         end
       end
 
