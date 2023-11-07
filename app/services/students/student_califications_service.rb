@@ -52,13 +52,13 @@ module Students
 
       academic_period_numbers.each do |academic_period_number|
         califications_hash["academic_period_#{academic_period_number}"] = {}
-        activity_calification = ActivityCalification
+        activity_califications = ActivityCalification.where(state: :no_grade)
                                   .joins(rotation: { academic_period: :subject })
-                                  .where(student_id: @student_id, rotations: { subject_id: @subject_id, state: :no_grade })
-                                  .where('academic_periods.number = (?)', academic_period_number)
+                                  .where(student_id: @student_id, rotations: { subject_id: @subject_id})
+                                  .where(academic_periods: {number: academic_period_number})
                                   .exists?
 
-        if activity_calification
+        if activity_califications
           califications_hash["academic_period_#{academic_period_number}"][:grade] = 0
           califications_hash["academic_period_#{academic_period_number}"][:message] = "incomplete"
         else
