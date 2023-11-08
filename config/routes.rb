@@ -20,6 +20,8 @@ Rails.application.routes.draw do
         collection do
           post 'create_rotations'
           post 'create_user_batch'
+          get 'activity_califications_for_student'
+          get 'all_activity_califications_for_student'
         end
       end
       resources :roles, only: [:index]

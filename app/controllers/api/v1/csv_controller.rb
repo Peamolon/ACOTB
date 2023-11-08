@@ -50,6 +50,128 @@ module Api
         render json: { error: e.message }, status: :unprocessable_entity
       end
 
+      def activity_califications_for_student
+        student_id = params[:student_id]
+        subject_id = params[:subject_id]
+
+        state_map = {
+          'graded' => 'Calificado',
+          'no_grade' => 'No calificado'
+        }
+
+        type_map = {
+          'THEORETICAL' => 'Teorica',
+          'PRACTICAL' => 'Practica',
+          'THEORETICAL_PRACTICAL' => 'Teorica-practica'
+        }
+
+        activity_califications = ActivityCalification.joins(activity: [ :unity, { unity: :academic_period } ])
+                                                     .where(student_id: student_id, activities: { subject_id: subject_id })
+                                                     .order('academic_periods.number')
+
+        csv_data = CSV.generate(headers: true) do |csv|
+          csv << [
+            'Corte',
+            'Nombre de la Actividad',
+            'Tipo de Actividad',
+            'Unidad',
+            'Nota',
+            'Fecha de Calificación',
+            'Estado',
+            'Nombre de la Materia',
+            'Inicio de la Rotación',
+            'Fin de la Rotación'
+          ]
+
+          activity_califications.each do |calification|
+            activity = calification.activity
+            unity = activity.unity
+            academic_period = unity.academic_period
+            subject = activity.subject
+            rotation = calification.rotation
+            translated_state = state_map[calification.state] || calification.state
+            translated_type = type_map[activity.type] || activity.type
+
+            csv << [
+              academic_period.number,
+              activity.name,
+              translated_type,
+              unity.name,
+              calification.numeric_grade,
+              calification.calification_date,
+              translated_state,
+              subject.name,
+              rotation.start_date,
+              rotation.end_date
+            ]
+          end
+        end
+
+        student = Student.find(student_id)
+        subject = Subject.find(subject_id)
+
+        send_data csv_data, filename: "#{student.full_name}_calificaciones_#{subject.name}.csv"
+      end
+
+      def all_activity_califications_for_student
+        student_id = params[:student_id]
+
+        state_map = {
+          'graded' => 'Calificado',
+          'no_grade' => 'No calificado'
+        }
+
+        type_map = {
+          'THEORETICAL' => 'Teórica',
+          'PRACTICAL' => 'Práctica',
+          'THEORETICAL_PRACTICAL' => 'Teórica-Práctica'
+        }
+
+        activity_califications = ActivityCalification.joins(activity: [ :unity, { unity: :academic_period }, :subject ])
+                                                     .where(student_id: student_id)
+                                                     .order('academic_periods.number', 'subjects.name')
+
+        csv_data = CSV.generate(headers: true) do |csv|
+          csv << [
+            'Nombre de la Materia',
+            'Corte',
+            'Nombre de la Actividad',
+            'Tipo de Actividad',
+            'Unidad',
+            'Nota',
+            'Fecha de Calificación',
+            'Estado'
+          ]
+
+          activity_califications.each do |calification|
+            activity = calification.activity
+            unity = activity.unity
+            academic_period = unity.academic_period
+            subject = activity.subject
+            translated_state = state_map[calification.state] || calification.state
+            translated_type = type_map[activity.type] || activity.type
+
+            csv << [
+              subject.name,
+              academic_period.number,
+              activity.name,
+              translated_type,
+              unity.name,
+              calification.numeric_grade,
+              calification.calification_date,
+              translated_state
+            ]
+          end
+        end
+
+        student = Student.find(student_id)
+
+        send_data csv_data, filename: "#{student.full_name}_calificaciones_todas_materias.csv"
+      end
+
+
+
+
       def create_rotations
         uploaded_file = params[:csvFile]
         if uploaded_file
