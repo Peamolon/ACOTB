@@ -4,7 +4,18 @@ module Api
       #before_action :authenticate_user!, except: :create
       before_action :set_user_profile, only: [:show, :update]
       def index
-        user_profiles = UserProfile.all.order(updated_at: :desc).paginate(page: params[:page], per_page: 10)
+        user_profiles = UserProfile.all.order(updated_at: :desc)
+
+        user_profiles = user_profiles.joins(:user).where("users.username ILIKE ?", "%#{params[:username]}%") if params[:username].present?
+        user_profiles = user_profiles.joins(:user).where("users.email ILIKE ?", "%#{params[:email]}%") if params[:email].present?
+
+        user_profiles = user_profiles.where("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", "%#{params[:user_name].downcase}%") if params[:user_name].present?
+        user_profiles = user_profiles.where("id_number ILIKE ?", "%#{params[:id_number]}%") if params[:id_number].present?
+        user_profiles = user_profiles.where("username ILIKE ?", "%#{params[:username]}%") if params[:username].present?
+        user_profiles = user_profiles.joins(:roles).where("roles.name ILIKE ?", "%#{params[:role]}%") if params[:role].present?
+        user_profiles = user_profiles.where("email ILIKE ?", "%#{params[:email]}%") if params[:email].present?
+
+        user_profiles = user_profiles.paginate(page: params[:page], per_page: 10)
         total_pages = user_profiles.total_pages
 
         response_hash = {
@@ -14,6 +25,7 @@ module Api
 
         render json: response_hash || []
       end
+
 
       def show
         render json: @user_profile, methods: [:email, :username, :assigned_roles]

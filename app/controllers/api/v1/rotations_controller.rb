@@ -51,8 +51,19 @@ module Api
 
 
       def index
-        @rotations = Rotation.all.includes(activity_califications: [:activity]).order('created_at DESC').paginate(page: params[:page], per_page: 10)
+        @rotations = Rotation.all.joins(:institution).includes(activity_califications: [:activity]).order('created_at DESC').paginate(page: params[:page], per_page: 10)
         total_pages = @rotations.total_pages
+
+        if params[:start_date].present? && params[:end_date].present?
+          start_date = Date.parse(params[:start_date]) rescue nil
+          end_date = Date.parse(params[:end_date]) rescue nil
+
+          @rotations = @rotations.where("start_date >= ? AND end_date <= ?", start_date, end_date) if start_date && end_date
+        end
+
+        @rotations = @rotations.joins(student: :user_profile).where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:name_student].downcase}%") if params[:name_student].present?
+        @rotations = @rotations.where("LOWER(institutions.name) LIKE ?", "%#{params[:name_institution].downcase}%") if params[:name_institution].present?
+        @rotations = @rotations.joins(:subject).where("LOWER(subjects.name) LIKE ?", "%#{params[:name_subject].downcase}%") if params[:name_subject].present?
 
         render json: {
           rotations: @rotations.as_json(

@@ -2,7 +2,7 @@ module Api
   module V1
     class SubjectsController < ApplicationController
       before_action :set_subject, only: [:show, :update, :destroy, :get_unities_by_subject,
-                                         :activities, :get_activities]
+                                         :activities, :get_activities, :graphics]
 
       def index
         per_page = params[:per_page] || 10
@@ -11,6 +11,14 @@ module Api
         render json: {
           subjects: @subjects.as_json(include: [:rubrics, :academic_periods]),
           total_pages: total_pages
+        }
+      end
+
+      def graphics
+        render json: {
+          subject: @subject,
+          average_grades_by_academic_period: BloomLevels::BloomTaxonomyStatisticsService.average_grades_by_academic_period(@subject.id),
+          activities_by_bloom_verbs: BloomLevels::BloomTaxonomyStatisticsService.activities_by_bloom_verbs(@subject.id)
         }
       end
 

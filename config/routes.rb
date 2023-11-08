@@ -35,6 +35,7 @@ Rails.application.routes.draw do
           get 'unities', to: 'subjects#get_unities_by_subject'
           get 'activities'
           get 'get_activities'
+          get 'graphics'
         end
         collection do
           get 'list'

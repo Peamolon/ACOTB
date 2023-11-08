@@ -2,7 +2,12 @@ module Api
   module V1
     class InstitutionsController < ApplicationController
       def index
-        institutions = Institution.all.order(updated_at: :desc).paginate(page: params[:page], per_page: 10)
+        institutions = Institution.all.order(updated_at: :desc)
+
+        institutions = institutions.where("name ILIKE ?", "%#{params[:name_institution]}%") if params[:name_institution].present?
+        institutions = institutions.where("contact_email ILIKE ?", "%#{params[:email]}%") if params[:email].present?
+
+        institutions = institutions.paginate(page: params[:page], per_page: 10)
         total_pages = institutions.total_pages
 
         render json: {
@@ -10,6 +15,7 @@ module Api
           total_pages: total_pages
         }
       end
+
 
       def list
         render json: Institution.all
