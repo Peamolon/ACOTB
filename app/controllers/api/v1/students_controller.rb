@@ -106,7 +106,7 @@ module Api
 
         #subjects = subjects.joins(:institution).where("institutions.id" => institution_id) if institution_id.present?
 
-        subjects = subjects.paginate(page: params[:page], per_page: 1)
+        subjects = subjects.paginate(page: params[:page], per_page: 2)
 
         total_pages = subjects.total_pages
 
@@ -134,7 +134,7 @@ module Api
 
         #subjects = subjects.joins(:institution).where("institutions.id" => institution_id) if institution_id.present?
 
-        subjects = subjects.paginate(page: params[:page], per_page: 3)
+        subjects = subjects.paginate(page: params[:page], per_page: 2)
 
         total_pages = subjects.total_pages
 
