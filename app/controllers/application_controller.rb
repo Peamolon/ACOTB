@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-  protected
+  #protected
 
   #def authenticate_user!
   #  return if user_signed_in?
@@ -8,4 +8,7 @@ class ApplicationController < ActionController::API
   #    error: 'Unauthorized'
   #  }, status: :unauthorized
   #end
+  def health
+    render json: { status: 'ok' }, status: :ok
+  end
 end

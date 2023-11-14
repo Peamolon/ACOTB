@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   devise_scope :user do
     get 'recovery_password', to: 'passwords#recovery'
   end
+
+  get '/health', to: 'application#health'
   namespace :api do
     namespace :v1 do
       resources :user_profiles, only: [:index, :show, :create, :update, :destroy] do
