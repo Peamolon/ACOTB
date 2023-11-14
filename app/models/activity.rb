@@ -68,6 +68,25 @@ class Activity < ApplicationRecord
     end
   end
 
+  def self.bloom_taxonomy_statistics
+    total_activities = Activity.count
+    statistics = Activity.pluck(:bloom_taxonomy_levels)
+                         .flatten
+                         .each_with_object(Hash.new(0)) do |level, counts|
+      counts[level] += 1
+    end
+
+    statistics.transform_values! { |count| (count.to_f / total_activities * 100).round(2) }
+  end
+
+  def self.bloom_taxonomy_counts
+    statistics = Activity.pluck(:bloom_taxonomy_levels)
+                         .flatten
+                         .each_with_object(Hash.new(0)) do |level, counts|
+      counts[level] += 1
+    end
+  end
+
   def days_until_delivery
     return 0 if delivery_date.nil?
 

@@ -43,6 +43,16 @@ module Api
         }
       end
 
+      def bloom_verbs
+        stats = Activity.bloom_taxonomy_statistics
+        render json: stats
+      end
+
+      def bloom_verbs_count
+        counts = Activity.bloom_taxonomy_counts
+        render json: counts
+      end
+
       private
 
       def set_administrator

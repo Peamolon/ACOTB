@@ -110,6 +110,8 @@ Rails.application.routes.draw do
       resources :administrators, only: [:index, :show, :create, :update] do
         collection do
           get 'get_admin_counts'
+          get 'bloom_verbs'
+          get 'bloom_verbs_count'
         end
       end
       resources :activity_califications, only: [:create] do
