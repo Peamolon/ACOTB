@@ -9,7 +9,14 @@ module Api
                                          :get_subject_scores, :get_unities, :activities, :rotations, :get_subjects_with_score,
                                          :get_rotation_info, :all_activities, :get_subjects_with_score_by_period, :califications]
       def index
-        @students = Student.all.paginate(page: params[:page], per_page: 10)
+        @students = Student.includes(:user_profile).all
+
+        if params[:student_name].present?
+          @students = @students.joins(:user_profile)
+                               .where("LOWER(CONCAT(user_profiles.first_name, ' ', user_profiles.last_name)) LIKE ?", "%#{params[:student_name].downcase}%")
+        end
+
+        @students = @students.paginate(page: params[:page], per_page: 10)
         total_pages = @students.total_pages
 
         response_hash = {
@@ -19,6 +26,7 @@ module Api
 
         render json: response_hash || []
       end
+
 
       def list
         @students = Student.all
